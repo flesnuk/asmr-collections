@@ -12,8 +12,9 @@ import GoToDetail from '../go-to-detail';
 import HiddenImage from '../hidden-image';
 import ThemeToggle from '../theme-toggle';
 
+const { useParams, useNavigate } = getRouteApi('/work-details/$id');
+
 export function WorkDetailsMenu() {
-  const { useParams, useNavigate } = getRouteApi('/work-details/$id');
   const { id } = useParams();
 
   const navigate = useNavigate();
