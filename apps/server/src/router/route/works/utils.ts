@@ -88,7 +88,7 @@ export function whereBuilder(query: z.infer<typeof IndexSearchQuerySchema>) {
   if (keyword && !embedding) {
     const searchCondition: Prisma.WorkWhereInput = {
       OR: [
-        { id: { contains: keyword, mode: 'insensitive' } },
+        { id: { equals: keyword, mode: 'insensitive' } },
         { name: { contains: keyword, mode: 'insensitive' } },
         { circle: { name: { contains: keyword, mode: 'insensitive' } } },
         { series: { name: { contains: keyword, mode: 'insensitive' } } },
