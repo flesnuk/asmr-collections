@@ -118,8 +118,8 @@ function WorkDetails({ id}: { id: string }) {
           <div className="flex flex-col gap-3 p-2 w-full">
             <h2 className="sm:text-xl text-[20px] pt-2" title={data.name}>{data.name}</h2>
             <div className="opacity-70">
-              <Link to="/" search={{ circleId: data.circleId }}>{data.circle.name}</Link>
-              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2">「{data.series?.name}」系列</Link> : null}
+              <Link to="/" search={{ circleId: data.circleId }} className="hover:underline underline-offset-4">{data.circle.name}</Link>
+              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2 hover:underline underline-offset-4">「{data.series?.name}」系列</Link> : null}
             </div>
 
             <Separator />
