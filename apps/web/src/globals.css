@@ -1,8 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-
-@plugin "tailwindcss-animate";
 
 @font-face {
   font-family: "HarmonyOS Sans SC";
@@ -50,18 +49,6 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
-}
-
-body {
-  font-family: "HarmonyOS Sans SC", system-ui, sans-serif;
-}
-
-.no-scrollbar {
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 @theme inline {
@@ -247,6 +234,18 @@ html {
 html body[data-scroll-locked] {
   overflow: unset !important;
   margin-right: unset !important;
+}
+
+body {
+  font-family: "HarmonyOS Sans SC", system-ui, sans-serif;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 * {
