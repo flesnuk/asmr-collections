@@ -4,6 +4,7 @@ import WorkSkeletons from './components/works/skeleton';
 import PreloadNextWorks from './components/works/preload-next';
 
 import useSWR from 'swr';
+import { motion } from 'framer-motion';
 import { useSearch } from '@tanstack/react-router';
 import { withQuery } from '@asmr-collections/shared';
 
@@ -36,12 +37,17 @@ export default function App() {
   if (isLoading || !data) return <WorkSkeletons />;
 
   return (
-    <>
+    <motion.div
+      key={key}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: .2 }}
+    >
       <Works data={data} />
       <Pagination total={data.total} current={search.page} limit={search.limit} />
 
       {/** 预渲染下一页的数据 */}
       <PreloadNextWorks swrKey={nextKey} />
-    </>
+    </motion.div>
   );
 }

@@ -57,7 +57,11 @@ function WorkDetails({ id}: { id: string }) {
     throw new Error('作品数据请求失败，详情请查看控制台');
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+    >
       <Activity mode={settings.showWorkDetail ? 'visible' : 'hidden'}>
         <Card className="md:flex-row flex-col gap-1 p-0 overflow-hidden">
           <div className="w-full relative md:max-w-[40%] min-w-[40%] h-auto flex items-center">
@@ -255,7 +259,7 @@ function WorkDetails({ id}: { id: string }) {
       )}
 
       <SimilarWorks work={data} />
-    </>
+    </motion.div>
   );
 }
 

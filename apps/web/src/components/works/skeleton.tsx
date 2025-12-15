@@ -17,9 +17,9 @@ export function WorkSkeleton() {
           <Skeleton className="w-24 h-8" />
         </div>
         <div className="flex flex-wrap gap-2 mb-2">
-          <Skeleton className="flex-1 h-8" />
-          <Skeleton className="w-20 h-8" />
-          <Skeleton className="w-20 h-8" />
+          <Skeleton className="flex-1 h-10" />
+          <Skeleton className="w-19.5 h-10" />
+          <Skeleton className="w-16 h-10" />
         </div>
       </CardContent>
     </Card>

@@ -28,7 +28,7 @@ function setupImg(img: HTMLImageElement) {
 
 export default function Image({
   classNames,
-  duration = 500,
+  duration = 150,
   disableHidden = false,
   ...props
 }: ImageProps) {
