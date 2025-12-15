@@ -1,14 +1,14 @@
+import Image from '~/components/image';
+
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { hiddenImageAtom } from '~/hooks/use-hidden-image';
+
 import { mediaStateAtom } from '~/hooks/use-media-state';
 
-import { cn } from '~/lib/utils';
 import { playerExpandAtom } from '../../hooks/use-player-expand';
 
 export default function PlayerCover({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   const mediaState = useAtomValue(mediaStateAtom);
-  const isHiddenImage = useAtomValue(hiddenImageAtom);
   const setPlayerExpand = useSetAtom(playerExpandAtom);
 
   const navigate = useNavigate();
@@ -32,18 +32,15 @@ export default function PlayerCover({ ...rest }: React.HTMLAttributes<HTMLDivEle
   return (
     <div {...rest} className="w-full relative h-auto flex items-center self-center max-sm:self-auto max-sm:max-w-full max-sm:mt-12">
       <div className="pb-[75%]" />
-      <div className="bg-zinc-700 absolute inset-0 overflow-hidden rounded-md">
-        <img
-          onClick={handleClick}
-          src={data?.cover}
-          alt={data?.name}
-          onLoad={e => { e.currentTarget.style.opacity = '1'; }}
-          className={cn(
-            'object-cover object-center size-full opacity-0 transition-opacity cursor-pointer',
-            isHiddenImage && 'filter blur-xl'
-          )}
-        />
-      </div>
+      <Image
+        onClick={handleClick}
+        src={data?.cover}
+        alt={data?.name}
+        classNames={{
+          wrapper: 'bg-zinc-700 absolute inset-0 overflow-hidden rounded-md',
+          img: 'cursor-pointer'
+        }}
+      />
     </div>
   );
 }

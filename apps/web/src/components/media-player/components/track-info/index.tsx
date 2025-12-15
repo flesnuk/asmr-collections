@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai';
+import Image from '~/components/image';
 import { mediaStateAtom } from '~/hooks/use-media-state';
 
 interface MiddleControlsProps {
@@ -15,10 +16,10 @@ export default function TrackInfo({ mainExpand }: MiddleControlsProps) {
 
   return (
     <div id="track-info" className="flex items-center justify-center gap-2">
-      <div id="thumbnail-wrapper" className="size-11 bg-zinc-800 rounded-md overflow-hidden max-sm:block">
-        <img
+      <div id="thumbnail-wrapper" className="size-11 rounded-md overflow-hidden max-sm:block">
+        <Image
+          disableHidden
           id="thumbnail"
-          className="w-full h-full object-cover"
           src={mediaState.work?.cover}
           alt="Thumbnail"
         />

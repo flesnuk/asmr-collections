@@ -7,6 +7,7 @@ import { formatChineseDate } from '@asmr-collections/shared';
 
 import { ImageIcon, MicIcon } from 'lucide-react';
 
+import Image from '~/components/image';
 import WorkPreview from '~/components/work-preview';
 
 import { Card } from '~/components/ui/card';
@@ -25,7 +26,6 @@ import { match } from 'ts-pattern';
 import { useAtomValue } from 'jotai';
 
 import { useWorkInfo } from '~/hooks/use-work-info';
-import { hiddenImageAtom } from '~/hooks/use-hidden-image';
 import { useWorkDetailsTracks } from '~/hooks/use-work-details';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
@@ -40,7 +40,6 @@ function WorkDetails({ id}: { id: string }) {
   const searchPath = route.useSearch({ select: ({ path }) => path });
   const matchRoute = useMatchRoute();
 
-  const isHiddenImage = useAtomValue(hiddenImageAtom);
   const settings = useAtomValue(settingOptionsAtom);
 
   const { data } = useWorkInfo(id, { suspense: true });
@@ -63,56 +62,52 @@ function WorkDetails({ id}: { id: string }) {
         <Card className="md:flex-row flex-col gap-1 p-0 overflow-hidden">
           <div className="w-full relative md:max-w-[40%] min-w-[40%] h-auto flex items-center">
             <div className="pb-[75%]" />
-            <div className="bg-zinc-700 absolute inset-0 overflow-hidden">
-              <img
-                src={data.cover}
-                alt={data.name}
-                onLoad={e => { e.currentTarget.style.opacity = '1'; }}
-                className={cn(
-                  'object-cover object-center size-full opacity-0 transition-opacity',
-                  isHiddenImage && 'filter blur-xl'
-                )}
-              />
-              <Badge
-                className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
-                onClick={() => {
-                  writeClipboard(data.id, 'ID 已复制到剪贴板');
-                }}
-              >
-                {data.id}
-                {data.subtitles ? <span>带字幕</span> : null}
-                {data.exists === false ? <span>未收藏</span> : null}
-              </Badge>
-              <Badge
-                className={cn(
-                  'absolute top-10 left-2 dark:text-white shadow-md font-bold',
-                  match(data.ageCategory)
-                    .with(3, () => 'bg-red-500')
-                    .with(2, () => 'bg-blue-500')
-                    .otherwise(() => 'bg-emerald-500')
-                )}
-              >
-                {
-                  match(data.ageCategory)
-                    .with(1, () => '全年龄')
-                    .with(2, () => 'R15')
-                    .otherwise(() => 'R18')
-                }
-              </Badge>
-              {tracks?.existsInLocal === false && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={cn(
-                    'truncate block',
-                    'p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
-                    'text-gray-300 max-w-[70%] truncate'
-                  )}
-                >
-                  不存在于本地库
-                </motion.div>
+            <Image
+              src={data.cover}
+              alt={data.name}
+              classNames={{
+                wrapper: 'absolute inset-0 overflow-hidden'
+              }}
+            />
+            <Badge
+              className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
+              onClick={() => {
+                writeClipboard(data.id, 'ID 已复制到剪贴板');
+              }}
+            >
+              {data.id}
+              {data.subtitles ? <span>带字幕</span> : null}
+              {data.exists === false ? <span>未收藏</span> : null}
+            </Badge>
+            <Badge
+              className={cn(
+                'absolute top-10 left-2 dark:text-white shadow-md font-bold',
+                match(data.ageCategory)
+                  .with(3, () => 'bg-red-500')
+                  .with(2, () => 'bg-blue-500')
+                  .otherwise(() => 'bg-emerald-500')
               )}
-            </div>
+            >
+              {
+                match(data.ageCategory)
+                  .with(1, () => '全年龄')
+                  .with(2, () => 'R15')
+                  .otherwise(() => 'R18')
+              }
+            </Badge>
+            {tracks?.existsInLocal === false && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className={cn(
+                  'truncate block',
+                  'p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
+                  'text-gray-300 max-w-[70%] truncate'
+                )}
+              >
+                不存在于本地库
+              </motion.div>
+            )}
           </div>
 
           <div className="flex flex-col gap-3 p-2 w-full">
