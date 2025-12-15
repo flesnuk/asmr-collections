@@ -21,13 +21,12 @@ export default function SearchBar({ search }: SearchBarProps) {
   const navigate = useNavigate();
 
   const onSearch = () => {
-    navigate({
-      to: '/',
-      search: exclude(
-        ['page'],
-        { keyword, embedding: isEmbedding ? keyword : undefined }
-      )
-    });
+    if (!keyword.trim()) return;
+
+    if (isEmbedding)
+      navigate({ to: '/', search: exclude(['page', 'keyword'], { embedding: keyword }) });
+    else
+      navigate({ to: '/', search: exclude(['page', 'embedding'], { keyword }) });
   };
 
   return (
