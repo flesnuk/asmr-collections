@@ -3,6 +3,8 @@ import { Button } from '../ui/button';
 import { confirm } from '../ui/confirmer';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
+import Link from '../link';
+
 import { MenuIcon } from 'lucide-react';
 
 import { extname } from '@asmr-collections/shared';
@@ -14,6 +16,7 @@ import { useAtomValue } from 'jotai';
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
+import { externalUrl } from '~/utils';
 import { mutateWorkInfo, mutateWorks } from '~/lib/mutation';
 
 import type { Work } from '@asmr-collections/shared';
@@ -142,10 +145,9 @@ export const Menu = memo(({ work }: Props) => {
                 {work.languageEditions.length === 0 && <DropdownMenuItem>没有其它版本</DropdownMenuItem>}
                 {work.languageEditions.map(languageEdition => (
                   <DropdownMenuItem asChild key={languageEdition.workId}>
-                    <a href={`https://www.dlsite.com/maniax/work/=/product_id/${languageEdition.workId}.html`} target="_blank">
+                    <Link to={externalUrl.dlsite(languageEdition.workId)} isExternal showAnchorIcon>
                       {languageEdition.label}
-                      <svg aria-hidden="true" fill="none" focusable="false" height="1em" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="1em" className="flex text-current self-center"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><path d="M15 3h6v6" /><path d="M10 14L21 3" /></svg>
-                    </a>
+                    </Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuSubContent>
@@ -161,10 +163,9 @@ export const Menu = memo(({ work }: Props) => {
           ]
             .map(({ label, link }) => (
               <DropdownMenuItem asChild key={label}>
-                <a href={link} target="_blank">
+                <Link to={link} isExternal showAnchorIcon>
                   {label}
-                  <svg aria-hidden="true" fill="none" focusable="false" height="1em" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="1em" className="flex text-current self-center"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><path d="M15 3h6v6" /><path d="M10 14L21 3" /></svg>
-                </a>
+                </Link>
               </DropdownMenuItem>
             ))}
         </DropdownMenuGroup>

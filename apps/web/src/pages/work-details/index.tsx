@@ -1,4 +1,4 @@
-import { createLazyRoute, getRouteApi, Link, useMatchRoute } from '@tanstack/react-router';
+import { createLazyRoute, getRouteApi, useMatchRoute } from '@tanstack/react-router';
 
 import { motion } from 'framer-motion';
 import { Activity, Suspense, useCallback } from 'react';
@@ -7,6 +7,7 @@ import { formatChineseDate } from '@asmr-collections/shared';
 
 import { ImageIcon, MicIcon } from 'lucide-react';
 
+import Link from '~/components/link';
 import Image from '~/components/image';
 import WorkPreview from '~/components/work-preview';
 
@@ -29,7 +30,7 @@ import { useWorkInfo } from '~/hooks/use-work-info';
 import { useWorkDetailsTracks } from '~/hooks/use-work-details';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
-import { writeClipboard } from '~/utils';
+import { externalUrl, writeClipboard } from '~/utils';
 
 import { cn } from '~/lib/utils';
 
@@ -117,8 +118,8 @@ function WorkDetails({ id}: { id: string }) {
           <div className="flex flex-col gap-3 p-2 w-full">
             <h2 className="sm:text-xl text-[20px] pt-2" title={data.name}>{data.name}</h2>
             <div className="opacity-70">
-              <Link to="/" search={{ circleId: data.circleId }} className="hover:underline underline-offset-4">{data.circle.name}</Link>
-              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2 hover:underline underline-offset-4">「{data.series?.name}」系列</Link> : null}
+              <Link to="/" search={{ circleId: data.circleId }} underline="hover">{data.circle.name}</Link>
+              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2" underline="hover">「{data.series?.name}」系列</Link> : null}
             </div>
 
             <Separator />
@@ -194,15 +195,15 @@ function WorkDetails({ id}: { id: string }) {
 
             <div className="flex flex-wrap gap-2 *:px-1">
               <Button asChild variant="link" size="sm" className="w-max hover:opacity-80">
-                <a href={`https://www.dlsite.com/maniax/work/=/product_id/${data.id}.html`} target="_blank" rel="noreferrer noopener">
+                <Link to={externalUrl.dlsite(data.id)} isExternal underline="always">
                   DLsite
-                </a>
+                </Link>
               </Button>
 
               <Button asChild variant="link" size="sm" className="w-max hover:opacity-80">
-                <a href={`https://asmr.one/work/${data.id}`} target="_blank" rel="noreferrer noopener">
+                <Link to={externalUrl.one(data.id)} isExternal underline="always">
                   ASMR.ONE
-                </a>
+                </Link>
               </Button>
 
               {

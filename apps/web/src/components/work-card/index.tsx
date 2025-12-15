@@ -4,7 +4,7 @@ import { Card, CardTitle } from '../ui/card';
 
 import Image from '../image';
 
-import { Link } from '@tanstack/react-router';
+import Link from '../link';
 
 import { ImageIcon, MicIcon } from 'lucide-react';
 
@@ -100,8 +100,7 @@ export default function WorkCard({ work, showMenus = true, showImageBadge = true
         }
         <div
           className={cn(
-            'truncate block',
-            'p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
+            'block p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
             'text-gray-300 max-w-[70%] truncate'
           )}
         >
@@ -112,12 +111,12 @@ export default function WorkCard({ work, showMenus = true, showImageBadge = true
             ? (
               <Link
                 className={cn(
-                  'truncate block hover:underline underline-offset-4',
-                  'p-2 py-1 absolute bottom-0 left-0 bg-zinc-800/80 rounded-none rounded-tr-md text-sm',
+                  'block p-2 py-1 absolute bottom-0 left-0 bg-zinc-800/80 rounded-none rounded-tr-md text-sm',
                   'text-gray-300 max-w-[60%] truncate'
                 )}
                 to="/"
                 search={include(['sort', 'order', 'filterOp'], { seriesId: work.seriesId })}
+                underline="hover"
               >
                 {work.series?.name}
               </Link>
@@ -132,9 +131,10 @@ export default function WorkCard({ work, showMenus = true, showImageBadge = true
           </Link>
         </CardTitle>
         <Link
-          className="hover:underline underline-offset-4 opacity-60 max-w-max"
+          className="opacity-60 max-w-max"
           to="/"
           search={include(['sort', 'order', 'filterOp'], { circleId: work.circleId })}
+          underline="hover"
         >
           {work.circle.name}
         </Link>

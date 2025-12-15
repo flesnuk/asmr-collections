@@ -2,8 +2,7 @@ import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table';
 
 import { FileImage, FileText, FolderClosed } from 'lucide-react';
 
-import { Link } from '@tanstack/react-router';
-
+import Link from '~/components/link';
 import FolderBreadcrumb from '~/components/breadcrumb/folder-breadcrumb';
 
 import VideoItem from './video-item';

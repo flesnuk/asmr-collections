@@ -103,3 +103,9 @@ export function parseWorkInput(input: string) {
 
   return stats;
 }
+
+export const externalUrl = {
+  dlsite: (id: string) => `https://www.dlsite.com/maniax/work/=/product_id/${id}.html`,
+  dlsiteKeyword: (text: string) => `https://www.dlsite.com/maniax/fsr/=/keyword_creater/"${text}"`,
+  one: (id: string) => `https://asmr.one/work/${id}`
+};

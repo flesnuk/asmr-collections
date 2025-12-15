@@ -6,7 +6,8 @@ import { createLazyRoute } from '@tanstack/react-router';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 import { transcodeTempAtom } from '~/hooks/use-transcode-options';
 
-import { Button } from '~/components/ui/button';
+import Link from '~/components/link';
+
 import { Separator } from '~/components/ui/separator';
 
 import { GenresSettings } from './components/genres';
@@ -16,6 +17,12 @@ import { SettingInput } from './components/setting-input';
 import { TranscodeSettings } from './components/transcode';
 import { StorageSkeleton } from './components/storage-skeleton';
 import { SmartPathSettings } from './components/smart-path-settings';
+
+const URLS = [
+  { name: 'ASMR.ONE', url: 'https://asmr.one' },
+  { name: 'GitHub', url: 'https://github.com/kahosan/asmr-collections' },
+  { name: 'DLsite', url: 'https://dlsite.com' }
+];
 
 function Settings() {
   const [options, setOptions] = useImmerAtom(settingOptionsAtom);
@@ -137,21 +144,11 @@ function Settings() {
       <Separator />
 
       <div className="flex gap-2">
-        <Button asChild variant="link" size="sm" className="w-max hover:opacity-80 p-1">
-          <a href="https://asmr.one" target="_blank" rel="noreferrer noopener">
-            ASMR.ONE
-          </a>
-        </Button>
-        <Button asChild variant="link" size="sm" className="w-max hover:opacity-80 p-1">
-          <a href="https://github.com/kahosan/asmr-collections" target="_blank" rel="noreferrer noopener">
-            GitHub
-          </a>
-        </Button>
-        <Button asChild variant="link" size="sm" className="w-max hover:opacity-80 p-1">
-          <a href="https://dlsite.com" target="_blank" rel="noreferrer noopener">
-            DLsite
-          </a>
-        </Button>
+        {URLS.map(({ name, url }) => (
+          <Link title={name} key={name} to={url} isExternal underline="hover" className="text-sm">
+            {name}
+          </Link>
+        ))}
       </div>
     </motion.div>
   );

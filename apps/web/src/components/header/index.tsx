@@ -1,8 +1,9 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { Menubar } from '../ui/menubar';
 import { Separator } from '../ui/separator';
 
+import Link from '../link';
 import SearchBar from './search-bar';
 
 import SortMenu from './sort-menu';
