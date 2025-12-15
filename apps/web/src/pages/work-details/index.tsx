@@ -193,13 +193,13 @@ function WorkDetails({ id}: { id: string }) {
             <Separator />
 
             <div className="flex flex-wrap gap-2 *:px-1">
-              <Button asChild variant="link" size="sm" className="w-max hover:opacity-80">
+              <Button asChild variant="link" size="sm" className="w-max hover:opacity-90">
                 <Link to={externalUrl.dlsite(data.id)} isExternal underline="always">
                   DLsite
                 </Link>
               </Button>
 
-              <Button asChild variant="link" size="sm" className="w-max hover:opacity-80">
+              <Button asChild variant="link" size="sm" className="w-max hover:opacity-90">
                 <Link to={externalUrl.one(data.id)} isExternal underline="always">
                   ASMR.ONE
                 </Link>
@@ -210,7 +210,7 @@ function WorkDetails({ id}: { id: string }) {
                   edition.workId === data.id
                     ? null
                     : (
-                      <Button key={edition.workId} asChild variant="link" size="sm" className="w-max hover:opacity-80">
+                      <Button key={edition.workId} asChild variant="link" size="sm" className="w-max hover:opacity-90">
                         <Link to="/work-details/$id" params={{ id: edition.workId }}>
                           {edition.label}
                         </Link>
@@ -221,7 +221,7 @@ function WorkDetails({ id}: { id: string }) {
 
               {
                 data.translationInfo.childWorknos.map(childId => (
-                  <Button key={childId} asChild variant="link" size="sm" className="w-max hover:opacity-80">
+                  <Button key={childId} asChild variant="link" size="sm" className="w-max hover:opacity-90">
                     <Link to="/work-details/$id" params={{ id: childId }}>
                       译者版
                     </Link>
