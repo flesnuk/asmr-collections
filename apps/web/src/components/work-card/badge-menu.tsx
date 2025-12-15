@@ -21,7 +21,7 @@ interface Props {
   isFilter?: boolean
 }
 
-export default function BadgeMenu({ search, variant, icon, text, isFilter }: Props) {
+export function BadgeMenu({ search, variant, icon, text, isFilter }: Props) {
   const [open, setOpen] = useState(false);
 
   return (

@@ -6,10 +6,10 @@ import { Link } from '@tanstack/react-router';
 
 import { ImageIcon, MicIcon } from 'lucide-react';
 
-import Menu from './menu';
-import BadgeMenu from './badge-menu';
-import GenresPopover from './genres-popover';
-import AuditionDrawer from './audition-drawer';
+import { Menu } from './menu';
+import { BadgeMenu } from './badge-menu';
+import { GenresPopover } from './genres-popover';
+import { AuditionDrawer } from './audition-drawer';
 
 import { storageOptionsAtom } from '~/hooks/use-setting-options';
 

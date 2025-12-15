@@ -8,7 +8,7 @@ import { MenuIcon } from 'lucide-react';
 import { extname } from '@asmr-collections/shared';
 
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 
 import { useToastMutation } from '~/hooks/use-toast-fetch';
@@ -22,7 +22,7 @@ interface Props {
   work: Work
 }
 
-export default function Menu({ work }: Props) {
+export const Menu = memo(({ work }: Props) => {
   const [open, setOpen] = useState(false);
 
   const settingOptions = useAtomValue(settingOptionsAtom);
@@ -171,7 +171,7 @@ export default function Menu({ work }: Props) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});
 
 export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string, existsSubtitles: boolean, onClose?: () => void }) {
   const [subtitlesAction, subtitlesIsMutating] = useToastMutation('subtitles');

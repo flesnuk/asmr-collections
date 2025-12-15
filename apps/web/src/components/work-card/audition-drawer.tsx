@@ -12,7 +12,7 @@ import WorkPreview from '../work-preview';
 
 import { useState } from 'react';
 
-export default function AuditionDrawer({ workId, originalId }: { workId: string, originalId?: string | null }) {
+export function AuditionDrawer({ workId, originalId }: { workId: string, originalId?: string | null }) {
   const [open, setOpen] = useState(false);
 
   return (

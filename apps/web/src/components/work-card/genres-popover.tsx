@@ -16,7 +16,7 @@ interface Props {
   searchGenres?: number[]
 }
 
-export default function GenresPopover({ genres, searchGenres }: Props) {
+export function GenresPopover({ genres, searchGenres }: Props) {
   const [selectedGenres, setSelectedGenres] = useState(searchGenres ?? []);
 
   // 路由更新后，弹出框不受影响啊，只改了 search
