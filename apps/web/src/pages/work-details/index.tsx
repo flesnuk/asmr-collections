@@ -5,7 +5,7 @@ import { Activity, Suspense, useCallback } from 'react';
 
 import { formatChineseDate } from '@asmr-collections/shared';
 
-import { ImageIcon, MicIcon } from 'lucide-react';
+import { ImageIcon, MicIcon, TagIcon } from 'lucide-react';
 
 import Link from '~/components/link';
 import Image from '~/components/image';
@@ -19,6 +19,7 @@ import { Separator } from '~/components/ui/separator';
 import ErrorBoundary from '~/components/error-boundary';
 
 import SimilarWorks from './components/similar';
+import MetaButton from '~/components/meta-button';
 import TracksTabale from './components/tracks-table';
 import WorkDetailsSkeleton from './components/skeleton';
 import TracksSkeleton from './components/tracks-skeleton';
@@ -142,10 +143,10 @@ function WorkDetails({ id}: { id: string }) {
             <div className="text-sm inline-flex items-center flex-wrap gap-2">
               {
                 data.artists.map(artist => (
-                  <Button
+                  <MetaButton
                     key={artist.name}
                     asChild
-                    variant="green"
+                    metaType="artists"
                     size="sm"
                     disabled={!artist.id}
                   >
@@ -153,15 +154,15 @@ function WorkDetails({ id}: { id: string }) {
                       <MicIcon />
                       {artist.name}
                     </Link>
-                  </Button>
+                  </MetaButton>
                 ))
               }
               {
                 data.illustrators.map(illust => (
-                  <Button
+                  <MetaButton
                     key={illust.name}
                     asChild
-                    variant="blue"
+                    metaType="illustrators"
                     size="sm"
                     disabled={!illust.id}
                   >
@@ -169,7 +170,7 @@ function WorkDetails({ id}: { id: string }) {
                       <ImageIcon />
                       {illust.name}
                     </Link>
-                  </Button>
+                  </MetaButton>
                 ))
               }
             </div>
@@ -179,14 +180,12 @@ function WorkDetails({ id}: { id: string }) {
             <div className="inline-flex flex-wrap gap-2 mt-auto">
               {
                 data.genres.map(genre => (
-                  <Link
-                    key={genre.id}
-                    to="/"
-                    search={{ genres: [genre.id] }}
-                    className="text-sm p-1 px-2 bg-zinc-200 dark:bg-zinc-700 rounded-md hover:opacity-80 transition-opacity"
-                  >
-                    {genre.name}
-                  </Link>
+                  <Badge key={genre.id} asChild variant="info" size="lg" className="hover:opacity-90 transition-opacity">
+                    <Link to="/" search={{ genres: [genre.id] }}>
+                      <TagIcon />
+                      {genre.name}
+                    </Link>
+                  </Badge>
                 ))
               }
             </div>

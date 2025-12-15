@@ -6,8 +6,6 @@ import Image from '../image';
 
 import Link from '../link';
 
-import { ImageIcon, MicIcon } from 'lucide-react';
-
 import { Menu } from './menu';
 import { BadgeMenu } from './badge-menu';
 import { GenresPopover } from './genres-popover';
@@ -149,9 +147,8 @@ export default function WorkCard({ work, showMenus = true, showImageBadge = true
             <BadgeMenu
               key={artist.id}
               text={artist.name}
+              metaType="artists"
               search={exclude(['page', 'keyword'], { artistId: [artist.id] })}
-              icon={<MicIcon />}
-              variant="green"
               isFilter={search.artistId?.includes(artist.id)}
             />
           ))}
@@ -159,9 +156,8 @@ export default function WorkCard({ work, showMenus = true, showImageBadge = true
             <BadgeMenu
               key={illustrator.id}
               text={illustrator.name}
+              metaType="illustrators"
               search={exclude(['page', 'keyword'], { illustratorId: illustrator.id })}
-              icon={<ImageIcon />}
-              variant="blue"
               isFilter={search.illustratorId === illustrator.id}
             />
           ))}

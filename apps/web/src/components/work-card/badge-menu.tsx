@@ -1,4 +1,3 @@
-import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,7 +5,8 @@ import {
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu';
 
-import Link from '~/components/link';
+import Link from '../link';
+import MetaButton from '../meta-button';
 
 import { useState } from 'react';
 
@@ -15,28 +15,20 @@ import type { RootSearchParams } from '~/providers/router';
 
 interface Props {
   search: RootSearchParams
-  variant: 'green' | 'blue'
-  icon: React.ReactNode
+  metaType: 'artists' | 'illustrators'
   text: string
   isFilter?: boolean
 }
 
-export function BadgeMenu({ search, variant, icon, text, isFilter }: Props) {
+export function BadgeMenu({ search, metaType, text, isFilter }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
     <DropdownMenu open={open} key={String(open) /** 筛选只是添加了 url search，虽然有设置 open false，但是没用 */}>
       <DropdownMenuTrigger asChild>
-        <Button
-          onPointerDown={e => e.preventDefault()}
-          onClick={() => setOpen(p => !p)}
-          variant={variant}
-          size="sm"
-          className="text-xs"
-        >
-          {icon}
+        <MetaButton onPointerDown={e => e.preventDefault()} onClick={() => setOpen(p => !p)} metaType={metaType} size="sm">
           {text}
-        </Button>
+        </MetaButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40" onInteractOutside={() => setOpen(false)}>
         <DropdownMenuItem asChild>
