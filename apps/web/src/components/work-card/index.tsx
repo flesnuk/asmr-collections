@@ -46,7 +46,7 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
 
   return (
     <Card className="bg-zinc-100 dark:bg-zinc-900 overflow-hidden grid grid-rows-[auto_auto_1fr] h-full py-0 gap-2">
-      <div className="pb-[65%] relative overflow-hidden">
+      <div className="pb-[65%] relative">
         <Link to="/work-details/$id" params={{ id: work.id }} title={work.name}>
           <Image
             src={work.cover}
@@ -56,46 +56,40 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
             }}
           />
         </Link>
-        {
-          showImageBadge ? (
-            <>
-              <Badge
-                className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
-                onClick={() => {
-                  writeClipboard(work.id, 'ID 已复制到剪贴板');
-                }}
-              >
-                {work.id}
-                {work.subtitles ? <span>带字幕</span> : null}
-              </Badge>
-              <Badge
-                className={cn(
-                  'absolute top-10 left-2 dark:text-white shadow-md font-bold',
-                  match(work.ageCategory)
-                    .with(3, () => 'bg-red-500')
-                    .with(2, () => 'bg-blue-500')
-                    .otherwise(() => 'bg-emerald-500')
-                )}
-              >
-                {
-                  match(work.ageCategory)
-                    .with(1, () => '全年龄')
-                    .with(2, () => 'R15')
-                    .otherwise(() => 'R18')
-                }
-              </Badge>
-              {
-                data?.exists === false
-                  ? (
-                    <Badge className="absolute top-2 right-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-default">
-                      不存在于本地库
-                    </Badge>
-                  )
-                  : null
-              }
-            </>
-          ) : null
-        }
+        {showImageBadge ? (
+          <>
+            <Badge
+              className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
+              onClick={() => {
+                writeClipboard(work.id, 'ID 已复制到剪贴板');
+              }}
+            >
+              {work.id}
+              {work.subtitles ? <span>带字幕</span> : null}
+            </Badge>
+            <Badge
+              className={cn(
+                'absolute top-10 left-2 dark:text-white shadow-md font-bold',
+                match(work.ageCategory)
+                  .with(3, () => 'bg-red-500')
+                  .with(2, () => 'bg-blue-500')
+                  .otherwise(() => 'bg-emerald-500')
+              )}
+            >
+              {match(work.ageCategory)
+                .with(1, () => '全年龄')
+                .with(2, () => 'R15')
+                .otherwise(() => 'R18')}
+            </Badge>
+            {data?.exists === false
+              ? (
+                <Badge className="absolute top-2 right-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-default">
+                  不存在于本地库
+                </Badge>
+              )
+              : null}
+          </>
+        ) : null}
         <div
           className={cn(
             'block p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
@@ -129,7 +123,7 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
           </Link>
         </CardTitle>
         <Link
-          className="opacity-60 max-w-max"
+          className="text-muted-foreground max-w-max"
           to="/"
           search={include(['sort', 'order', 'filterOp'], { circleId: work.circleId })}
           underline="hover"
@@ -139,7 +133,7 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
         <Separator className="dark:bg-zinc-700" />
       </div>
       <div className="space-y-2 flex flex-col px-2 pb-6">
-        <div className="flex-1 max-h-[60px]">
+        <div className="flex-1 max-h-15">
           <div className="line-clamp-3 text-sm opacity-80">{work.intro}</div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -165,16 +159,12 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
       </div>
       <div className="flex p-6 pt-0 px-2 pb-2 gap-2 items-end w-full">
         <GenresPopover genres={work.genres} searchGenres={search.genres} key={search.genres?.join('')} />
-        {
-          showMenus
-            ? (
-              <>
-                <AuditionDrawer workId={work.id} originalId={work.originalId} />
-                <Menu work={work} />
-              </>
-            )
-            : null
-        }
+        {showMenus && (
+          <>
+            <AuditionDrawer workId={work.id} originalId={work.originalId} />
+            <Menu work={work} />
+          </>
+        )}
       </div>
     </Card>
   );
