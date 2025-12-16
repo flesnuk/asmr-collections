@@ -69,7 +69,7 @@ export class LocalStorageAdapter implements StorageAdapterBase<'local'> {
     const file = Bun.file(this.resolvePath(path));
 
     function chunk(begin = 0, end?: number): BunFile {
-      if (begin === 0 && typeof end === 'undefined')
+      if (begin === 0 && end === undefined)
         return file;
 
       // 206 的 end 要 size - 1，但 slice 如果 -1 会丢失最后一个字节，所以这里 +1

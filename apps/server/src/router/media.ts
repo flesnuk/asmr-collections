@@ -4,8 +4,9 @@ import { rename, utimes } from 'node:fs/promises';
 
 import { Hono } from 'hono';
 
+import { storage } from '~/storage';
 import { createFFmpegProc } from '~/lib/ffmpeg';
-import { BunFileToAdapterFile, storage } from '~/storage';
+import { BunFileToAdapterFile } from '~/storage/utils';
 import { TRANSCODE_CACHE_PATH, TRANSCODE_FORMATS } from '~/lib/constant';
 
 import { formatError, formatMessage } from './utils';
