@@ -10,10 +10,11 @@ import type { Work } from '@asmr-collections/shared';
 
 interface SimilarWorksProps {
   work: Work
+  inStorage: boolean | undefined
 }
 
-export default function SimilarWorks({ work }: SimilarWorksProps) {
-  const { data } = useSimilar(work.id);
+export default function SimilarWorks({ work, inStorage }: SimilarWorksProps) {
+  const { data } = useSimilar(work.id, !!inStorage);
 
   if (!data || data.length === 0)
     return null;

@@ -20,12 +20,12 @@ export type TracksData =
     error: Error
     data?: undefined
     fallback?: undefined
-    existsInLocal: boolean
+    inStorage: boolean
     externalSubtitles?: undefined
   } | {
     data: Tracks
     fallback: boolean
-    existsInLocal: boolean
+    inStorage: boolean
     error?: undefined
     externalSubtitles?: SubtitleInfo[]
   } | null;
@@ -73,38 +73,38 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
 
   const fetchFn = async (): Promise<TracksData> => {
     let tracks: Tracks | undefined;
-    let existsInLocal = false;
+    let inStorage = false;
     let fallback = false;
 
     if (storage.enabled) {
       try {
         const key = withQuery(`/api/tracks/${id}`, getQuery('local'));
         tracks = await fetcher<Tracks>(key);
-        existsInLocal = true;
+        inStorage = true;
       } catch (e) {
         if (e instanceof HTTPError && e.status === 404) {
-          existsInLocal = false;
+          inStorage = false;
         } else {
           logger.error(e, '获取本地音频数据失败');
           return {
             error: new Error('获取本地音频数据失败', { cause: e }),
-            existsInLocal: false
+            inStorage: false
           };
         }
       }
     }
 
     // 不存在于本地，且允许回退到 ASMR.ONE API，或本地存储未启用
-    if (!existsInLocal && (!storage.enabled || storage.fallbackToAsmrOneApi)) {
+    if (!inStorage && (!storage.enabled || storage.fallbackToAsmrOneApi)) {
       try {
         const key = withQuery(`/api/tracks/${id}`, getQuery('asmrone'));
         tracks = await fetcher<Tracks>(key);
-        fallback = storage.enabled && !existsInLocal;
+        fallback = storage.enabled && !inStorage;
       } catch (e) {
         logger.error(e, '获取 ASMR.ONE 音频数据失败');
         return {
           error: new Error('获取 ASMR.ONE 音频数据失败', { cause: e }),
-          existsInLocal: false
+          inStorage: false
         };
       }
     }
@@ -114,7 +114,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
     const tracksData = {
       data: tracks,
       fallback,
-      existsInLocal
+      inStorage
     };
 
     if (hasSubtitles) {

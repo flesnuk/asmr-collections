@@ -101,7 +101,7 @@ function WorkDetails({ id}: { id: string }) {
                   .otherwise(() => 'R18')
               }
             </Badge>
-            {tracks?.existsInLocal === false && (
+            {tracks?.inStorage === false && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -258,7 +258,7 @@ function WorkDetails({ id}: { id: string }) {
         <WorkPreview workId={data.id} originalId={data.originalId} className="block" />
       )}
 
-      <SimilarWorks work={data} />
+      <SimilarWorks work={data} inStorage={tracks?.inStorage} />
     </motion.div>
   );
 }

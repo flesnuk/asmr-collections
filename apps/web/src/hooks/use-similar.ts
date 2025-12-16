@@ -14,11 +14,11 @@ import type { Work } from '@asmr-collections/shared';
 
 const asmroneOptions = focusAtom(settingOptionsAtom, optic => optic.prop('asmrone'));
 
-export function useSimilar(id: string) {
+export function useSimilar(id: string, inStorage: boolean) {
   const options = useAtomValue(asmroneOptions);
 
   const query = options.recommender ? { api: options.api } : {};
-  const key = withQuery(`/api/work/similar/${id}`, query);
+  const key = inStorage ? withQuery(`/api/work/similar/${id}`, query) : null;
 
   return useSWRImmutable<Work[]>(key, fetcher, {
     onError: e => notifyError(e, '获取相似作品失败', { id: `work-similar-error-${id}` }),
