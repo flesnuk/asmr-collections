@@ -6,7 +6,7 @@ import { VirtualizerScrollArea, VirtualizedVirtualizer } from '~/components/ui/v
 
 import { CopyIcon, Loader2 } from 'lucide-react';
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import type { BatchLogType } from '@asmr-collections/shared';
 
@@ -15,6 +15,22 @@ interface BatchLogsProps {
   isProcessing: boolean
   logs: Array<{ id: string, type: BatchLogType, message: string }>
 }
+
+const LogItem = memo(({ id, type, message }: { id: string, type: BatchLogType, message: string }) => (
+  <motion.div
+    key={id}
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: .2 }}
+    className="flex items-start gap-2"
+  >
+    {match(type)
+      .with('info', () => <span className="mt-0.5 text-muted-foreground">{message}</span>)
+      .with('warning', () => <span className="text-yellow-500 dark:text-yellow-400/80 mt-0.5">{message}</span>)
+      .with('error', () => <span className="text-purple-500 dark:text-purple-300/80 mt-0.5">{message}</span>)
+      .exhaustive()}
+  </motion.div>
+));
 
 export default function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
   const [autoScroll, setAutoScroll] = useState(true);
@@ -64,20 +80,8 @@ export default function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProp
             {logs.length === 0 && !isProcessing && (
               <div className="text-muted-foreground text-center py-12">准备就绪</div>
             )}
-            {logs.map(({ id, type, message }) => (
-              <motion.div
-                key={id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: .3 }}
-                className="flex items-start gap-2"
-              >
-                {match(type)
-                  .with('info', () => <span className="mt-0.5 opacity-80">{message}</span>)
-                  .with('warning', () => <span className="text-yellow-500 dark:text-yellow-400/80 mt-0.5">{message}</span>)
-                  .with('error', () => <span className="text-purple-500 dark:text-purple-300/80 mt-0.5">{message}</span>)
-                  .exhaustive()}
-              </motion.div>
+            {logs.map(log => (
+              <LogItem key={log.id} {...log} />
             ))}
           </VirtualizedVirtualizer>
         </div>
