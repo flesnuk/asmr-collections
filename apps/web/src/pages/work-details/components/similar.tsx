@@ -1,8 +1,10 @@
 import { WorkCard } from '~/components/work-card';
 import { Carousel, CarouselContent, CarouselItem } from '~/components/ui/carousel';
 
-import Autoplay from 'embla-carousel-autoplay';
+import { memo, useRef } from 'react';
 import { useSimilar } from '~/hooks/use-similar';
+
+import Autoplay from 'embla-carousel-autoplay';
 
 import { cn } from '~/lib/utils';
 
@@ -13,8 +15,10 @@ interface SimilarWorksProps {
   exists: boolean | undefined
 }
 
-export function SimilarWorks({ work, exists }: SimilarWorksProps) {
+export const SimilarWorks = memo(({ work, exists }: SimilarWorksProps) => {
+  const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
   const { data } = useSimilar(work.id, !!exists);
+
   if (!data || data.length === 0)
     return null;
 
@@ -26,30 +30,28 @@ export function SimilarWorks({ work, exists }: SimilarWorksProps) {
           align: 'start',
           skipSnaps: true
         }}
-        plugins={[Autoplay({ delay: 3000, stopOnInteraction: true })]}
+        plugins={[plugin.current]}
       >
         <CarouselContent>
           {
-            data.map(similarWork => (similarWork.id === work.id
-              ? null
-              : (
-                <CarouselItem
-                  className={cn(
-                    'min-w-0 select-none cursor-grab',
-                    'flex-[0_0_20%]',
-                    'max-[440px]:flex-[0_0_100%]',
-                    'max-[650px]:flex-[0_0_50%]',
-                    'max-[780px]:flex-[0_0_33%]',
-                    'md:flex-[0_0_25%]'
-                  )}
-                  key={similarWork.id}
-                >
-                  <WorkCard work={similarWork} showMenus={false} showImageBadge={false} />
-                </CarouselItem>
-              )))
+            data.map(similarWork => (
+              <CarouselItem
+                className={cn(
+                  'min-w-0 select-none cursor-grab',
+                  'flex-[0_0_20%]',
+                  'max-[440px]:flex-[0_0_100%]',
+                  'max-[650px]:flex-[0_0_50%]',
+                  'max-[780px]:flex-[0_0_33%]',
+                  'md:flex-[0_0_25%]'
+                )}
+                key={similarWork.id}
+              >
+                <WorkCard work={similarWork} showMenus={false} showImageBadge={false} />
+              </CarouselItem>
+            ))
           }
         </CarouselContent>
       </Carousel>
     </section>
   );
-}
+});
