@@ -29,21 +29,24 @@ export default function VideoItem({ track, tracks, work }: VideoItemProps) {
     if (nextTrack) setCurrentTrack(nextTrack);
   }, [currentTrack.title, tracks]);
 
-  const onPlaying = useCallback(() => {
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentTrack.title,
-        artist: work?.artists.map(artist => artist.name).join(', '),
-        album: work?.name,
-        artwork: [
-          { src: work?.cover ?? '' }
-        ]
-      });
+  const updateMediaMetadata = useCallback(() => {
+    if (
+      !('mediaSession' in navigator)
+      || !work
+    ) return;
 
-      navigator.mediaSession.setActionHandler('previoustrack', () => changeTrack());
-      navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(true));
-    }
-  }, [changeTrack, currentTrack.title, work?.artists, work?.cover, work?.name]);
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentTrack.title,
+      artist: work.artists.map(artist => artist.name).join(', '),
+      album: work.name,
+      artwork: [
+        { src: work.cover, sizes: '512x512', type: 'image/jpeg' }
+      ]
+    });
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => changeTrack());
+    navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(true));
+  }, [changeTrack, currentTrack.title, work]);
 
   return (
     <Dialog>
@@ -65,7 +68,7 @@ export default function VideoItem({ track, tracks, work }: VideoItemProps) {
           controls
           src={currentTrack.mediaDownloadUrl}
           className="rounded-sm min-w-full min-h-40 sm:min-h-70"
-          onPlaying={onPlaying}
+          onCanPlay={updateMediaMetadata}
         />
         <DialogFooter className="gap-3">
           <Button variant="outline" onClick={() => changeTrack()}>上一个</Button>
