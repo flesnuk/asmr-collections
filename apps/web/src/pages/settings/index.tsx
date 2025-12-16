@@ -6,7 +6,7 @@ import { createLazyRoute } from '@tanstack/react-router';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 import { transcodeTempAtom } from '~/hooks/use-transcode-options';
 
-import Link from '~/components/link';
+import { Link } from '~/components/link';
 
 import { Separator } from '~/components/ui/separator';
 

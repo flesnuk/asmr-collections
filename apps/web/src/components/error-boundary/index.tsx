@@ -47,7 +47,7 @@ function ErrorFallback({ error }: FallbackProps) {
   );
 }
 
-export default function ErrorBoundary({ children }: { children: React.ReactNode }) {
+export function ErrorBoundary({ children }: { children: React.ReactNode }) {
   return (
     <Boundary FallbackComponent={ErrorFallback}>
       {children}

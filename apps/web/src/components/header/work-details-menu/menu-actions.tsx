@@ -3,8 +3,8 @@ import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from '~/co
 
 import { SubtitlesSubMenu } from '~/components/work-card/menu';
 
-import UpdateMenu from './update';
-import ClearCacheMenu from './clear-cache';
+import { UpdateMenu } from './update';
+import { ClearCacheMenu } from './clear-cache';
 
 import { match } from 'ts-pattern';
 
@@ -13,7 +13,7 @@ import { useToastMutation } from '~/hooks/use-toast-fetch';
 
 import { mutateSimilar, mutateWorkInfo } from '~/lib/mutation';
 
-export default function MenuActions({ id}: { id: string }) {
+export function MenuActions({ id}: { id: string }) {
   const [createAction, createIsMutating] = useToastMutation<{ message?: string }>('create');
   const [deleteAction, deleteIsMutating] = useToastMutation('delete');
 

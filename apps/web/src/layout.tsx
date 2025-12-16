@@ -1,6 +1,6 @@
-import Header from './components/header';
-import MediaPlayer from './components/media-player';
-import ErrorBoundary from './components/error-boundary';
+import { Header } from './components/header';
+import { MediaPlayer } from './components/media-player';
+import { ErrorBoundary } from './components/error-boundary';
 
 import { Confirmer } from './components/ui/confirmer';
 

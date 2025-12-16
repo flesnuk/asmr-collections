@@ -13,7 +13,7 @@ import { pipCaptionsOpenAtom } from '../../hooks/use-pip-open';
 import { Button } from '~/components/ui/button';
 import { PictureInPicture2Icon, PictureInPictureIcon, RefreshCwIcon, RefreshCwOffIcon } from 'lucide-react';
 
-import SubtitleSelector from './subtitle-selector';
+import { SubtitleSelector } from './subtitle-selector';
 
 import { cn } from '~/lib/utils';
 
@@ -36,7 +36,7 @@ interface SubtitlesProps {
   scrollAreaRef: React.RefObject<HTMLDivElement | null>
 }
 
-export default function Subtitles({ scrollAreaRef }: SubtitlesProps) {
+export function Subtitles({ scrollAreaRef }: SubtitlesProps) {
   const remote = useMediaRemote();
   const media = useMediaContext();
 

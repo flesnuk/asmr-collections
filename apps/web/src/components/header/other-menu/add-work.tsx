@@ -1,7 +1,7 @@
 import { Button } from '~/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui/dialog';
 
-import WorkInput from '~/components/work-input';
+import { WorkInput } from '~/components/work-input';
 
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ import { useToastMutation } from '~/hooks/use-toast-fetch';
 import { parseWorkInput } from '~/utils';
 import { mutateSimilar, mutateWorks } from '~/lib/mutation';
 
-export default function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
+export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
   const [id, setId] = useState<string>('');
 
   const [createAction, isMutating] = useToastMutation<{ message?: string }>('create');

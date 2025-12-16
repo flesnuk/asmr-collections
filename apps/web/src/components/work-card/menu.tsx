@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { confirm } from '../ui/confirmer';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
-import Link from '../link';
+import { Link } from '../link';
 
 import { MenuIcon } from 'lucide-react';
 

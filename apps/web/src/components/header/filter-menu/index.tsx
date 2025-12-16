@@ -1,11 +1,11 @@
 import { MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarMenu, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '~/components/ui/menubar';
 
-import AgeCategory from './age-category';
-import GenresFilter from './genres-filter';
-import CircleFilter from './circle-filter';
-import SeriesFilter from './series-filter';
-import ArtistsFilter from './artists-filter';
-import IllustratorsFilter from './illustrators-filter';
+import { AgeCategory } from './age-category';
+import { GenresFilter } from './genres-filter';
+import { CircleFilter } from './circle-filter';
+import { SeriesFilter } from './series-filter';
+import { ArtistsFilter } from './artists-filter';
+import { IllustratorsFilter } from './illustrators-filter';
 
 import { Activity } from 'react';
 import { useAtomValue } from 'jotai';
@@ -13,7 +13,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { storageOptionsAtom } from '~/hooks/use-setting-options';
 
-export default function FilterMenu() {
+export function FilterMenu() {
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 

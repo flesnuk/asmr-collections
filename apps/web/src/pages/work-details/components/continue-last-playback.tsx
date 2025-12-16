@@ -12,7 +12,7 @@ interface ContinueLastPlaybackProps {
   handlePlayHistory: (track: Track, lastPlayedAt: number) => void
 }
 
-export default function ContinueLastPlayback({ id, currentPlayWorkId, handlePlayHistory }: ContinueLastPlaybackProps) {
+export function ContinueLastPlayback({ id, currentPlayWorkId, handlePlayHistory }: ContinueLastPlaybackProps) {
   const history = usePlayHistoryValue(id);
 
   const show = history && !(currentPlayWorkId === id);

@@ -13,7 +13,7 @@ interface SearchBarProps {
   }
 }
 
-export default function SearchBar({ search }: SearchBarProps) {
+export function SearchBar({ search }: SearchBarProps) {
   const [keyword, setKeyword] = useState(() => search.keyword ?? '');
   const [isEmbedding, setIsEmbedding] = useState(() => !!search.embedding);
 

@@ -26,7 +26,7 @@ export function WorkSkeleton() {
   );
 }
 
-export default function WorkSkeletons() {
+export function WorkSkeletons() {
   const works = Array.from({ length: 6 }, (_, i) => i);
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,auto))] gap-4">

@@ -3,7 +3,7 @@ import { Button } from '~/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '~/components/ui/select';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '~/components/ui/dialog';
 
-import Loading from '~/components/loading';
+import { Loading } from '~/components/loading';
 
 import { SettingInput } from './setting-input';
 

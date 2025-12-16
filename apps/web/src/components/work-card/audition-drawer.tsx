@@ -8,7 +8,7 @@ import {
   DrawerTrigger
 } from '~/components/ui/drawer';
 
-import WorkPreview from '../work-preview';
+import { WorkPreview } from '../work-preview';
 
 import { useState } from 'react';
 

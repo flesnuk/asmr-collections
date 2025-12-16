@@ -21,7 +21,7 @@ interface WorkPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   originalId?: string | null
 }
 
-export default function WorkPreview({ workId, originalId, ...props }: WorkPreviewProps) {
+export function WorkPreview({ workId, originalId, ...props }: WorkPreviewProps) {
   const key = withQuery('https://chobit.cc/api/v1/dlsite/embed', { workno: originalId ?? workId });
   const [iframeLoading, setIframeLoading] = useState(true);
 

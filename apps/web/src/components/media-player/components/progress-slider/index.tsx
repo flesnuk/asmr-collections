@@ -1,6 +1,6 @@
 import { TimeSlider } from '@vidstack/react';
 
-export default function ProgressSlider({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
+export function ProgressSlider({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className="absolute top-0 w-full" {...rest}>
       <TimeSlider.Root className="group relative w-full cursor-pointer touch-none select-none items-center outline-none aria-hidden:hidden before:absolute before:inset-0 before:-top-2 before:-bottom-2 before:content-[''] max-sm:pointer-events-none">

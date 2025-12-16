@@ -7,7 +7,7 @@ interface MetaButtonProps extends React.ComponentProps<typeof Button> {
   metaType: 'artists' | 'illustrators'
 }
 
-export default function MetaButton({ metaType, children, ...props }: MetaButtonProps) {
+export function MetaButton({ metaType, children, ...props }: MetaButtonProps) {
   function renderIcon() {
     return match(metaType)
       .with('artists', () => <MicIcon />)

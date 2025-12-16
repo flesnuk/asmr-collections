@@ -2,13 +2,13 @@ import { Button } from '~/components/ui/button';
 import { Progress } from '~/components/ui/progress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog';
 
-import BatchLogs from './batch-logs';
+import { BatchLogs } from './batch-logs';
 
 import { CheckIcon, Loader2 } from 'lucide-react';
 
 import { useBatchOperation } from '~/hooks/use-batch-operation';
 
-export default function SyncStorageDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
+export function SyncStorageDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
   const {
     copyLogs,
     handleCancel,

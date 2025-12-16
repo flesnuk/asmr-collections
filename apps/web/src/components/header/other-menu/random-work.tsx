@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 
-export default function RandomWork() {
+export function RandomWork() {
   const [action, loading] = useToastMutation<{ id: string }>('random');
 
   const navigate = useNavigate();

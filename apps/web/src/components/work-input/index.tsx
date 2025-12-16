@@ -19,7 +19,7 @@ type WorkInputProps = React.ComponentProps<typeof InputGroupInput> & {
   tipIcon?: React.ReactNode
 };
 
-export default function WorkInput(props: WorkInputProps) {
+export function WorkInput(props: WorkInputProps) {
   const {
     value,
     onValueChange,

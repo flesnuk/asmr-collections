@@ -6,7 +6,7 @@ import { floatingCaptionsOpenAtom } from '../../hooks/use-floating-open';
 
 import { cn } from '~/lib/utils';
 
-export default function FloatingCaptions() {
+export function FloatingCaptions() {
   const open = useAtomValue(floatingCaptionsOpenAtom);
 
   const { activeCue, textTrackState } = useActiveCue();

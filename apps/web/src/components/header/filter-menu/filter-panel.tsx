@@ -6,7 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import Loading from '~/components/loading';
+import { Loading } from '~/components/loading';
 
 import { HTTPError } from '@asmr-collections/shared';
 
@@ -23,7 +23,7 @@ interface Props<T extends string | number> {
   isCheck: (data: Data<T>) => boolean | 'indeterminate'
 }
 
-export default function FilterPanel<T extends string | number>({
+export function FilterPanel<T extends string | number>({
   placeholder,
   isLoading,
   error,

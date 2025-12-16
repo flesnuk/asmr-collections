@@ -1,7 +1,7 @@
 import { ScrollArea } from '~/components/ui/scroll-area';
 
-import Playlist from './playlist';
-import Subtitles from './subtitles';
+import { Playlist } from './playlist';
+import { Subtitles } from './subtitles';
 
 import { Tabs, TabsContent } from '~/components/tabs';
 
@@ -18,7 +18,7 @@ type PlayerSidePanelProps = {
   classNames?: { scrollArea?: string }
 } & React.ComponentProps<typeof TabsPrimitive.Root>;
 
-export default function PlayerSidePanel({ activeTab = 'playlist', onTabChange, classNames, ...rest }: PlayerSidePanelProps) {
+export function PlayerSidePanel({ activeTab = 'playlist', onTabChange, classNames, ...rest }: PlayerSidePanelProps) {
   const [tab, setTab] = useState(activeTab);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 

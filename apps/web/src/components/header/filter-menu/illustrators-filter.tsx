@@ -1,6 +1,6 @@
 import { MenubarSub, MenubarSubContent, MenubarSubTrigger } from '~/components/ui/menubar';
 
-import FilterPanel from './filter-panel';
+import { FilterPanel } from './filter-panel';
 
 import useSWR from 'swr';
 import { useCallback } from 'react';
@@ -15,7 +15,7 @@ import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
-export default function IllustratorsFilter() {
+export function IllustratorsFilter() {
   const { data, isLoading, error } = useSWR<Array<Data<number>>>('/api/field/illustrator', fetcher, {
     onError: error => notifyError(error, '获取画师列表失败')
   });

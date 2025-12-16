@@ -12,7 +12,7 @@ interface SleepModeDialogProps {
   setOpen: (open: boolean) => void
 }
 
-export default function SleepModeDialog({ open, setOpen }: SleepModeDialogProps) {
+export function SleepModeDialog({ open, setOpen }: SleepModeDialogProps) {
   const setMediaState = useSetAtom(mediaStateAtom);
 
   const timer = useRef<number>(null);

@@ -1,4 +1,4 @@
-import Image from '~/components/image';
+import { Image } from '~/components/image';
 
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -7,7 +7,7 @@ import { mediaStateAtom } from '~/hooks/use-media-state';
 
 import { playerExpandAtom } from '../../hooks/use-player-expand';
 
-export default function PlayerCover({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
+export function PlayerCover({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   const mediaState = useAtomValue(mediaStateAtom);
   const setPlayerExpand = useSetAtom(playerExpandAtom);
 

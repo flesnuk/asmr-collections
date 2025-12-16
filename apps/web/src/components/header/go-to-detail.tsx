@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 
-import WorkInput from '../work-input';
+import { WorkInput } from '../work-input';
 import { ArrowRight } from 'lucide-react';
 
 import { parseWorkInput } from '~/utils';
 
 const route = getRouteApi('/work-details/$id');
 
-export default function GoToDetail() {
+export function GoToDetail() {
   const [id, setId] = useState('');
   const navigate = route.useNavigate();
 

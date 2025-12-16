@@ -15,7 +15,7 @@ import { usePlayHistoryUpdate } from '~/hooks/use-play-history';
 
 import { fetchTextTrackContent } from './utils';
 
-export default function MediaPlayer() {
+export function MediaPlayer() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
   const updateHistory = usePlayHistoryUpdate();
 

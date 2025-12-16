@@ -3,12 +3,12 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { Menubar } from '../ui/menubar';
 import { Separator } from '../ui/separator';
 
-import Link from '../link';
-import SearchBar from './search-bar';
+import { Link } from '../link';
+import { SearchBar } from './search-bar';
 
-import SortMenu from './sort-menu';
-import OtherMenu from './other-menu';
-import FilterMenu from './filter-menu';
+import { SortMenu } from './sort-menu';
+import { OtherMenu } from './other-menu';
+import { FilterMenu } from './filter-menu';
 import { WorkDetailsMenu } from './work-details-menu';
 
 import { useSetAtom } from 'jotai';
@@ -17,7 +17,7 @@ import { useIsRoute } from '~/hooks/use-is-route';
 import { useShortcut } from '~/hooks/use-shortcut';
 import { hiddenImageAtom } from '~/hooks/use-hidden-image';
 
-export default function Header() {
+export function Header() {
   const isDetailsPage = useIsRoute('/work-details/$id');
 
   const search = useSearch({

@@ -5,12 +5,12 @@ import { getRouteApi } from '@tanstack/react-router';
 import { Button } from '~/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '~/components/ui/dropdown-menu';
 
-import MenuActions from './menu-actions';
-import SleepModeDialog from './sleep-mode-dialog';
+import { MenuActions } from './menu-actions';
+import { SleepModeDialog } from './sleep-mode-dialog';
 
-import GoToDetail from '../go-to-detail';
-import HiddenImage from '../hidden-image';
-import ThemeToggle from '../theme-toggle';
+import { GoToDetail } from '../go-to-detail';
+import { HiddenImage } from '../hidden-image';
+import { ThemeToggle } from '../theme-toggle';
 
 const { useParams, useNavigate } = getRouteApi('/work-details/$id');
 

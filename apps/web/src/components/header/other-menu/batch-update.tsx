@@ -4,12 +4,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 import { CheckIcon, Loader2 } from 'lucide-react';
 
-import BatchLogs from './batch-logs';
+import { BatchLogs } from './batch-logs';
 
 import { useBatchOperation } from '~/hooks/use-batch-operation';
 import { usePreventAutoFocus } from '~/hooks/use-prevent-auto-focus';
 
-export default function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
+export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
   const {
     copyLogs,
     handleCancel,

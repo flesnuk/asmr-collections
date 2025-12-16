@@ -2,7 +2,7 @@ import { Button } from '../ui/button';
 import { Toggle } from '../ui/toggle';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
-import Link from '../link';
+import { Link } from '../link';
 
 import { CheckIcon, MinusIcon, Tag } from 'lucide-react';
 

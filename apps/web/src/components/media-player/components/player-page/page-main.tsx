@@ -1,13 +1,14 @@
 import { useAtomValue } from 'jotai';
-import PlayerPageActions from './actions';
 import { mediaStateAtom } from '~/hooks/use-media-state';
+
+import { PlayerPageActions } from './actions';
 
 import { Volume1Icon, Volume2 } from 'lucide-react';
 import { Time, TimeSlider, VolumeSlider } from '@vidstack/react';
 
 import { isIOSSafari } from '../../utils';
 
-export default function PlayerPageMain() {
+export function PlayerPageMain() {
   const mediaState = useAtomValue(mediaStateAtom);
 
   const title = mediaState.currentTrack?.title || '未知曲目';

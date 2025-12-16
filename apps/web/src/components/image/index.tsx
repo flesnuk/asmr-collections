@@ -26,7 +26,7 @@ function setupImg(img: HTMLImageElement) {
   };
 }
 
-export default function Image({
+export function Image({
   classNames,
   duration = 150,
   disableHidden = false,

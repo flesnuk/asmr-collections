@@ -4,7 +4,7 @@ import { DropdownMenuItem } from '~/components/ui/dropdown-menu';
 
 import { mutateSimilar, mutateWorkInfo } from '~/lib/mutation';
 
-export default function UpdateMenu({ id }: { id: string }) {
+export function UpdateMenu({ id }: { id: string }) {
   const [updateAction, updateIsMutating] = useToastMutation('update');
 
   const update = () => {

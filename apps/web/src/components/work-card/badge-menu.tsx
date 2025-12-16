@@ -5,8 +5,8 @@ import {
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu';
 
-import Link from '../link';
-import MetaButton from '../meta-button';
+import { Link } from '../link';
+import { MetaButton } from '../meta-button';
 
 import { useState } from 'react';
 

@@ -15,7 +15,7 @@ interface VideoItemProps {
   work?: Work
 }
 
-export default function VideoItem({ track, tracks, work }: VideoItemProps) {
+export function VideoItem({ track, tracks, work }: VideoItemProps) {
   const [currentTrack, setCurrentTrack] = useState(() => track);
 
   const changeTrack = useCallback((next = false) => {

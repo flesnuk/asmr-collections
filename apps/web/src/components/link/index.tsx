@@ -56,6 +56,4 @@ function BaseLink({
   );
 };
 
-const Link = createLink(BaseLink);
-
-export default Link;
+export const Link = createLink(BaseLink);

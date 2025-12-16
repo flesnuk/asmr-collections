@@ -7,22 +7,21 @@ import { formatChineseDate } from '@asmr-collections/shared';
 
 import { ImageIcon, MicIcon, TagIcon } from 'lucide-react';
 
-import Link from '~/components/link';
-import Image from '~/components/image';
-import WorkPreview from '~/components/work-preview';
+import { Link } from '~/components/link';
+import { Image } from '~/components/image';
+import { WorkPreview } from '~/components/work-preview';
 
 import { Card } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 
-import ErrorBoundary from '~/components/error-boundary';
-
-import SimilarWorks from './components/similar';
-import MetaButton from '~/components/meta-button';
-import TracksTabale from './components/tracks-table';
-import WorkDetailsSkeleton from './components/skeleton';
-import TracksSkeleton from './components/tracks-skeleton';
+import { SimilarWorks } from './components/similar';
+import { MetaButton } from '~/components/meta-button';
+import { TracksTabale } from './components/tracks-table';
+import { ErrorBoundary } from '~/components/error-boundary';
+import { WorkDetailsSkeleton } from './components/skeleton';
+import { TracksSkeleton } from './components/tracks-skeleton';
 
 import { match } from 'ts-pattern';
 import { useAtomValue } from 'jotai';

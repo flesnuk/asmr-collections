@@ -32,7 +32,7 @@ const LogItem = memo(({ id, type, message }: { id: string, type: BatchLogType, m
   </motion.div>
 ));
 
-export default function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
+export function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
   const [autoScroll, setAutoScroll] = useState(true);
 
   const handleScroll = (e: Event) => {

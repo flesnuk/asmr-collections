@@ -1,6 +1,6 @@
 import { MenubarSub, MenubarSubContent, MenubarSubTrigger } from '~/components/ui/menubar';
 
-import FilterPanel from './filter-panel';
+import { FilterPanel } from './filter-panel';
 
 import useSWR from 'swr';
 import { useCallback } from 'react';
@@ -15,7 +15,7 @@ import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
-export default function CircleFilter() {
+export function CircleFilter() {
   const { data, isLoading, error } = useSWR<Array<Data<string>>>('/api/field/circle', fetcher, {
     onError: error => notifyError(error, '获取社团列表失败')
   });

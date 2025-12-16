@@ -8,7 +8,7 @@ interface HiddenImageProps {
   menuType: 'menubar' | 'dropdown'
 }
 
-export default function HiddenImage({ menuType }: HiddenImageProps) {
+export function HiddenImage({ menuType }: HiddenImageProps) {
   const [isHidden, setIsHidden] = useHiddenImage();
 
   return match(menuType)

@@ -9,7 +9,7 @@ interface RightPlayControlsProps {
   mainExpand?: boolean
 }
 
-export default function RightPlayControls({ mainExpand }: RightPlayControlsProps) {
+export function RightPlayControls({ mainExpand }: RightPlayControlsProps) {
   const actions = useMediaActions();
   const playing = useMediaState('playing');
   const canPlay = useMediaState('canPlay');

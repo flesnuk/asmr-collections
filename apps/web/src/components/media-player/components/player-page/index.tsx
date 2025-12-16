@@ -5,18 +5,18 @@ import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { useIsMobile } from '~/hooks/use-is-mobile';
 import { usePlayerExpand } from '../../hooks/use-player-expand';
 
-import PlayerCover from './cover';
-import PlayerSidePanel from './side-panel';
-import PlayerPageMain from './page-main';
-import TrackInfo from '../track-info';
-import PlayerPageActionsAbove from './actions-above';
-import RightPlayControls from '../right-controls/right-play';
+import { PlayerCover } from './cover';
+import { PlayerSidePanel } from './side-panel';
+import { PlayerPageMain } from './page-main';
+import { TrackInfo } from '../track-info';
+import { PlayerPageActionsAbove } from './actions-above';
+import { RightPlayControls } from '../right-controls/right-play';
 
 import { cn } from '~/lib/utils';
 
 type ActiveTab = 'playlist' | 'subtitles' | 'similar' | '';
 
-export default function PlayerPage() {
+export function PlayerPage() {
   const [expand, setExpand] = usePlayerExpand();
 
   const [mainExpand, setMainExpand] = useState(true);

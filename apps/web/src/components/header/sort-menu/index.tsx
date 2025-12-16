@@ -48,7 +48,7 @@ const sortOptions = [
   }
 ];
 
-export default function SortMenu() {
+export function SortMenu() {
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 

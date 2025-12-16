@@ -1,6 +1,6 @@
 import { MenubarSub, MenubarSubContent, MenubarSubTrigger } from '~/components/ui/menubar';
 
-import FilterPanel from './filter-panel';
+import { FilterPanel } from './filter-panel';
 
 import useSWR from 'swr';
 import { produce } from 'immer';
@@ -16,7 +16,7 @@ import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
-export default function GenresFilter() {
+export function GenresFilter() {
   const { data, isLoading, error } = useSWR<Array<Data<number>>>('/api/field/genre', fetcher, {
     onError: error => notifyError(error, '获取标签列表失败')
   });

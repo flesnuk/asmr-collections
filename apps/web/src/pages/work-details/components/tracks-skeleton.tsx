@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table';
 import { Skeleton } from '~/components/ui/skeleton';
 
-export default function TracksSkeleton() {
+export function TracksSkeleton() {
   return (
     <>
       <div className="flex items-center gap-2 mb-4">

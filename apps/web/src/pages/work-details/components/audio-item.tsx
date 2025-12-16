@@ -13,7 +13,7 @@ interface AudioItemProps {
   enqueueTrack: (track: MediaTrack) => void
 }
 
-export default function AudioItem({ existCurrentTrack, track, onPlay, enqueueTrack }: AudioItemProps) {
+export function AudioItem({ existCurrentTrack, track, onPlay, enqueueTrack }: AudioItemProps) {
   return (
     <ContextMenu>
       <ContextMenuTrigger className="flex items-center py-1 w-full cursor-pointer select-none" onClick={onPlay} title={track.title}>

@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai';
 import { playerExpandAtom } from '../../hooks/use-player-expand';
 
-export default function PlayerPageActionsAbove() {
+export function PlayerPageActionsAbove() {
   const setExpand = useSetAtom(playerExpandAtom);
 
   const handleClick = () => setExpand(p => !p);

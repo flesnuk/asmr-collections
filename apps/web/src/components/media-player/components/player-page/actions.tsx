@@ -5,7 +5,7 @@ import { SeekButton, useMediaRemote, useMediaState } from '@vidstack/react';
 
 import { useMediaActions } from '../../context/media-actions';
 
-export default function PlayerPageActions() {
+export function PlayerPageActions() {
   const actions = useMediaActions();
   const playing = useMediaState('playing');
   const canPlay = useMediaState('canPlay');

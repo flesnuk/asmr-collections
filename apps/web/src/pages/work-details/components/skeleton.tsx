@@ -1,9 +1,10 @@
 import { Card } from '~/components/ui/card';
 import { Skeleton } from '~/components/ui/skeleton';
 import { Separator } from '~/components/ui/separator';
-import TracksSkeleton from './tracks-skeleton';
 
-export default function WorkDetailsSkeleton() {
+import { TracksSkeleton } from './tracks-skeleton';
+
+export function WorkDetailsSkeleton() {
   return (
     <>
       <Card className="md:flex-row flex-col gap-1 p-0 overflow-hidden">

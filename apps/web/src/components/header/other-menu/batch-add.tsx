@@ -4,13 +4,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 import { CheckIcon, Loader2 } from 'lucide-react';
 
-import WorkInput from '~/components/work-input';
+import { WorkInput } from '~/components/work-input';
 
-import BatchLogs from './batch-logs';
+import { BatchLogs } from './batch-logs';
 
 import { useBatchOperation } from '~/hooks/use-batch-operation';
 
-export default function BatchAddDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
+export function BatchAddDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
   const {
     copyLogs,
     handleCancel,

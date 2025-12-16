@@ -13,7 +13,7 @@ import { fetchTextTrackContent } from '../../utils';
 const currentTrackAtom = focusAtom(mediaStateAtom, optic => optic.prop('currentTrack'));
 const allSubtitlesAtom = focusAtom(mediaStateAtom, optic => optic.prop('allSubtitles'));
 
-export default function SubtitleSelector() {
+export function SubtitleSelector() {
   const [currentTrack, setCurrentTrack] = useAtom(currentTrackAtom);
   const allSubtitles = useAtomValue(allSubtitlesAtom);
 

@@ -1,7 +1,7 @@
-import Works from './components/works';
-import Pagination from './components/pagination';
-import WorkSkeletons from './components/works/skeleton';
-import PreloadNextWorks from './components/works/preload-next';
+import { Works } from './components/works';
+import { Pagination } from './components/pagination';
+import { WorkSkeletons } from './components/works/skeleton';
+import { PreloadNextWorks } from './components/works/preload-next';
 
 import useSWR from 'swr';
 import { motion } from 'framer-motion';

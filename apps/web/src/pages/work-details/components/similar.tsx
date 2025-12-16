@@ -1,4 +1,4 @@
-import WorkCard from '~/components/work-card';
+import { WorkCard } from '~/components/work-card';
 import { Carousel, CarouselContent, CarouselItem } from '~/components/ui/carousel';
 
 import Autoplay from 'embla-carousel-autoplay';
@@ -13,7 +13,7 @@ interface SimilarWorksProps {
   inStorage: boolean | undefined
 }
 
-export default function SimilarWorks({ work, inStorage }: SimilarWorksProps) {
+export function SimilarWorks({ work, inStorage }: SimilarWorksProps) {
   const { data } = useSimilar(work.id, !!inStorage);
 
   if (!data || data.length === 0)

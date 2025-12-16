@@ -3,7 +3,7 @@ import { ChevronUp, RepeatIcon, Volume2Icon, VolumeOffIcon } from 'lucide-react'
 
 import { usePlayerExpand } from '../../hooks/use-player-expand';
 
-export default function RightControls() {
+export function RightControls() {
   const muted = useMediaState('muted');
   const loop = useMediaState('loop');
 

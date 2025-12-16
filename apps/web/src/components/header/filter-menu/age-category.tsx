@@ -11,7 +11,7 @@ const AGE_OPTIONS = [
   { label: 'R18', value: 3 }
 ] as const;
 
-export default function AgeCategory() {
+export function AgeCategory() {
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 

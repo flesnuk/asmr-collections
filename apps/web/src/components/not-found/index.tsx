@@ -1,4 +1,4 @@
-export default function NotFound() {
+export function NotFound() {
   return (
     <div className="mt-20 space-y-4">
       <h2 className="font-bold text-3xl">页面不存在</h2>

@@ -2,12 +2,12 @@ import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table';
 
 import { FileImage, FileText, FolderClosed } from 'lucide-react';
 
-import Link from '~/components/link';
-import FolderBreadcrumb from '~/components/breadcrumb/folder-breadcrumb';
+import { Link } from '~/components/link';
+import { FolderBreadcrumb } from '~/components/breadcrumb/folder-breadcrumb';
 
-import VideoItem from './video-item';
-import AudioItem from './audio-item';
-import ContinueLastPlayback from './continue-last-playback';
+import { VideoItem } from './video-item';
+import { AudioItem } from './audio-item';
+import { ContinueLastPlayback } from './continue-last-playback';
 
 import { useAtom } from 'jotai';
 import { produce } from 'immer';
@@ -44,7 +44,7 @@ interface TracksTableProps {
   externalSubtitles?: SubtitleInfo[]
 }
 
-export default function TracksTabale({ work, tracks, searchPath, externalSubtitles }: TracksTableProps) {
+export function TracksTabale({ work, tracks, searchPath, externalSubtitles }: TracksTableProps) {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
 
   const filterData = useMemo(() => {

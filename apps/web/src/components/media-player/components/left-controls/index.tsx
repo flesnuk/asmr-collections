@@ -5,7 +5,7 @@ import { Time, useMediaRemote, useMediaState } from '@vidstack/react';
 
 import { useMediaActions } from '../../context/media-actions';
 
-export default function LeftControls() {
+export function LeftControls() {
   const actions = useMediaActions();
   const playing = useMediaState('playing');
   const canPlay = useMediaState('canPlay');

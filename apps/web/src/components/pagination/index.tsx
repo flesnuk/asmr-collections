@@ -11,7 +11,7 @@ interface PaginationProps {
   limit: number
 }
 
-export default function Pagination({ total, current, limit }: PaginationProps) {
+export function Pagination({ total, current, limit }: PaginationProps) {
   const pages = [];
 
   const totalPages = Math.ceil(total / limit);

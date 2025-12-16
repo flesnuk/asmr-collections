@@ -13,7 +13,7 @@ import { cn } from '~/lib/utils';
 
 import type { Track } from '@asmr-collections/shared';
 
-export default function Playlist() {
+export function Playlist() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
 
   const current = mediaState.currentTrack;

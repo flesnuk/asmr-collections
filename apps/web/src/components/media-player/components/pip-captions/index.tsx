@@ -21,7 +21,7 @@ interface DocumentPictureInPicture extends EventTarget {
   requestWindow(options?: DocumentPictureInPictureOptions): Promise<Window>
 }
 
-export default function PipCaptions() {
+export function PipCaptions() {
   const { activeCue } = useActiveCue();
 
   const pipWindowRef = useRef<Window | null>(null);

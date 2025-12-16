@@ -2,9 +2,9 @@ import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 import { Card, CardTitle } from '../ui/card';
 
-import Image from '../image';
+import { Image } from '../image';
 
-import Link from '../link';
+import { Link } from '../link';
 
 import { Menu } from './menu';
 import { BadgeMenu } from './badge-menu';
@@ -31,7 +31,7 @@ interface Props {
   showImageBadge?: boolean
 }
 
-export default function WorkCard({ work, showMenus = true, showImageBadge = true }: Props) {
+export function WorkCard({ work, showMenus = true, showImageBadge = true }: Props) {
   const options = useAtomValue(storageOptionsAtom);
 
   const { search, exclude, include } = useGenerateSearch();

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import Link from '../link';
+import { Link } from '../link';
 
 import {
   Breadcrumb,
@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu';
 
-export default function FolderBreadcrumb({ path}: { path?: string[] }) {
+export function FolderBreadcrumb({ path}: { path?: string[] }) {
   return (
     <Breadcrumb>
       <BreadcrumbList className="flex-nowrap">

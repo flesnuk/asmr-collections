@@ -13,7 +13,7 @@ interface ThemeToggleProps {
   menuType: 'menubar' | 'dropdown'
 }
 
-export default function ThemeToggle({ menuType }: ThemeToggleProps) {
+export function ThemeToggle({ menuType }: ThemeToggleProps) {
   const { setTheme, theme } = useTheme();
 
   return match(menuType)

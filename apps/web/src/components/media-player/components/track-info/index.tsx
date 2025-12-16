@@ -1,12 +1,13 @@
 import { useAtomValue } from 'jotai';
-import Image from '~/components/image';
 import { mediaStateAtom } from '~/hooks/use-media-state';
+
+import { Image } from '~/components/image';
 
 interface MiddleControlsProps {
   mainExpand?: boolean
 }
 
-export default function TrackInfo({ mainExpand }: MiddleControlsProps) {
+export function TrackInfo({ mainExpand }: MiddleControlsProps) {
   const mediaState = useAtomValue(mediaStateAtom);
 
   const title = mediaState.currentTrack?.title;

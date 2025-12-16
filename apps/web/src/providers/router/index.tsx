@@ -13,7 +13,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import App from '~/app';
 import RootLayout from '~/layout';
 
-import NotFound from '~/components/not-found';
+import { NotFound } from '~/components/not-found';
 
 import { preloadWorkDetails } from './preload';
 import { RootSearchSchema, IndexSearchSchema, WorkDetailsSearchSchema } from './schemas';
