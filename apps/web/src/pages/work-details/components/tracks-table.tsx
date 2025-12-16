@@ -47,9 +47,13 @@ interface TracksTableProps {
 export default function TracksTabale({ work, tracks, searchPath, externalSubtitles }: TracksTableProps) {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
 
-  const filterData = searchPath?.reduce((acc, path) => {
-    return acc?.find(item => item.title === path)?.children ?? [];
-  }, tracks) ?? tracks;
+  const filterData = useMemo(() => {
+    if (!searchPath) return tracks;
+
+    return searchPath.reduce((acc, path) => {
+      return acc?.find(item => item.title === path)?.children ?? [];
+    }, tracks);
+  }, [searchPath, tracks]);
 
   const groupByType = useMemo(() => {
     if (filterData) {
@@ -156,7 +160,8 @@ export default function TracksTabale({ work, tracks, searchPath, externalSubtitl
                 lightGalleryRef.current = detail.instance;
               }}
               licenseKey="free"
-              speed={200}
+              speed={400}
+              preload={4}
               plugins={[lgThumbnail, lgZoom, lgRotate]}
               download
               counter
