@@ -5,7 +5,7 @@ import { logger } from '~/lib/logger';
 
 import { decodeText, lrcToVtt } from '~/lib/subtitle-matcher';
 
-export async function fetchTextTrackContent(src?: string) {
+export async function fetchTextTrackContent(src: string | undefined) {
   if (!src) return;
 
   const fileType = extname(src).toLowerCase();
