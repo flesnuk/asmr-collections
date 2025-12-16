@@ -54,11 +54,8 @@ mediaApp.get('/:path{.+}', async c => {
 
       const filename = file.name.replace(/\.[^.]+$/, '.m4a');
 
-      if (transcodeTasks.has(cachePath)) {
-        return c.body(null, 202, {
-          'X-Transcode-Status': encodeURIComponent(`正在转码：${file.name} -> AAC ${bitrate}k`)
-        });
-      }
+      if (transcodeTasks.has(cachePath))
+        return c.body(null, 202);
 
       const taskError = transcodeErrors.get(cachePath);
       if (taskError) {
@@ -102,9 +99,7 @@ mediaApp.get('/:path{.+}', async c => {
         transcodeTasks.set(cachePath, task);
         task.finally(() => transcodeTasks.delete(cachePath));
 
-        return c.body(null, 202, {
-          'X-Transcode-Status': encodeURIComponent(`正在转码：${file.name} -> AAC ${bitrate}k`)
-        });
+        return c.body(null, 202);
       }
     }
 

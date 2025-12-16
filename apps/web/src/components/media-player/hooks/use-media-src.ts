@@ -18,21 +18,24 @@ export function useMediaSrc(url: string | undefined) {
     const newURL = withQuery(url, { bitrate: options.bitrate });
     const response = await fetch(newURL, { method: 'HEAD' });
 
-    const transcodeStatus = decodeURIComponent(response.headers.get('x-transcode-status') ?? '未知转码状态');
-
     if (response.status === 200 || response.status === 206 || response.status === 304) {
       toast.dismiss('transcode-status');
       return newURL;
     }
 
     if (response.status === 202) {
-      toast.loading(transcodeStatus, { id: 'transcode-status' });
-      logger.info(transcodeStatus);
-      throw new HTTPError(transcodeStatus, 202);
+      const message = '转码中，请耐心等待...';
+      toast.loading(message, {
+        id: 'transcode-status',
+        description: '根据文件大小，这可能需要几分钟或数十分钟'
+      });
+      throw new HTTPError(message, 202);
     }
 
-    if (response.status >= 400)
+    if (response.status >= 400) {
+      const transcodeStatus = decodeURIComponent(response.headers.get('x-transcode-status') ?? '未知错误');
       throw new HTTPError(transcodeStatus, response.status);
+    }
   };
 
   const { data, mutate } = useSWRImmutable<string | undefined>(
@@ -43,7 +46,7 @@ export function useMediaSrc(url: string | undefined) {
       onErrorRetry(error, _key, _config, revalidate) {
         if (error instanceof HTTPError && error.status === 202) {
           // eslint-disable-next-line sukka/prefer-timer-id -- ignore
-          setTimeout(() => revalidate(), 1000 * 3);
+          setTimeout(() => revalidate(), 1000 * 2);
           return;
         }
 
