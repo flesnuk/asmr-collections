@@ -237,6 +237,7 @@ html body[data-scroll-locked] {
 }
 
 body {
+  text-autospace: normal;
   font-family: "HarmonyOS Sans SC", system-ui, sans-serif;
 }
 
