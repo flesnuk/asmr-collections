@@ -202,7 +202,7 @@ export default function TracksTabale({ work, tracks, searchPath, externalSubtitl
 
             {
               groupByType?.media?.map(item => {
-                const isCurrentTrack = mediaState.currentTrack?.title === item.title;
+                const isCurrentTrack = mediaState.currentTrack?.mediaDownloadUrl === item.mediaDownloadUrl;
                 const videoFt = ['mp4', 'mkv', 'avi', 'mov'];
                 const isVideo = videoFt.includes(extname(item.title).toLowerCase());
 
