@@ -1,4 +1,3 @@
-import { toast } from 'sonner';
 import { useCallback } from 'react';
 import { useAtomValue } from 'jotai';
 import useSWRImmutable from 'swr/immutable';
@@ -13,19 +12,19 @@ import { fetcher } from '~/lib/fetcher';
 import { readerZipFileSubtitles } from '~/lib/subtitle-matcher';
 
 import type { SubtitleInfo } from './use-media-state';
-import type { Tracks } from '@asmr-collections/shared';
+import type { Tracks, TracksResponse } from '@asmr-collections/shared';
 
 export type TracksData =
   {
     error: Error
     data?: undefined
-    fallback?: undefined
+    trackStorage?: undefined
     inStorage: boolean
     externalSubtitles?: undefined
   } | {
     data: Tracks
-    fallback: boolean
     inStorage: boolean
+    trackStorage?: TracksResponse['storage']
     error?: undefined
     externalSubtitles?: SubtitleInfo[]
   } | null;
@@ -40,14 +39,6 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
 
     if (tracks.error)
       notifyError(tracks.error.cause, tracks.error.message, { id: `work-tracks-error-${id}` });
-
-    if (tracks.fallback) {
-      toast.success('成功回退至 ASMR.ONE 获取数据', {
-        duration: 2000,
-        description: `${id} 不存在于本地库中`,
-        id: `work-tracks-fallback-${id}`
-      });
-    }
 
     if (
       settings.smartPath.enabled
@@ -74,12 +65,14 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
   const fetchFn = async (): Promise<TracksData> => {
     let tracks: Tracks | undefined;
     let inStorage = false;
-    let fallback = false;
+    let trackStorage: TracksResponse['storage'] | undefined;
 
     if (storage.enabled) {
       try {
         const key = withQuery(`/api/tracks/${id}`, getQuery('local'));
-        tracks = await fetcher<Tracks>(key);
+        const data = await fetcher<TracksResponse>(key);
+        tracks = data.tracks;
+        trackStorage = data.storage;
         inStorage = true;
       } catch (e) {
         if (e instanceof HTTPError && e.status === 404) {
@@ -99,7 +92,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
       try {
         const key = withQuery(`/api/tracks/${id}`, getQuery('asmrone'));
         tracks = await fetcher<Tracks>(key);
-        fallback = storage.enabled && !inStorage;
+        trackStorage = { type: 'asmrone', name: 'ASMR.ONE' };
       } catch (e) {
         logger.error(e, '获取 ASMR.ONE 音频数据失败');
         return {
@@ -113,7 +106,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
 
     const tracksData = {
       data: tracks,
-      fallback,
+      trackStorage,
       inStorage
     };
 

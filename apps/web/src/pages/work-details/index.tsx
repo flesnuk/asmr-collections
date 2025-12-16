@@ -76,7 +76,7 @@ function WorkDetails({ id}: { id: string }) {
               }}
             />
             <Badge
-              className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
+              className="absolute top-2 left-2 bg-[#795548] text-white font-bold shadow-md cursor-copy"
               onClick={() => {
                 writeClipboard(data.id, 'ID 已复制到剪贴板');
               }}
@@ -87,7 +87,7 @@ function WorkDetails({ id}: { id: string }) {
             </Badge>
             <Badge
               className={cn(
-                'absolute top-10 left-2 dark:text-white shadow-md font-bold',
+                'absolute top-10 left-2 text-white shadow-md font-bold',
                 match(data.ageCategory)
                   .with(3, () => 'bg-red-500')
                   .with(2, () => 'bg-blue-500')
@@ -101,18 +101,10 @@ function WorkDetails({ id}: { id: string }) {
                   .otherwise(() => 'R18')
               }
             </Badge>
-            {tracks?.inStorage === false && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className={cn(
-                  'truncate block',
-                  'p-2 py-1 absolute bottom-0 right-0 bg-zinc-800/80 rounded-none rounded-tl-md text-sm',
-                  'text-gray-300 max-w-[70%] truncate'
-                )}
-              >
-                不存在于本地库
-              </motion.div>
+            {tracks?.trackStorage && (
+              <Badge className="absolute top-2 right-2 shadow-md font-bold text-white bg-[#616f6e] dark:bg-[#6b7268]">
+                {tracks.trackStorage.name}
+              </Badge>
             )}
           </div>
 

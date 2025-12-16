@@ -1,5 +1,5 @@
 import type { IAudioMetadata } from 'music-metadata';
-import type { Track, Tracks } from '@asmr-collections/shared';
+import type { Track, Tracks, TracksResponse } from '@asmr-collections/shared';
 
 import type { StorageAdapter } from '~/types/storage/adapters';
 
@@ -58,11 +58,19 @@ tracksApp.get('/:id', zValidator('query', schema), async c => {
     if (!adapter)
       return c.json(formatMessage('作品不存在于本地音声库'), 404);
 
-    const data = await tracksCache({
+    const tracks = await tracksCache({
       cacheKey: `tracks-${id}`,
       getFreshValue: () => generateTracks(id, adapter),
       ctx: c
     });
+
+    const data: TracksResponse = {
+      storage: {
+        type: adapter.type,
+        name: adapter.name
+      },
+      tracks
+    };
 
     return c.json(data);
   } catch (e) {
