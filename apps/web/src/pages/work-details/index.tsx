@@ -254,7 +254,7 @@ function WorkDetails({ id}: { id: string }) {
         <WorkPreview workId={data.id} originalId={data.originalId} className="block" />
       )}
 
-      <SimilarWorks work={data} inStorage={tracks?.inStorage} />
+      <SimilarWorks work={data} exists={data.exists} />
     </motion.div>
   );
 }
