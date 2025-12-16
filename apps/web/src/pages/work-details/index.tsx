@@ -102,8 +102,13 @@ function WorkDetails({ id}: { id: string }) {
               }
             </Badge>
             {tracks?.trackStorage && (
-              <Badge className="absolute top-2 right-2 shadow-md font-bold text-white bg-[#616f6e] dark:bg-[#6b7268]">
-                {tracks.trackStorage.name}
+              <Badge className="absolute top-2 right-2 shadow-md font-bold text-white bg-[#616f6e] dark:bg-[#6b7268]" asChild>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {tracks.trackStorage.name}
+                </motion.span>
               </Badge>
             )}
           </div>
