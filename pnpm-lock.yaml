@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@types/bun':
+      specifier: ^1.3.0
+      version: 1.3.3
     '@types/node':
       specifier: ^24.10.1
       version: 24.10.1
@@ -18,6 +21,11 @@ catalogs:
 
 overrides:
   vite: 8.0.0-beta.0
+
+patchedDependencies:
+  lightgallery@2.9.0:
+    hash: 3e37571937bceeb9c57a90598c197d16a7fb68b72335f30e07516a544fb26d1b
+    path: patches/lightgallery@2.9.0.patch
 
 importers:
 
@@ -254,7 +262,7 @@ importers:
         version: 0.4.0(jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1)
       lightgallery:
         specifier: ^2.9.0
-        version: 2.9.0
+        version: 2.9.0(patch_hash=3e37571937bceeb9c57a90598c197d16a7fb68b72335f30e07516a544fb26d1b)
       lucide-react:
         specifier: ^0.561.0
         version: 0.561.0(react@19.2.3)
@@ -8253,7 +8261,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  lightgallery@2.9.0: {}
+  lightgallery@2.9.0(patch_hash=3e37571937bceeb9c57a90598c197d16a7fb68b72335f30e07516a544fb26d1b): {}
 
   lightningcss-android-arm64@1.30.2:
     optional: true
