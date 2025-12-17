@@ -13,9 +13,9 @@ import { Separator } from '~/components/ui/separator';
 import { GenresSettings } from './components/genres';
 import { StorageSettings } from './components/storage';
 import { SettingItem } from './components/setting-item';
-import { SettingInput } from './components/setting-input';
 import { TranscodeSettings } from './components/transcode';
 import { StorageSkeleton } from './components/storage-skeleton';
+import { ASMRONEAPISettings } from './components/asmr-one-server';
 import { SmartPathSettings } from './components/smart-path-settings';
 
 const URLS = [
@@ -38,20 +38,9 @@ function Settings() {
       className="flex flex-col gap-4.5 max-w-2xl mx-auto mt-4"
     >
 
-      <SettingInput
-        id="asmr-one-api"
-        name="asmr-one-api"
-        placeholder={options.asmrone.api}
-        value={options.asmrone.api}
-        onChange={e => setOptions(d => {
-          d.asmrone.api = e.target.value;
-        })}
-      >
-        ASMR.ONE API
-      </SettingInput>
-
       <SettingItem
         id="use-asmr-one-recommender"
+        description="详情页的相似作品替换为 ASMR.ONE 的"
         checked={options.asmrone.recommender}
         onCheckedChange={checked => setOptions(d => {
           d.asmrone.recommender = checked;
@@ -59,6 +48,15 @@ function Settings() {
       >
         使用 ASMR.ONE 的推荐
       </SettingItem>
+
+      <ASMRONEAPISettings
+        value={options.asmrone.api}
+        onChange={value => setOptions(d => {
+          d.asmrone.api = value;
+        })}
+      />
+
+      <Separator />
 
       <GenresSettings api={options.asmrone.api} />
 
