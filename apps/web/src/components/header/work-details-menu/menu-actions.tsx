@@ -68,7 +68,7 @@ export function MenuActions({ id}: { id: string }) {
             <>
               <UpdateMenu id={id} />
               <ClearCacheMenu id={id} />
-              <DropdownMenuItem className="cursor-pointer" onClick={handleDelete} disabled={deleteIsMutating}>
+              <DropdownMenuItem className="cursor-pointer" variant="destructive" onClick={handleDelete} disabled={deleteIsMutating}>
                 删除作品
               </DropdownMenuItem>
               <DropdownMenuSeparator />

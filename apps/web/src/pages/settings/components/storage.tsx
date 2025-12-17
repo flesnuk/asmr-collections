@@ -103,7 +103,7 @@ function StorageActions({ data, mutate }: StorageActionsProps) {
   return (
     <div className="flex gap-2 justify-center">
       <StorageDialog actionType="edit" data={data} mutate={mutate} storageId={data.id} />
-      <Button variant="outline" size="default" onClick={onDelete} disabled={isLoading}>
+      <Button variant="destructive" size="default" onClick={onDelete} disabled={isLoading}>
         删除
       </Button>
     </div>

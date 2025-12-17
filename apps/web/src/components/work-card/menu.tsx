@@ -95,14 +95,16 @@ export const Menu = memo(({ work }: Props) => {
             数据更新
           </DropdownMenuItem>
           <DropdownMenuItem
+            variant="destructive"
             onClick={handleDelete}
             disabled={deleteIsMutating}
             className="cursor-pointer"
           >
             删除收藏
           </DropdownMenuItem>
-          <SubtitlesSubMenu id={work.id} existsSubtitles={work.subtitles} onClose={() => setOpen(false)} />
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <SubtitlesSubMenu id={work.id} existsSubtitles={work.subtitles} onClose={() => setOpen(false)} />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
