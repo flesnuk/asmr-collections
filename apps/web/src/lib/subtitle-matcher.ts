@@ -77,11 +77,15 @@ export function collectSubtitles(data: Tracks | undefined | null, recursive = fa
   const supportedExtensions = new Set(['srt', 'lrc', 'vtt']);
 
   function processItem(item: Tracks[number]) {
-    if (item.type === 'text' && supportedExtensions.has(extname(item.title))) {
+    const ext = extname(item.title).toLowerCase() as 'vtt' | 'srt' | 'lrc';
+    const type = ext === 'lrc' ? 'vtt' : ext;
+
+    if (item.type === 'text' && supportedExtensions.has(ext)) {
       const url = item.mediaDownloadUrl;
       if (url) {
         subtitles.push({
           title: item.title,
+          type,
           url
         });
       }
@@ -113,7 +117,8 @@ export async function readerZipFileSubtitles(src: string): Promise<SubtitleInfo[
     if (entry.directory) continue;
 
     let filename = decodeText(entry.rawFilename);
-    const ext = extname(filename);
+    const ext = extname(filename) as 'vtt' | 'srt' | 'lrc';
+    const type = ext === 'lrc' ? 'vtt' : ext;
 
     filename = filename.split('/').pop() || filename;
 
@@ -124,7 +129,7 @@ export async function readerZipFileSubtitles(src: string): Promise<SubtitleInfo[
       if (ext === 'lrc')
         c = lrcToVtt(c);
 
-      subtitles.push({ title: filename, content: c });
+      subtitles.push({ title: filename, content: c, type });
     }
   }
 

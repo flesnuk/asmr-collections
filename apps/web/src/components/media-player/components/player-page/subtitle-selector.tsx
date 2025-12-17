@@ -42,7 +42,8 @@ export function SubtitleSelector() {
         id: currentTrack.title,
         kind: 'subtitles',
         label: 'Chinese',
-        default: true
+        default: true,
+        type: subtitles.type
       });
 
       player.textTracks.add(textTrack);

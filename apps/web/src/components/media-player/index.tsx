@@ -45,23 +45,28 @@ export function MediaPlayer() {
     // 清理已存在的字幕轨道
     e.target.textTracks.clear();
 
-    const src = mediaState.currentTrack?.subtitles?.url;
-    const stateContent = mediaState.currentTrack?.subtitles?.content;
+    const currentTrack = mediaState.currentTrack;
+    const subtitles = currentTrack?.subtitles;
+
+    const src = subtitles?.url;
+    const stateContent = subtitles?.content;
 
     const content = await fetchTextTrackContent(src);
+
     if (!content && !stateContent && !src) return;
 
     const track = new TextTrack({
       content: content || stateContent,
-      id: mediaState.currentTrack?.title,
+      id: currentTrack?.title,
       kind: 'subtitles',
       label: 'Chinese',
-      default: true
+      default: true,
+      type: subtitles?.type
     });
 
     e.target.textTracks.add(track);
     track.setMode('showing');
-  }, [mediaState.currentTrack?.subtitles?.content, mediaState.currentTrack?.subtitles?.url, mediaState.currentTrack?.title]);
+  }, [mediaState.currentTrack]);
 
   const onEnded = useCallback(() => {
     changeTrack(true);

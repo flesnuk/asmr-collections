@@ -6,6 +6,7 @@ export interface SubtitleInfo {
   title: string
   url?: string
   content?: string
+  type: 'vtt' | 'srt'
 }
 
 export interface MediaTrack extends Track {
