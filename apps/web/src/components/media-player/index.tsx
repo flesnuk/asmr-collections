@@ -3,9 +3,10 @@ import type { MediaLoadedDataEvent, MediaPlayingEvent, MediaTimeUpdateEventDetai
 
 import { AudioPlayerLayout } from './layout';
 
-import { useAtom } from 'jotai';
+import { focusAtom } from 'jotai-optics';
 import { createPortal } from 'react-dom';
 import { useCallback, useMemo } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { throttle } from '@asmr-collections/shared';
 
@@ -17,7 +18,17 @@ import { usePlayHistoryUpdate } from '~/hooks/use-play-history';
 
 import { fetchTextTrackContent } from './utils';
 
+const openAtom = focusAtom(mediaStateAtom, optic => optic.prop('open'));
+
 export function MediaPlayer() {
+  const open = useAtomValue(openAtom);
+
+  if (!open) return null;
+
+  return <MediaPlayerInstance />;
+}
+
+function MediaPlayerInstance() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
   const updateHistory = usePlayHistoryUpdate();
 
@@ -120,8 +131,6 @@ export function MediaPlayer() {
     navigator.mediaSession.setActionHandler('previoustrack', () => changeTrack());
     navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(true));
   }, [changeTrack, mediaState.currentTrack, mediaState.work]);
-
-  if (!mediaState.open) return null;
 
   return createPortal(
     <div className="relative h-15 max-sm:z-10">

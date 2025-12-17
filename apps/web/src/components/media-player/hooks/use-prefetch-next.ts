@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranscodeOptions } from '~/hooks/use-transcode-options';
 
 import { logger } from '~/lib/logger';
@@ -11,14 +11,18 @@ export function usePrefetchNext(nextUrl: string | undefined) {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.src = '';
+        audioRef.current.load();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
   const fetcher = async () => {
     if (!nextUrl) return;
-
-    if (audioRef.current) {
-      audioRef.current.src = '';
-      audioRef.current.load();
-      audioRef.current = null;
-    }
 
     let newURL = nextUrl;
     if (options.mode !== 'disable')
