@@ -34,8 +34,8 @@ function NativeSelect({ className, classNames, ...props }: NativeSelectProps) {
   )
 }
 
-function NativeSelectOption({ ...props }: React.ComponentProps<"option">) {
-  return <option data-slot="native-select-option" {...props} />
+function NativeSelectOption({className, ...props }: React.ComponentProps<"option">) {
+  return <option data-slot="native-select-option" className={cn("bg-popover text-popover-foreground", className)} {...props} />
 }
 
 function NativeSelectOptGroup({
