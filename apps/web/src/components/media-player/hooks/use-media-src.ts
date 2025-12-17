@@ -1,5 +1,3 @@
-import { useCallback, useRef } from 'react';
-
 import { toast } from 'sonner';
 import useSWRImmutable from 'swr/immutable';
 
@@ -66,20 +64,5 @@ export function useMediaSrc(url: string | undefined) {
     }
   );
 
-  const nextUrlRef = useRef<string | null>(null);
-
-  const preTranscodeNext = useCallback((nextUrl: string | undefined) => {
-    if (nextUrlRef.current === nextUrl) return;
-    if (!nextUrl || options.mode === 'disable') return;
-
-    const newURL = withQuery(nextUrl, { bitrate: options.bitrate });
-
-    logger.info('预转码下一首');
-    fetch(newURL, { method: 'HEAD' })
-      .catch(e => logger.error(e, '预转码下一首失败'));
-
-    nextUrlRef.current = nextUrl;
-  }, [options.bitrate, options.mode]);
-
-  return { mediaSrc: data, preTranscodeNext, isTranscoded: !!(data && data !== url) };
+  return { mediaSrc: data, isTranscoded: !!(data && data !== url) };
 }

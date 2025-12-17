@@ -10,6 +10,8 @@ import { useCallback, useMemo } from 'react';
 import { throttle } from '@asmr-collections/shared';
 
 import { useMediaSrc } from './hooks/use-media-src';
+import { usePrefetchNext } from './hooks/use-prefetch-next';
+
 import { mediaStateAtom } from '~/hooks/use-media-state';
 import { usePlayHistoryUpdate } from '~/hooks/use-play-history';
 
@@ -19,7 +21,7 @@ export function MediaPlayer() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
   const updateHistory = usePlayHistoryUpdate();
 
-  const { mediaSrc, preTranscodeNext, isTranscoded } = useMediaSrc(mediaState.currentTrack?.mediaStreamUrl);
+  const { mediaSrc, isTranscoded } = useMediaSrc(mediaState.currentTrack?.mediaStreamUrl);
 
   const nextTrack = useMemo(() => {
     const currentIndex = mediaState.tracks?.findIndex(track => track.title === mediaState.currentTrack?.title);
@@ -28,6 +30,8 @@ export function MediaPlayer() {
     const nextIndex = currentIndex + 1;
     return mediaState.tracks?.at(nextIndex) || null;
   }, [mediaState.currentTrack?.title, mediaState.tracks]);
+
+  const { triggerPrefetch } = usePrefetchNext(nextTrack?.mediaStreamUrl);
 
   const changeTrack = useCallback((next = false) => {
     const currentIndex = mediaState.tracks?.findIndex(track => track.title === mediaState.currentTrack?.title);
@@ -90,10 +94,10 @@ export function MediaPlayer() {
     const currentTime = detail.currentTime;
 
     if (currentTime > 30)
-      preTranscodeNext(nextTrack?.mediaStreamUrl);
+      triggerPrefetch();
 
     throttledUpdateHistory(currentTime);
-  }, [nextTrack?.mediaStreamUrl, preTranscodeNext, throttledUpdateHistory]);
+  }, [triggerPrefetch, throttledUpdateHistory]);
 
   const updateMediaMetadata = useCallback(() => {
     if (
