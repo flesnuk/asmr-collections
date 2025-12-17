@@ -37,17 +37,6 @@ function Settings() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-4.5 max-w-2xl mx-auto mt-4"
     >
-      <SettingInput
-        id="kikoeru"
-        name="kikoeru"
-        placeholder={options.kikoeru}
-        value={options.kikoeru}
-        onChange={e => setOptions(d => {
-          d.kikoeru = e.target.value;
-        })}
-      >
-        自建 Kikoeru 地址
-      </SettingInput>
 
       <SettingInput
         id="asmr-one-api"
@@ -60,8 +49,6 @@ function Settings() {
       >
         ASMR.ONE API
       </SettingInput>
-
-      <Separator />
 
       <SettingItem
         id="use-asmr-one-recommender"

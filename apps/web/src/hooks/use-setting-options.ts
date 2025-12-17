@@ -6,7 +6,6 @@ import { focusAtom } from 'jotai-optics';
 import { toMerged } from '@asmr-collections/shared';
 
 export interface SettingOptions {
-  kikoeru: string
   showWorkDetail: boolean
   asmrone: {
     api: string
@@ -28,7 +27,6 @@ export interface SettingOptions {
 }
 
 const DEFAULT_SETTINGS = {
-  kikoeru: 'https://asmr.one/work',
   asmrone: {
     api: 'https://api.asmr.one',
     recommender: false

@@ -11,10 +11,8 @@ import { extname } from '@asmr-collections/shared';
 
 import { toast } from 'sonner';
 import { memo, useState } from 'react';
-import { useAtomValue } from 'jotai';
 
 import { useToastMutation } from '~/hooks/use-toast-fetch';
-import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
 import { externalUrl } from '~/utils';
 import { mutateWorkInfo, mutateWorks } from '~/lib/mutation';
@@ -27,8 +25,6 @@ interface Props {
 
 export const Menu = memo(({ work }: Props) => {
   const [open, setOpen] = useState(false);
-
-  const settingOptions = useAtomValue(settingOptionsAtom);
 
   const [updateAction, updateIsMutating] = useToastMutation('update');
 
@@ -160,8 +156,7 @@ export const Menu = memo(({ work }: Props) => {
         <DropdownMenuGroup>
           {[
             { label: 'DLsite', link: `https://www.dlsite.com/maniax/work/=/product_id/${work.id}.html` },
-            { label: 'One', link: `https://asmr.one/work/${work.id}` },
-            { label: 'Kikoeru', link: `${settingOptions.kikoeru}/${work.id}` }
+            { label: 'One', link: `https://asmr.one/work/${work.id}` }
           ]
             .map(({ label, link }) => (
               <DropdownMenuItem asChild key={label}>
