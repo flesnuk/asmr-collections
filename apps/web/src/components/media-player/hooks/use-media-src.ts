@@ -81,5 +81,5 @@ export function useMediaSrc(url: string | undefined) {
     nextUrlRef.current = nextUrl;
   }, [options.bitrate, options.mode]);
 
-  return { mediaSrc: data, preTranscodeNext };
+  return { mediaSrc: data, preTranscodeNext, isTranscoded: !!(data && data !== url) };
 }

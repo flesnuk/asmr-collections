@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useShortcut } from '~/hooks/use-shortcut';
 import { usePlayerExpand } from './hooks/use-player-expand';
 
-import { MediaActionsContext } from './context/media-actions';
+import { MediaContext } from './context/media';
 
 import { TrackInfo } from './components/track-info';
 import { PlayerPage } from './components/player-page';
@@ -16,15 +16,19 @@ import { FloatingCaptions } from './components/floating-captions';
 import { RightPlayControls } from './components/right-controls/right-play';
 
 interface PlayerLayoutProps {
+  isTranscoded: boolean
   prev: () => void
   next: () => void
 }
 
-export function AudioPlayerLayout({ prev, next }: PlayerLayoutProps) {
-  const mediaActions: MediaActionsContext = useMemo(() => ({
-    nextTrack: next,
-    prevTrack: prev
-  }), [next, prev]);
+export function AudioPlayerLayout({ prev, next, isTranscoded }: PlayerLayoutProps) {
+  const initialValue: MediaContext = useMemo(() => ({
+    isTranscoded,
+    actions: {
+      nextTrack: next,
+      prevTrack: prev
+    }
+  }), [isTranscoded, next, prev]);
 
   const [expand, setExpand] = usePlayerExpand();
 
@@ -37,7 +41,7 @@ export function AudioPlayerLayout({ prev, next }: PlayerLayoutProps) {
   }, true);
 
   return (
-    <MediaActionsContext value={mediaActions}>
+    <MediaContext value={initialValue}>
       <PlayerPage />
       <FloatingCaptions />
       <PipCaptions />
@@ -71,6 +75,6 @@ export function AudioPlayerLayout({ prev, next }: PlayerLayoutProps) {
           </motion.div>
         )}
       </AnimatePresence>
-    </MediaActionsContext>
+    </MediaContext>
   );
 }

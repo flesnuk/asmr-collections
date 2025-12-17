@@ -3,10 +3,10 @@ import { Loader2Icon, PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon } from 
 import { AnimatePresence, motion } from 'framer-motion';
 import { Time, useMediaRemote, useMediaState } from '@vidstack/react';
 
-import { useMediaActions } from '../../context/media-actions';
+import { useMedia } from '../../context/media';
 
 export function LeftControls() {
-  const actions = useMediaActions();
+  const { actions } = useMedia();
   const playing = useMediaState('playing');
   const canPlay = useMediaState('canPlay');
   const waiting = useMediaState('waiting');
@@ -25,7 +25,7 @@ export function LeftControls() {
   return (
     <div className="flex items-center h-full gap-1">
       <div className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors">
-        <SkipBackIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions?.prevTrack()} />
+        <SkipBackIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions.prevTrack()} />
       </div>
       <motion.div
         className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors"
@@ -48,7 +48,7 @@ export function LeftControls() {
         </AnimatePresence>
       </motion.div>
       <div className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors">
-        <SkipForwardIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions?.nextTrack()} />
+        <SkipForwardIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions.nextTrack()} />
       </div>
       <div className="flex items-center text-xs font-medium opacity-60">
         <Time className="time" type="current" />

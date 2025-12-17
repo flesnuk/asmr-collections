@@ -3,10 +3,10 @@ import { Loader2Icon, PauseIcon, PlayIcon, RotateCcwIcon, RotateCwIcon, SkipBack
 import { AnimatePresence, motion } from 'framer-motion';
 import { SeekButton, useMediaRemote, useMediaState } from '@vidstack/react';
 
-import { useMediaActions } from '../../context/media-actions';
+import { useMedia } from '../../context/media';
 
 export function PlayerPageActions() {
-  const actions = useMediaActions();
+  const { actions } = useMedia();
   const playing = useMediaState('playing');
   const canPlay = useMediaState('canPlay');
   const waiting = useMediaState('waiting');
@@ -28,7 +28,7 @@ export function PlayerPageActions() {
   return (
     <div className="flex items-center h-full sm:gap-2 gap-4">
       <div className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors">
-        <SkipBackIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions?.prevTrack()} />
+        <SkipBackIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions.prevTrack()} />
       </div>
       <SeekButton
         className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors"
@@ -63,7 +63,7 @@ export function PlayerPageActions() {
         <RotateCwIcon className={rotateIconClass} />
       </SeekButton>
       <div className="rounded-full p-2 dark:hover:bg-white/15 hover:bg-black/15 transition-colors">
-        <SkipForwardIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions?.nextTrack()} />
+        <SkipForwardIcon className="min-max-size-6 cursor-pointer" fill="currentColor" onClick={() => actions.nextTrack()} />
       </div>
     </div>
   );

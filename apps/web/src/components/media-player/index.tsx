@@ -19,7 +19,7 @@ export function MediaPlayer() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
   const updateHistory = usePlayHistoryUpdate();
 
-  const { mediaSrc, preTranscodeNext } = useMediaSrc(mediaState.currentTrack?.mediaStreamUrl);
+  const { mediaSrc, preTranscodeNext, isTranscoded } = useMediaSrc(mediaState.currentTrack?.mediaStreamUrl);
 
   const nextTrack = useMemo(() => {
     const currentIndex = mediaState.tracks?.findIndex(track => track.title === mediaState.currentTrack?.title);
@@ -135,6 +135,7 @@ export function MediaPlayer() {
         >
           <MediaProvider />
           <AudioPlayerLayout
+            isTranscoded={isTranscoded}
             prev={() => changeTrack()}
             next={() => changeTrack(true)}
           />
