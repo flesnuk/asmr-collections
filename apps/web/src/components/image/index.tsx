@@ -29,6 +29,7 @@ export function Image({
 }: ImageProps) {
   const isHiddenImage = useAtomValue(hiddenImageAtom);
 
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showIndicator, setShowIndicator] = useState(!props.src);
 
@@ -36,6 +37,11 @@ export function Image({
     if (!img) return;
 
     if (img.complete) {
+      if (img.naturalWidth === 0)
+        setIsError(true);
+      else
+        setIsError(false);
+
       setIsLoading(false);
       return;
     }
@@ -47,12 +53,14 @@ export function Image({
 
     const onLoad = () => {
       clearTimeout(timer);
+      setIsError(false);
       setShowIndicator(false);
       setIsLoading(false);
     };
 
     const onError = () => {
       clearTimeout(timer);
+      setIsError(true);
       setShowIndicator(false);
       setIsLoading(false);
     };
@@ -94,6 +102,55 @@ export function Image({
         </div>
       )}
 
+      {isError && (
+        <div
+          className={cn(
+            'absolute inset-0 size-full flex items-center justify-center',
+            'animate-in fade-in duration-400'
+          )}
+        >
+          <div>
+            <svg
+              className="size-12 text-zinc-400 dark:text-zinc-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <g transform="translate(-1, 0)">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h5l1-4-1-4 1-4-1-4z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L11 14.5"
+                />
+              </g>
+
+              <g transform="translate(1, 0)">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M13 4h5a2 2 0 012 2v12a2 2 0 01-2 2h-5l1-4-1-4 1-4-1-4z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M14 14l1.586-1.586a2 2 0 012.828 0L20 14"
+                />
+                <path strokeLinecap="round" strokeWidth={1.5} d="M15 8h.01" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      )}
+
       {props.src && <img
         {...props}
         ref={setupImg}
@@ -106,7 +163,7 @@ export function Image({
         )}
         style={{
           transitionDuration: `${duration}ms`,
-          opacity: isLoading ? 0 : 1,
+          opacity: (isLoading || isError) ? 0 : 1,
           ...style
         }}
       />}
