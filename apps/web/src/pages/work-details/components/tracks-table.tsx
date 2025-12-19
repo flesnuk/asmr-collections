@@ -7,7 +7,7 @@ import { FolderBreadcrumb } from '~/components/breadcrumb/folder-breadcrumb';
 
 import { VideoItem } from './video-item';
 import { AudioItem } from './audio-item';
-import { ContinueLastPlayback } from './continue-last-playback';
+import { PlaybackButton } from './playback-button';
 
 import { useAtom } from 'jotai';
 import { produce } from 'immer';
@@ -15,6 +15,7 @@ import { useMemo, useRef } from 'react';
 
 import { match } from 'ts-pattern';
 
+import { usePlayback } from '~/hooks/use-playback';
 import { mediaStateAtom } from '~/hooks/use-media-state';
 
 import LightGallery from 'lightgallery/react';
@@ -33,19 +34,20 @@ import 'lightgallery/css/lg-thumbnail.css';
 
 import { SubtitleMatcher, collectSubtitles } from '~/lib/subtitle-matcher';
 
-import type { MediaTrack, SubtitleInfo } from '~/hooks/use-media-state';
-
-import type { Work, Tracks } from '@asmr-collections/shared';
+import type { Playback, Work, Tracks, SubtitleInfo, Track } from '@asmr-collections/shared';
 
 interface TracksTableProps {
   work: Work
   tracks?: Tracks | null
   searchPath?: string[]
   externalSubtitles?: SubtitleInfo[]
+  playback: Playback | null
 }
 
-export function TracksTabale({ work, tracks, searchPath, externalSubtitles }: TracksTableProps) {
+export function TracksTabale({ work, tracks, searchPath, externalSubtitles, playback }: TracksTableProps) {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
+
+  const { trigger: updatePlayback } = usePlayback();
 
   const filterData = useMemo(() => {
     if (!searchPath) return tracks;
@@ -86,48 +88,28 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles }: Tr
     [groupByType?.media]
   );
 
-  const handlePlay = (track: MediaTrack) => {
+  const handlePlay = (track: Track, position?: number) => {
     const currentSubtitle = subtitleMatcher.find(track.title);
-    setMediaState({
-      work,
-      open: true,
-      allSubtitles,
-      tracks: filterTracks?.map(item => {
-        const subtitles = subtitleMatcher.find(item.title);
-        return {
-          ...item,
-          subtitles
-        };
-      }),
-      currentTrack: {
-        ...track,
-        subtitles: currentSubtitle
-      }
+
+    const currentTrack = {
+      ...track,
+      subtitles: currentSubtitle,
+      position
+    };
+
+    const tracks = filterTracks?.map(item => {
+      const subtitles = subtitleMatcher.find(item.title);
+      return {
+        ...item,
+        subtitles
+      };
     });
+
+    updatePlayback({ id: work.id, track: currentTrack, tracks, incrementCount: true });
+    setMediaState({ work, open: true, allSubtitles, tracks, currentTrack });
   };
 
-  const handlePlayHistory = (track: MediaTrack, lastPlayedAt?: number) => {
-    const currentSubtitle = subtitleMatcher.find(track.title);
-    setMediaState({
-      work,
-      open: true,
-      allSubtitles,
-      tracks: filterTracks?.map(item => {
-        const subtitles = subtitleMatcher.find(item.title);
-        return {
-          ...item,
-          subtitles
-        };
-      }),
-      currentTrack: {
-        ...track,
-        subtitles: currentSubtitle,
-        lastPlayedAt
-      }
-    });
-  };
-
-  const enqueueTrack = (track: MediaTrack) => {
+  const enqueueTrack = (track: Track) => {
     if (mediaState.tracks?.find(item => item.title === track.title)) return;
 
     const subtitles = subtitleMatcher.find(track.title);
@@ -148,7 +130,12 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles }: Tr
 
   return (
     <>
-      <ContinueLastPlayback id={work.id} currentPlayWorkId={mediaState.work?.id} handlePlayHistory={handlePlayHistory} />
+      <PlaybackButton
+        id={work.id}
+        currentPlayWorkId={mediaState.work?.id}
+        handlePlayback={handlePlay}
+        playback={playback}
+      />
 
       <FolderBreadcrumb path={searchPath} />
 
