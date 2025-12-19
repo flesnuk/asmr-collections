@@ -1,6 +1,6 @@
 import type { Jsonify } from '../utils';
-import type { ServerWork } from './work';
 import type { Track, Tracks } from './track';
+import type { ServerWork, Work } from './work';
 
 export interface ServerPlayback {
   work: Pick<ServerWork, 'id' | 'name' | 'cover' | 'circle' | 'artists'>
@@ -13,4 +13,9 @@ export interface ServerPlayback {
   updatedAt: Date
 }
 
-export type Playback = Jsonify<ServerPlayback>;
+export type Playback = Jsonify<
+  Omit<ServerPlayback, 'work'>
+  & {
+    work: Pick<Work, 'id' | 'name' | 'cover' | 'circle' | 'artists' | 'exists'>
+  }
+>;

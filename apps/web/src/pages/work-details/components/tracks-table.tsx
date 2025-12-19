@@ -105,7 +105,9 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
       };
     });
 
-    updatePlayback({ id: work.id, track: currentTrack, tracks, incrementCount: true });
+    if (work.exists)
+      updatePlayback({ id: work.id, track: currentTrack, tracks, incrementCount: true });
+
     setMediaState({ work, open: true, allSubtitles, tracks, currentTrack });
   };
 

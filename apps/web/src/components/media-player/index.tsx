@@ -89,7 +89,13 @@ function MediaPlayerInstance() {
   }, [mediaState.currentTrack]);
 
   const updatePlaybackFn = useCallback((currentTime: number, force = false) => {
-    if (!mediaState.work || !mediaState.currentTrack) return;
+    // 作品未收藏时不更新播放进度
+    if (
+      !mediaState.work
+      || !mediaState.work.exists
+      || !mediaState.currentTrack
+    ) return;
+
     const id = mediaState.work.id;
     const track = mediaState.currentTrack;
     const tracks = mediaState.tracks;
