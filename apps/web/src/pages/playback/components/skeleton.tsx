@@ -4,7 +4,7 @@ import { Image } from '~/components/image';
 
 import { Skeleton } from '~/components/ui/skeleton';
 import { ButtonGroup } from '~/components/ui/button-group';
-import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemHeader, ItemTitle } from '~/components/ui/item';
+import { Item, ItemActions, ItemContent, ItemGroup, ItemHeader } from '~/components/ui/item';
 
 export function PlaybackSkeleton() {
   return (
@@ -18,12 +18,8 @@ export function PlaybackSkeleton() {
             <Image alt="cover" classNames={{ wrapper: 'pb-[65%] w-full rounded-tl-md rounded-tr-md' }} />
           </ItemHeader>
           <ItemContent className="gap-2 max-sm:gap-4 max-sm:p-4 max-sm:pt-0">
-            <ItemTitle className="w-full">
-              <Skeleton className="h-8 w-3/4" />
-            </ItemTitle>
-            <ItemDescription className="">
-              <Skeleton className="h-4 w-2/3" />
-            </ItemDescription>
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-4 w-2/3" />
             <ItemActions className="sm:hidden mt-2">
               <ButtonGroup className="w-full *:flex-1">
                 <Skeleton className="h-10 w-full" />
