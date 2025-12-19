@@ -28,10 +28,15 @@ export function PlaybackItem({ playback, mutate }: Props) {
   const [deletePlayback, isLoading] = useToastMutation('playback-delete');
 
   const handlePlay = () => {
+    const currentTrack = {
+      ...playback.track,
+      position: playback.position
+    };
+
     setMediaState({
       open: true,
       work: playback.work,
-      currentTrack: playback.track,
+      currentTrack,
       tracks: playback.tracks
     });
   };
