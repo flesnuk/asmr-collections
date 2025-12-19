@@ -80,13 +80,13 @@ export function Subtitles({ scrollAreaRef }: SubtitlesProps) {
     };
   }, []);
 
-  if (allSubtitles?.length === 0)
+  if (!allSubtitles || allSubtitles.length === 0)
     return <div className="w-full my-8 text-center text-sm">暂无字幕</div>;
 
   return (
     <div className="relative">
       <div className="sticky top-0 bg-card w-full z-1 flex items-center justify-between p-2 border-b border-r border-l rounded-b-lg">
-        <SubtitleSelector />
+        <SubtitleSelector allSubtitles={allSubtitles} />
         <div className="flex items-center gap-2">
           <Button
             variant="secondary"

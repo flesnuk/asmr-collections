@@ -1,8 +1,8 @@
 import { useMediaPlayer, TextTrack } from '@vidstack/react';
 
 import { useMemo } from 'react';
+import { useAtom } from 'jotai';
 import { focusAtom } from 'jotai-optics';
-import { useAtom, useAtomValue } from 'jotai';
 import { mediaStateAtom } from '~/hooks/use-media-state';
 
 import { NativeSelect, NativeSelectOption } from '~/components/ui/native-select';
@@ -12,11 +12,13 @@ import { fetchTextTrackContent } from '../../utils';
 import type { SubtitleInfo } from '@asmr-collections/shared';
 
 const currentTrackAtom = focusAtom(mediaStateAtom, optic => optic.prop('currentTrack'));
-const allSubtitlesAtom = focusAtom(mediaStateAtom, optic => optic.prop('allSubtitles'));
 
-export function SubtitleSelector() {
+interface Props {
+  allSubtitles: SubtitleInfo[]
+}
+
+export function SubtitleSelector({ allSubtitles }: Props) {
   const [currentTrack, setCurrentTrack] = useAtom(currentTrackAtom);
-  const allSubtitles = useAtomValue(allSubtitlesAtom);
 
   const player = useMediaPlayer();
 
@@ -24,7 +26,7 @@ export function SubtitleSelector() {
 
   // 去重字幕名称一致的，然后排序
   const subtitles = useMemo(() => {
-    return Array.from<SubtitleInfo>(allSubtitles?.reduce((map, item) => map.set(item.title, item), new Map()).values() || [])
+    return Array.from<SubtitleInfo>(allSubtitles.reduce((map, item) => map.set(item.title, item), new Map()).values())
       .sort((a, b) => a.title.localeCompare(b.title));
   }, [allSubtitles]);
 

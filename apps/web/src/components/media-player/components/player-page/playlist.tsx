@@ -29,14 +29,14 @@ export function Playlist() {
     setMediaState({ ...mediaState, tracks: newTracks });
   };
 
-  if (tracks?.length === 0)
+  if (!tracks || tracks.length === 0)
     return <div className="w-full my-8 text-center">暂无曲目</div>;
 
   return (
     <div className="mt-4">
       <DragDropProvider
         onDragEnd={e => {
-          if (isSortable(e.operation.source) && tracks) {
+          if (isSortable(e.operation.source)) {
             const oldIndex = e.operation.source.sortable.initialIndex;
             const newIndex = e.operation.source.sortable.index;
             const newTracks = arrayMove(tracks, oldIndex, newIndex);
@@ -49,7 +49,7 @@ export function Playlist() {
           animate={{ opacity: 1 }}
         >
           {
-            tracks?.map((track, index) => (
+            tracks.map((track, index) => (
               <SortableItem
                 key={track.title}
                 current={current}
