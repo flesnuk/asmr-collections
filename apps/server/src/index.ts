@@ -48,7 +48,7 @@ app.use('/assets/*', serveStatic({
 }));
 
 // spa
-const spaRoutes = ['/work-details', '/settings'];
+const spaRoutes = ['/work-details', '/settings', '/playback'];
 // static files (png, ico, webmanifest)
 app.use('*', etag());
 app.use('*', serveStatic({

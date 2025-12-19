@@ -23,11 +23,8 @@ app.route('/api', api);
 app.route('/proxy', proxyApp);
 
 // web
-app.get('/work-details/*', c => {
-  return c.env.ASSETS.fetch(new URL('/index.html', c.req.url));
-});
-
-app.get('/settings', c => {
+const spaRoutes = ['/work-details/*', '/settings', '/playback'];
+app.on('GET', spaRoutes, c => {
   return c.env.ASSETS.fetch(new URL('/index.html', c.req.url));
 });
 
