@@ -8,7 +8,7 @@ import { ItemGroup } from '~/components/ui/item';
 import { Pagination } from '~/components/pagination';
 import { PlaybackSkeleton } from './components/skeleton';
 import { PlaybackItem } from './components/playback-item';
-import { PreloadNextPlayback } from './components/preload-next';
+import { PrefetchNextPlayback } from './components/prefetch-next';
 
 import { notifyError } from '~/utils';
 import { withQuery } from '@asmr-collections/shared';
@@ -60,7 +60,7 @@ function Playback() {
         </AnimatePresence>
       </ItemGroup>
       <Pagination total={data.total} current={search.page} limit={search.limit} />
-      <PreloadNextPlayback swrKey={nextSWRKey} />
+      <PrefetchNextPlayback swrKey={nextSWRKey} />
     </motion.div>
   );
 }

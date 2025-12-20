@@ -1,7 +1,7 @@
 import { Works } from './components/works';
 import { Pagination } from './components/pagination';
 import { WorkSkeletons } from './components/works/skeleton';
-import { PreloadNextWorks } from './components/works/preload-next';
+import { PrefetchNextWorks } from './components/works/prefetch-next';
 
 import useSWR from 'swr';
 import { motion } from 'framer-motion';
@@ -47,7 +47,7 @@ export default function App() {
       <Pagination total={data.total} current={search.page} limit={search.limit} />
 
       {/** 预渲染下一页的数据 */}
-      <PreloadNextWorks swrKey={nextKey} />
+      <PrefetchNextWorks swrKey={nextKey} />
     </motion.div>
   );
 }
