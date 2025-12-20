@@ -6,8 +6,9 @@ import { createLazyRoute, useSearch } from '@tanstack/react-router';
 import { ItemGroup } from '~/components/ui/item';
 
 import { Pagination } from '~/components/pagination';
-import { PlaybackItem } from './components/playback-item';
 import { PlaybackSkeleton } from './components/skeleton';
+import { PlaybackItem } from './components/playback-item';
+import { PreloadNextPlayback } from './components/preload-next';
 
 import { notifyError } from '~/utils';
 import { withQuery } from '@asmr-collections/shared';
@@ -18,12 +19,18 @@ import type { PlaybacksResponse } from '@asmr-collections/shared';
 
 function Playback() {
   const search = useSearch({ from: '/playback' });
-  const key = withQuery('/api/playback', {
+
+  const swrKey = withQuery('/api/playback', {
     page: search.page,
     limit: search.limit
   });
 
-  const { data, mutate } = useSWR<PlaybacksResponse>(key, fetcher, {
+  const nextSWRKey = withQuery('/api/playback', {
+    page: search.page + 1,
+    limit: search.limit
+  });
+
+  const { data, mutate } = useSWR<PlaybacksResponse>(swrKey, fetcher, {
     onError: e => notifyError(e, '获取播放列表失败'),
     suspense: true
   });
@@ -38,7 +45,7 @@ function Playback() {
       transition={{ duration: 0.3 }}
     >
       <ItemGroup>
-        <AnimatePresence initial={false}>
+        <AnimatePresence key={search.page}>
           {data.data.map(playback => (
             <motion.div
               layout
@@ -53,6 +60,7 @@ function Playback() {
         </AnimatePresence>
       </ItemGroup>
       <Pagination total={data.total} current={search.page} limit={search.limit} />
+      <PreloadNextPlayback swrKey={nextSWRKey} />
     </motion.div>
   );
 }
