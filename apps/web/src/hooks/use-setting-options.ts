@@ -9,6 +9,7 @@ export interface SettingOptions {
   showWorkDetail: boolean
   asmrone: {
     api: string
+    priority: boolean
     recommender: boolean
   }
   storage: {
@@ -26,9 +27,10 @@ export interface SettingOptions {
   }
 }
 
-const DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS: SettingOptions = {
   asmrone: {
     api: 'https://api.asmr.one',
+    priority: false,
     recommender: false
   },
   showWorkDetail: true,

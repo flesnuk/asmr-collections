@@ -40,13 +40,24 @@ function Settings() {
 
       <SettingItem
         id="use-asmr-one-recommender"
-        description="详情页的相似作品替换为 ASMR.ONE 的"
+        description="详情页的相似作品替换为 ASMR.ONE 的推荐"
         checked={options.asmrone.recommender}
         onCheckedChange={checked => setOptions(d => {
           d.asmrone.recommender = checked;
         })}
       >
         使用 ASMR.ONE 的推荐
+      </SettingItem>
+
+      <SettingItem
+        id="priority-asmr-one-library"
+        description="开启本地库时也优先使用 ASMR.ONE 音声库，不存在时回退至本地库"
+        checked={options.asmrone.priority}
+        onCheckedChange={checked => setOptions(d => {
+          d.asmrone.priority = checked;
+        })}
+      >
+        优先使用 ASMR.ONE 音声库
       </SettingItem>
 
       <ASMRONEAPISettings

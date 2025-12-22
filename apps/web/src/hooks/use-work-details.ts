@@ -18,15 +18,15 @@ export type TracksData =
     error: Error
     data?: undefined
     trackStorage?: undefined
-    inStorage: boolean
     externalSubtitles?: undefined
   } | {
     data: Tracks
-    inStorage: boolean
     trackStorage?: TracksResponse['storage']
     error?: undefined
     externalSubtitles?: SubtitleInfo[]
   } | null;
+
+interface InternalResult { data: Tracks, trackStorage?: TracksResponse['storage'] }
 
 // eslint-disable-next-line sukka/bool-param-default -- Need to distinguish undefined
 export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[]) => void, hasSubtitles?: boolean, searchPath?: string[]) {
@@ -62,51 +62,76 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
   }
 
   const fetchFn = async (): Promise<TracksData> => {
-    let tracks: Tracks | undefined;
-    let inStorage = false;
-    let trackStorage: TracksResponse['storage'] | undefined;
+    let result: InternalResult | null = null;
+    let error: unknown | null = null;
 
-    if (storage.enabled) {
+    const tryStorage = async (): Promise<InternalResult | null> => {
+      if (!storage.enabled) return null;
       try {
         const key = withQuery(`/api/tracks/${id}`, getQuery('local'));
         const data = await fetcher<TracksResponse>(key);
-        tracks = data.tracks;
-        trackStorage = data.storage;
-        inStorage = true;
+        return { data: data.tracks, trackStorage: data.storage };
       } catch (e) {
-        if (e instanceof HTTPError && e.status === 404) {
-          inStorage = false;
-        } else {
-          logger.error(e, '获取本地音频数据失败');
-          return {
-            error: new Error('获取本地音频数据失败', { cause: e }),
-            inStorage: false
-          };
+        if (e instanceof HTTPError && e.status === 404)
+          return null;
+
+        throw e;
+      }
+    };
+
+    const tryOne = async (): Promise<InternalResult> => {
+      const key = withQuery(`/api/tracks/${id}`, getQuery('asmrone'));
+      const tracks = await fetcher<Tracks>(key);
+      return {
+        data: tracks,
+        trackStorage: { type: 'asmrone', name: 'ASMR.ONE' }
+      };
+    };
+
+    if (settings.asmrone.priority) {
+      try {
+        result = await tryOne();
+      } catch (e) {
+        logger.warn(e, '优先 ASMR.ONE 获取音频数据失败，回退本地存储');
+
+        try {
+          const data = await tryStorage();
+          if (data) result = data;
+        } catch (e) {
+          error = e;
+        }
+
+        if (!result && !error) error = e;
+      }
+    } else {
+      try {
+        const data = await tryStorage();
+        if (data) result = data;
+      } catch (e) {
+        logger.error(e, '获取本地音频数据失败');
+        error = e;
+      }
+
+      if (!result && (storage.fallbackToAsmrOneApi || !storage.enabled)) {
+        try {
+          result = await tryOne();
+          error = null;
+        } catch (e) {
+          logger.error(e, '获取 ASMR.ONE 音频数据失败');
+          error = e;
         }
       }
     }
 
-    // 不存在于本地，且允许回退到 ASMR.ONE API，或本地存储未启用
-    if (!inStorage && (!storage.enabled || storage.fallbackToAsmrOneApi)) {
-      try {
-        const key = withQuery(`/api/tracks/${id}`, getQuery('asmrone'));
-        tracks = await fetcher<Tracks>(key);
-        trackStorage = { type: 'asmrone', name: 'ASMR.ONE' };
-      } catch (e) {
-        logger.error(e, '获取 ASMR.ONE 音频数据失败');
-        return {
-          error: new Error('获取 ASMR.ONE 音频数据失败', { cause: e }),
-          inStorage: false
-        };
-      }
+    if (!result) {
+      if (error) return { error: new Error('获取音频数据失败', { cause: error }) };
+
+      return null;
     }
 
-    if (!tracks) return null;
-
     const tracksData = {
-      data: tracks,
-      trackStorage,
-      inStorage
+      data: result.data,
+      trackStorage: result.trackStorage
     };
 
     if (hasSubtitles) {
@@ -125,7 +150,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
 
   const key = hasSubtitles === undefined
     ? null
-    : [`work-tracks-${id}`, storage.enabled, storage.fallbackToAsmrOneApi, hasSubtitles];
+    : [`work-tracks-${id}`, storage.enabled, storage.fallbackToAsmrOneApi, settings.asmrone.priority, hasSubtitles];
 
   return useSWRImmutable<TracksData>(key, fetchFn, { onSuccess });
 }
