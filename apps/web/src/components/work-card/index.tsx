@@ -19,6 +19,7 @@ import useSWRImmutable from 'swr/immutable';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 
 import { notifyError, writeClipboard } from '~/utils';
+import { formatISODate } from '@asmr-collections/shared';
 
 import { cn } from '~/lib/utils';
 import { fetcher } from '~/lib/fetcher';
@@ -96,7 +97,7 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
             'text-gray-300 max-w-[70%] truncate'
           )}
         >
-          {work.releaseDate.slice(0, 10)}
+          {formatISODate(work.releaseDate)}
         </div>
         {
           work.seriesId

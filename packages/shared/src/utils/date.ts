@@ -1,3 +1,6 @@
+import { zhCN } from 'date-fns/locale';
+import { format } from 'date-fns/format';
+
 /**
  * 格式化时间单位，确保两位数显示
  * @param unit - 时间单位（小时、分钟或秒）
@@ -25,15 +28,18 @@ export function formatDuration(seconds: number): string {
 
 /**
  * 格式化日期为中文格式
- * @param dateString - ISO 日期字符串
+ * @param date - ISO 日期字符串
  * @returns 格式化后的日期字符串，如 "2025年11月18日 0时"
  */
-export function formatChineseDate(dateString: string): string {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
+export function formatChineseDate(date: string | Date): string {
+  return format(date, 'yyyy年MM月dd日 H时', { locale: zhCN });
+}
 
-  return `${year}年${month}月${day}日 ${hour}时`;
+/**
+ * 格式化日期为 ISO 格式
+ * @param date - ISO 日期字符串
+ * @returns 格式化后的日期字符串，如 "2025-11-18"
+ */
+export function formatISODate(date: string | Date): string {
+  return format(date, 'yyyy-MM-dd');
 }

@@ -7,7 +7,7 @@ import { Link } from '../link';
 
 import { MenuIcon } from 'lucide-react';
 
-import { extname } from '@asmr-collections/shared';
+import { extname, formatISODate } from '@asmr-collections/shared';
 
 import { toast } from 'sonner';
 import { memo, useState } from 'react';
@@ -124,13 +124,13 @@ export const Menu = memo(({ work }: Props) => {
                   赏析数：{work.reviewCount}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  发售日期：{work.releaseDate.slice(0, 10)}
+                  发售日期：{formatISODate(work.releaseDate)}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  收藏日期：{work.createdAt.slice(0, 10)}
+                  收藏日期：{formatISODate(work.createdAt)}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  更新日期：{work.updatedAt.slice(0, 10)}
+                  更新日期：{formatISODate(work.updatedAt)}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
