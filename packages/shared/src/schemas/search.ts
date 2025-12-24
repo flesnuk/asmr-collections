@@ -12,6 +12,11 @@ export const RootBaseSearchSchema: z.ZodObject<{
     only: 'only'
     exclude: 'exclude'
   }>>
+  workType: z.ZodOptional<z.ZodEnum<{
+    RJ: 'RJ'
+    BJ: 'BJ'
+    VJ: 'VJ'
+  }>>
   sort: z.ZodDefault<z.ZodString>
   order: z.ZodDefault<z.ZodEnum<{
     desc: 'desc'
@@ -34,6 +39,7 @@ export const RootBaseSearchSchema: z.ZodObject<{
   keyword: z.string().optional(),
   embedding: z.string().optional(),
   storageFilter: z.enum(['only', 'exclude']).optional(),
+  workType: z.enum(['RJ', 'BJ', 'VJ']).optional(),
 
   sort: z.string().default(ROOT_DEFAULT_SEARCH_VALUES.sort),
   order: z.enum(['asc', 'desc']).default(ROOT_DEFAULT_SEARCH_VALUES.order),
@@ -57,6 +63,11 @@ export const RootSearchQuerySchema: z.ZodObject<{
   storageFilter: z.ZodOptional<z.ZodEnum<{
     only: 'only'
     exclude: 'exclude'
+  }>>
+  workType: z.ZodOptional<z.ZodEnum<{
+    RJ: 'RJ'
+    BJ: 'BJ'
+    VJ: 'VJ'
   }>>
   sort: z.ZodDefault<z.ZodString>
   order: z.ZodDefault<z.ZodEnum<{
@@ -101,6 +112,11 @@ export const IndexSearchQuerySchema: z.ZodObject<{
   storageFilter: z.ZodOptional<z.ZodEnum<{
     only: 'only'
     exclude: 'exclude'
+  }>>
+  workType: z.ZodOptional<z.ZodEnum<{
+    RJ: 'RJ'
+    BJ: 'BJ'
+    VJ: 'VJ'
   }>>
   sort: z.ZodDefault<z.ZodString>
   order: z.ZodDefault<z.ZodEnum<{

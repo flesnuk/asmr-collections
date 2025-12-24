@@ -12,7 +12,7 @@ export type FindManyWorksQuery = Parameters<PrismaClient['work']['findMany']>[0]
 
 export function whereBuilder(query: z.infer<typeof IndexSearchQuerySchema>) {
   const {
-    circleId, seriesId, illustratorId, artistId, genres,
+    circleId, seriesId, illustratorId, artistId, genres, workType,
     subtitles, multilingual, age, keyword, embedding, filterOp
   } = query;
 
@@ -76,6 +76,9 @@ export function whereBuilder(query: z.infer<typeof IndexSearchQuerySchema>) {
     else
       pushCondition({ circleId });
   }
+
+  // 这里需要做三态复选吗？
+  if (workType) pushCondition({ id: { startsWith: workType } });
 
   if (subtitles) pushCondition({ subtitles: { equals: true } });
   if (multilingual) pushCondition({ languageEditions: { isEmpty: false } });

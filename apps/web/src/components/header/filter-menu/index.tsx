@@ -1,5 +1,6 @@
 import { MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarMenu, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '~/components/ui/menubar';
 
+import { WorkCategory } from './work-category';
 import { AgeCategory } from './age-category';
 import { GenresFilter } from './genres-filter';
 import { CircleFilter } from './circle-filter';
@@ -27,6 +28,7 @@ export function FilterMenu() {
       <MenubarContent className="max-[400px]:min-w-40">
         <MenubarGroup>
           <AgeCategory />
+          <WorkCategory />
           <MenubarShortcut />
           <MenubarSeparator />
           <MenubarCheckboxItem
