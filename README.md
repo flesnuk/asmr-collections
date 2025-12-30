@@ -21,8 +21,8 @@
 mkdir asmr-collections
 cd asmr-collections
 
-# 创建 covers 目录用于存放封面
-mkdir covers
+# 创建 data 目录用于存放数据
+mkdir data
 
 # 复制 docker-compose.yaml 文件到当前目录
 curl -O https://raw.githubusercontent.com/kahosan/asmr-collections/main/docker-compose.yaml
