@@ -17,17 +17,20 @@ import { SubtitleSelector } from './subtitle-selector';
 
 import { cn } from '~/lib/utils';
 
-function formatTime(seconds: number) {
-  const mins = Math.floor(seconds / 60)
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600)
     .toString()
     .padStart(2, '0');
-  const secs = Math.floor(seconds % 60)
+
+  const m = Math.floor((seconds % 3600) / 60)
     .toString()
     .padStart(2, '0');
-  const ms = Math.floor((seconds % 1) * 100)
+
+  const s = Math.floor(seconds % 60)
     .toString()
     .padStart(2, '0');
-  return `${mins}:${secs}.${ms}`;
+
+  return `${h}:${m}:${s}`;
 }
 
 const allSubtitlesAtom = focusAtom(mediaStateAtom, optic => optic.prop('allSubtitles'));
