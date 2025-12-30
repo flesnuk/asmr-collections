@@ -4,6 +4,9 @@ import type { SubtitleInfo, Tracks } from '../types';
 
 import Fuse from 'fuse.js';
 
+import { millisecondsToHours } from 'date-fns/millisecondsToHours';
+import { millisecondsToMinutes } from 'date-fns/millisecondsToMinutes';
+import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { configure, Uint8ArrayReader, Uint8ArrayWriter, ZipReader } from '@zip.js/zip.js';
 
 import { extname } from '../utils';
@@ -158,46 +161,64 @@ export function decodeText(data: ArrayBuffer | Uint8Array): string {
   return new TextDecoder('utf-8').decode(data);
 }
 
+function formatDuration(ms: number): string {
+  const h = millisecondsToHours(ms);
+  const m = millisecondsToMinutes(ms) % 60; // 取模，只保留不满1小时的分钟数
+  const s = millisecondsToSeconds(ms) % 60; // 取模，只保留不满1分钟的秒数
+  const mill = ms % 1000;
+
+  // WebVTT 标准格式: HH:MM:SS.mmm
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(mill).padStart(3, '0')}`;
+}
+
 export function lrcToVtt(text: string): string {
   // LRC 转 VTT
   const lines = text.split('\n');
   const vttLines = ['WEBVTT\n'];
 
-  const matchReg = /\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?]/;
+  const matchReg = /\[(\d+):(\d{2})(?:\.(\d{1,3}))?]/;
 
-  for (const line of lines) {
-    const timeTagMatch = matchReg.exec(line);
+  // 2. 预处理：将 LRC 解析为 { totalMs, content } 结构
+  const parsedLines = lines.reduce<Array<{ totalMs: number, content: string }>>((acc, line) => {
+    const match = matchReg.exec(line);
 
-    if (timeTagMatch) {
-      const content = line.replace(timeTagMatch[0], '').trim();
-      if (!content) continue;
+    // 如果正则不匹配，直接返回当前累加结果（相当于 filter 掉）
+    if (!match) return acc;
 
-      const minutes = Number.parseInt(timeTagMatch[1], 10);
-      const seconds = Number.parseInt(timeTagMatch[2], 10);
-      const milliseconds = timeTagMatch[3] ? Number.parseInt(timeTagMatch[3].padEnd(3, '0'), 10) : 0;
-      const startTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+    const content = line.replace(match[0], '').trim();
 
-      const nextLine = lines.at(lines.indexOf(line) + 1);
-      if (nextLine) {
-        const nextTimeTagMatch = matchReg.exec(nextLine);
-        if (nextTimeTagMatch) {
-          const nextMinutes = Number.parseInt(nextTimeTagMatch[1], 10);
-          const nextSeconds = Number.parseInt(nextTimeTagMatch[2], 10);
-          const nextMilliseconds = nextTimeTagMatch[3] ? Number.parseInt(nextTimeTagMatch[3].padEnd(3, '0'), 10) : 0;
-          const endTime = `${String(nextMinutes).padStart(2, '0')}:${String(nextSeconds).padStart(2, '0')}.${String(nextMilliseconds).padStart(3, '0')}`;
+    // 如果没有内容，也跳过
+    if (!content) return acc;
 
-          vttLines.push(`${startTime} --> ${endTime}\n${content}\n`);
-          continue;
-        }
-      }
+    const minutes = Number.parseInt(match[1], 10);
+    const seconds = Number.parseInt(match[2], 10);
+    const milliseconds = match[3]
+      ? Number.parseInt(match[3].padEnd(3, '0'), 10)
+      : 0;
 
-      const endSeconds = seconds + 5;
-      const endMinutes = minutes + Math.floor(endSeconds / 60);
-      const adjustedEndSeconds = endSeconds % 60;
-      const endTime = `${String(endMinutes).padStart(2, '0')}:${String(adjustedEndSeconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+    const totalMs = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
 
-      vttLines.push(`${startTime} --> ${endTime}\n${content}\n`);
-    }
+    // 将有效结果推入数组
+    acc.push({ totalMs, content });
+    return acc;
+  }, []);
+
+  // 4. 生成 VTT 内容
+  for (let i = 0; i < parsedLines.length; i++) {
+    const current = parsedLines.at(i);
+    const next = parsedLines.at(i + 1);
+
+    if (!current) continue;
+
+    const startTime = formatDuration(current.totalMs);
+    let endTime: string;
+
+    if (next)
+      endTime = formatDuration(next.totalMs);
+    else
+      endTime = formatDuration(current.totalMs + 5000);
+
+    vttLines.push(`${startTime} --> ${endTime}\n${current.content}\n`);
   }
 
   return vttLines.join('\n');
