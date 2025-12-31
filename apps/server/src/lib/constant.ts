@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-const DATA_PATH = process.env.DATA_PATH || join(process.cwd(), 'data');
+export const DATA_PATH = join(process.cwd(), 'data');
 
 export const IS_WORKERS = process.env.RUNTIME === 'workers';
 

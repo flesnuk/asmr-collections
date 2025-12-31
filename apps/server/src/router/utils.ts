@@ -6,7 +6,7 @@ import { HTTPError } from '@asmr-collections/shared';
 import { exists } from '@asmr-collections/shared/server';
 
 import { getPrisma } from '~/lib/db';
-import { COVERS_PATH, IS_WORKERS } from '~/lib/constant';
+import { COVERS_PATH, DATA_PATH, IS_WORKERS } from '~/lib/constant';
 
 export function findwork(id: string) {
   const prisma = getPrisma();
@@ -41,8 +41,9 @@ export async function saveCoverImage(url: string, id: string) {
   }
 
   const coverPath = join(COVERS_PATH, id + '.jpg');
+  const normalizedPath = coverPath.replace(DATA_PATH, '');
   if (await exists(coverPath))
-    return coverPath.replace(process.cwd(), '');
+    return normalizedPath;
 
   const normalizedUrl = url.startsWith('//') ? 'https:' + url : url;
 
@@ -64,7 +65,7 @@ export async function saveCoverImage(url: string, id: string) {
     const buffer = await res.arrayBuffer();
 
     await Bun.write(coverPath, buffer);
-    return coverPath.replace(process.cwd(), '');
+    return normalizedPath;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError')
       throw new Error('下载封面图片超时');
