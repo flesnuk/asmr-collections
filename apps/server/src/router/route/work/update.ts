@@ -18,6 +18,7 @@ updateApp.put('/update/:id', async c => {
     if (!await findwork(id))
       return c.json(formatMessage('收藏不存在'), 400);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 
@@ -26,6 +27,7 @@ updateApp.put('/update/:id', async c => {
   try {
     data = await fetchDLsiteInfo(id);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 
@@ -35,7 +37,7 @@ updateApp.put('/update/:id', async c => {
     const coverPath = await saveCoverImage(data.image_main, id);
     data.image_main = coverPath ?? data.image_main;
   } catch (e) {
-    console.error('保存 cover 图片失败:', e);
+    console.error('保存 cover 图片失败', e);
   }
 
   try {
@@ -55,6 +57,7 @@ updateApp.put('/update/embedding/:id', async c => {
     if (!await findwork(id))
       return c.json(formatMessage('收藏不存在'), 400);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 
@@ -63,6 +66,7 @@ updateApp.put('/update/embedding/:id', async c => {
   try {
     data = await fetchDLsiteInfo(id);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 

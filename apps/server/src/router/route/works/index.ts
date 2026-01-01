@@ -117,6 +117,7 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
       data: works
     });
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

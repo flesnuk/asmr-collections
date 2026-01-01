@@ -84,6 +84,7 @@ infoApp.get('/info/:id', async c => {
 
     return c.json(data);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

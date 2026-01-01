@@ -33,6 +33,7 @@ fieldApp.get('/:field', async c => {
 
     return Array.isArray(data.at(0)) ? c.json(data.flat()) : c.json(data);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

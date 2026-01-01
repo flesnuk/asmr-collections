@@ -43,6 +43,7 @@ export const subtitlesApp = new Hono()
 
       return c.json(subtitles);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -105,6 +106,7 @@ export const subtitlesApp = new Hono()
       if (e?.code === 'P2025')
         return c.json(formatMessage('字幕不存在'), 404);
 
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   });

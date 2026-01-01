@@ -53,6 +53,7 @@ similarApp.get('/similar/:id', zValidator('query', schema), async c => {
     if (e instanceof HTTPError)
       return c.json(formatError(e), e.status);
 
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

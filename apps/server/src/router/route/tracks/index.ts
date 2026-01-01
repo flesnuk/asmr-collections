@@ -77,6 +77,7 @@ tracksApp.get('/:id', zValidator('query', schema), async c => {
     if (e instanceof HTTPError)
       return c.json(formatError(e), e.status);
 
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });
@@ -94,6 +95,7 @@ tracksApp.post('/:id/cache/clear', zValidator('query', schemaClearCache), async 
     await clearTracksCache(`asmrone-tracks-${id}-${encodeURIComponent(api)}`);
     return c.json(formatMessage(`${id} 缓存已清除`));
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

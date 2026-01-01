@@ -17,6 +17,7 @@ deleteApp.delete('/delete/:id', async c => {
     await prisma.work.delete({ where: { id } });
     return c.json(formatMessage('删除成功'));
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

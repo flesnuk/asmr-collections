@@ -35,7 +35,7 @@ const sqliteCache = IS_WORKERS
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cachified types
       return bunSqliteCacheAdapter<any>({ database, tableName: TABLE_NAME });
     } catch (e) {
-      console.error('[Cache] Failed to initialize bun:sqlite cache adapter:', e);
+      console.error('[Cache] Failed to initialize bun:sqlite cache adapter', e);
       return null;
     }
   })();

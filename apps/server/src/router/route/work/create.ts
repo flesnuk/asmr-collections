@@ -31,6 +31,7 @@ createApp.post('/create/:id', async c => {
     if (await findwork(id))
       return c.json(formatMessage('作品已收藏'), 400);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 
@@ -43,14 +44,14 @@ createApp.post('/create/:id', async c => {
     else if (e instanceof Error)
       embeddingError = new HTTPError(e.message, 500);
 
-    console.error(`${id} 生成向量失败:`, e);
+    console.error(`${id} 生成向量失败`, e);
   }
 
   try {
     const coverPath = await saveCoverImage(data.image_main, id);
     data.image_main = coverPath ?? data.image_main;
   } catch (e) {
-    console.error('保存 cover 图片失败:', e);
+    console.error('保存 cover 图片失败', e);
   }
 
   const prisma = getPrisma();
@@ -68,6 +69,7 @@ createApp.post('/create/:id', async c => {
 
     return c.json(formatMessage(errorText, work));
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

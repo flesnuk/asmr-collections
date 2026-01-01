@@ -44,6 +44,7 @@ workApp.get('/:id', async c => {
 
     return c.json(work);
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

@@ -7,6 +7,7 @@ import { etag } from 'hono/etag';
 import { logger } from 'hono/logger';
 import { serveStatic } from 'hono/bun';
 import { compress } from 'hono/compress';
+import { formatISO } from '@asmr-collections/shared';
 
 import { api } from './router';
 import { mediaApp } from './router/media';
@@ -17,7 +18,7 @@ const CLIENT_DIST = process.env.DIST_PATH || path.resolve(import.meta.dirname, '
 
 export const app = new Hono();
 
-app.use(logger());
+app.use(logger((msg, ...rest) => console.log(`[${formatISO(new Date())}] ${msg}`, ...rest)));
 app.use(compress());
 
 app.route('/api', api);

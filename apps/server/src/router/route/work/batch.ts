@@ -48,6 +48,7 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
 
       return c.json({ targetIds });
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   }
@@ -162,7 +163,7 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
             embedding = await generateEmbedding(data);
           } catch (e) {
             const message = (e instanceof Error) ? e.message : '未知错误';
-            console.error(`${id} 生成向量失败:`, message);
+            console.error(`${id} 生成向量失败`, message);
             await sendEvent('log', { type: 'warning', message: `${id} 生成向量失败` });
           }
 
@@ -170,7 +171,7 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
             const coverPath = await saveCoverImage(data.image_main, id);
             if (coverPath) data.image_main = coverPath;
           } catch (e) {
-            console.error('保存 cover 图片失败：', e);
+            console.error('保存 cover 图片失败', e);
             await sendEvent('log', { type: 'warning', message: `${id} 封面保存失败` });
           }
 
@@ -187,7 +188,7 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
             await sendProgress();
             await sendEvent('log', { type: 'info', message: `${id} 创建成功` });
           } catch (e) {
-            console.error(`创建 ${id} 失败:`, e);
+            console.error(`创建 ${id} 失败`, e);
             result.failed.push({ id, error: e instanceof Error ? e.message : '未知错误' });
 
             currentStep += 1;
@@ -208,7 +209,7 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
       await sendEvent('log', { type: 'info', message: `所有批次处理完成：成功: ${result.success.length}，失败：${result.failed.length}` });
       await sendEvent('end', { message: '批量创建完成', stats: result });
     } catch (e) {
-      console.error('批量创建失败：', e);
+      console.error('批量创建失败', e);
 
       const message = e instanceof Error ? e.message : '未知错误';
       await sendEvent('log', { type: 'error', message: `批量创建失败：${message}` });
@@ -304,7 +305,7 @@ batchApp.get('/batch/update', c => {
             const coverPath = await saveCoverImage(data.image_main, id);
             if (coverPath) data.image_main = coverPath;
           } catch (e) {
-            console.error('保存 cover 图片失败：', e);
+            console.error('保存 cover 图片失败', e);
             await sendEvent('log', { type: 'warning', message: `${id} 封面保存失败` });
           }
 
@@ -316,7 +317,7 @@ batchApp.get('/batch/update', c => {
             await sendProgress();
             await sendEvent('log', { type: 'info', message: `${id} 更新成功` });
           } catch (e) {
-            console.error(`更新 ${id} 失败:`, e);
+            console.error(`更新 ${id} 失败`, e);
             result.failed.push({ id, error: e instanceof Error ? e.message : '未知错误' });
 
             currentStep += 1;
@@ -337,7 +338,7 @@ batchApp.get('/batch/update', c => {
       await sendEvent('log', { type: 'info', message: `所有批次处理完成：成功: ${result.success.length}, 失败: ${result.failed.length}` });
       await sendEvent('end', { message: '批量更新完成', stats: result });
     } catch (e) {
-      console.error('批量更新失败：', e);
+      console.error('批量更新失败', e);
 
       const message = e instanceof Error ? e.message : '未知错误';
       await sendEvent('log', { type: 'error', message: `批量更新失败: ${message}` });
@@ -368,7 +369,7 @@ function createSendEvent(stream: SSEStreamingApi): BatchSendEventFn {
         data: JSON.stringify(data)
       });
     } catch (e) {
-      console.warn('SSE 写入数据失败 ：', e);
+      console.warn('SSE 写入数据失败', e);
     }
   };
 }
@@ -399,7 +400,7 @@ async function fetchValidData(
       validData.push({ id, data });
       await sendEvent('log', { type: 'info', message: `${id} 信息获取成功` });
     } catch (e) {
-      console.error(`获取 ${id} 信息失败：`, e);
+      console.error(`获取 ${id} 信息失败`, e);
       failed.push({ id, error: '网络或解析错误' });
 
       changeCurrentStep();
@@ -413,7 +414,7 @@ async function fetchValidData(
     await fetchQueue.all(fetchTasks);
   } catch (e) {
     await sendEvent('log', { type: 'error', message: `信息获取队列出错：${e instanceof Error ? e.message : '未知错误'}` });
-    console.error('信息获取队列出错：', e);
+    console.error('信息获取队列出错', e);
   }
 
   return { validData, failed };

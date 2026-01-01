@@ -15,6 +15,7 @@ export const randomApp = new Hono()
 
       return c.json(work[0]);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   });

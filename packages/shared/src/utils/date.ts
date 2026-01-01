@@ -1,6 +1,8 @@
 import { zhCN } from 'date-fns/locale';
 import { format } from 'date-fns/format';
 
+export { formatISO } from 'date-fns/formatISO';
+
 /**
  * 格式化时间单位，确保两位数显示
  * @param unit - 时间单位（小时、分钟或秒）

@@ -32,7 +32,7 @@ export class LocalStorageAdapter implements StorageAdapterBase<'local'> {
       await fs.access(config.path, fs.constants.R_OK | fs.constants.W_OK);
       return true;
     } catch (e) {
-      console.error(`本地存储检测连接失败 ${config.path}:`, e);
+      console.error(`本地存储检测连接失败 ${config.path}`, e);
       return false;
     }
   };
@@ -42,7 +42,7 @@ export class LocalStorageAdapter implements StorageAdapterBase<'local'> {
       await fs.access(this.baseDir, fs.constants.R_OK | fs.constants.W_OK);
       return true;
     } catch (e) {
-      console.error(`本地存储检测连接失败 ${this.baseDir}:`, e);
+      console.error(`本地存储检测连接失败 ${this.baseDir}`, e);
       return false;
     }
   }

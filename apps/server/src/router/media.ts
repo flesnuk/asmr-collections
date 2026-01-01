@@ -162,6 +162,7 @@ mediaApp.get('/:path{.+}', async c => {
       headers
     });
   } catch (e) {
+    console.error(e);
     return c.json(formatError(e), 500);
   }
 });

@@ -14,6 +14,7 @@ export const libraryApp = new Hono()
       const exists = await storage.exists(id);
       return c.json({ exists });
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -22,6 +23,7 @@ export const libraryApp = new Hono()
       const exists = await Bun.file(join(TRANSCODE_CACHE_PATH, 'ffmpeg')).exists();
       return c.json({ exists });
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   });

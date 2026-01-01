@@ -13,6 +13,7 @@ export const storageApp = new Hono()
       const storages = await prisma.storage.findMany({ orderBy: { priority: 'desc' } });
       return c.json(storages);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -30,6 +31,7 @@ export const storageApp = new Hono()
 
       return c.json(storage);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -51,6 +53,7 @@ export const storageApp = new Hono()
 
       return c.json(storage, 201);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -79,6 +82,7 @@ export const storageApp = new Hono()
 
       return c.json(updated);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   })
@@ -102,6 +106,7 @@ export const storageApp = new Hono()
 
       return c.json(formatMessage(`${storage.name} 已删除`));
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   });

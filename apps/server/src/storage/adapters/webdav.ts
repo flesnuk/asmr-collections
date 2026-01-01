@@ -41,7 +41,7 @@ export class WebDAVStorageAdapter implements StorageAdapterBase<'webdav'> {
 
       return await client.exists(config.path);
     } catch (e) {
-      console.error(`WebDAV 存储检测连接失败 ${config.path}:`, e);
+      console.error(`WebDAV 存储检测连接失败 ${config.path}`, e);
       return false;
     }
   };
@@ -50,7 +50,7 @@ export class WebDAVStorageAdapter implements StorageAdapterBase<'webdav'> {
     try {
       return await this.client.exists(this.config.path);
     } catch (e) {
-      console.error(`WebDAV 存储检测连接失败 ${this.config.path}:`, e);
+      console.error(`WebDAV 存储检测连接失败 ${this.config.path}`, e);
       return false;
     }
   }

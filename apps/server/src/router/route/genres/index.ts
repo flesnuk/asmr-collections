@@ -40,6 +40,7 @@ export const genresApp = new Hono()
 
       return c.body(null, 200);
     } catch (e) {
+      console.error(e);
       return c.json(formatError(e), 500);
     }
   });
