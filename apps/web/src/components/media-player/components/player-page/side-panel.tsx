@@ -1,5 +1,6 @@
 import { ScrollArea } from '~/components/ui/scroll-area';
 
+import { Similar } from './similar';
 import { Playlist } from './playlist';
 import { Subtitles } from './subtitles';
 
@@ -55,7 +56,7 @@ export function PlayerSidePanel({ activeTab = 'playlist', onTabChange, className
           <Subtitles scrollAreaRef={scrollAreaRef} />
         </TabsContent>
         <TabsContent value="similar">
-          <div className="p-4 text-sm">相似推荐内容</div>
+          <Similar />
         </TabsContent>
       </ScrollArea>
     </Tabs>
