@@ -107,7 +107,6 @@ export function PipCaptions() {
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.15 }}
           style={{
-            fontFamily: 'HarmonyOS Sans, sans-serif',
             textAlign: 'center',
             fontSize: 'clamp(14px, 5vw, 50px)',
             fontWeight: 600,
