@@ -61,6 +61,13 @@ export function WorkInput(props: WorkInputProps) {
         onChange={e => onValueChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        onKeyDown={e => {
+          if (rest.onKeyDown)
+            rest.onKeyDown(e);
+
+          if (e.key === 'Escape')
+            e.currentTarget.blur();
+        }}
       />
       {isLoading && (
         <InputGroupAddon>
