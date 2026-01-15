@@ -103,10 +103,24 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
       };
     });
 
-    if (work.exists)
-      updatePlayback({ id: work.id, track: prepareTracks(currentTrack), tracks: prepareTracks(tracks), incrementCount: true });
+    if (work.exists) {
+      // 仅第一次播放时增加播放次数
+      const incrementCount = mediaState.work?.id !== work.id;
+      updatePlayback({
+        id: work.id,
+        track: prepareTracks(currentTrack),
+        tracks: prepareTracks(tracks), incrementCount
+      });
+    }
 
-    setMediaState({ work, open: true, allSubtitles, tracks, currentTrack });
+    setMediaState(state => {
+      if (state.work?.id !== work.id)
+        return { work, open: true, allSubtitles, tracks, currentTrack };
+
+      return produce(state, draft => {
+        draft.currentTrack = currentTrack;
+      });
+    });
   };
 
   const enqueueTrack = (track: Track) => {
