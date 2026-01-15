@@ -19,7 +19,7 @@ export function Similar() {
   const { data } = useSimilar(id, true);
 
   return (
-    <ItemGroup className="mt-4 pr-4">
+    <ItemGroup className="mt-4">
       {data?.map(item => (
         <Item key={item.id} variant="outline" className="p-0 gap-2">
           <ItemHeader>

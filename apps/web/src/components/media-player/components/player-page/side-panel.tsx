@@ -44,7 +44,11 @@ export function PlayerSidePanel({ activeTab = 'playlist', onTabChange, className
       ]}
     >
       <ScrollArea
-        className={cn('h-110 max-sm:h-[calc(100dvh-10rem)] touch-auto', classNames?.scrollArea)}
+        className={cn(
+          'h-110 max-sm:h-[calc(100dvh-10rem)] touch-auto',
+          '*:data-[slot=scroll-area-scrollbar]:-mr-4',
+          classNames?.scrollArea
+        )}
         ref={scrollAreaRef}
         overscrollBehavior="contain"
         type="auto"
