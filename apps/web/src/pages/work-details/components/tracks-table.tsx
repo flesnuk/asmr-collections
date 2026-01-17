@@ -119,6 +119,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
 
       return produce(state, draft => {
         draft.currentTrack = currentTrack;
+        draft.tracks = tracks;
       });
     });
   };
