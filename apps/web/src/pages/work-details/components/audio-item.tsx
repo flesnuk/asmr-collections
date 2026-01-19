@@ -7,13 +7,13 @@ import { formatDuration } from '@asmr-collections/shared';
 import type { Track } from '@asmr-collections/shared';
 
 interface AudioItemProps {
-  existCurrentTrack?: boolean
   track: Track
   onPlay: () => void
   enqueueTrack: (track: Track) => void
+  disableEnqueue: boolean
 }
 
-export function AudioItem({ existCurrentTrack, track, onPlay, enqueueTrack }: AudioItemProps) {
+export function AudioItem({ disableEnqueue, track, onPlay, enqueueTrack }: AudioItemProps) {
   return (
     <ContextMenu>
       <ContextMenuTrigger className="flex items-center py-1 w-full cursor-pointer select-none" onClick={onPlay} title={track.title}>
@@ -27,7 +27,7 @@ export function AudioItem({ existCurrentTrack, track, onPlay, enqueueTrack }: Au
         <ContextMenuLabel>操作</ContextMenuLabel>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={onPlay}>播放</ContextMenuItem>
-        <ContextMenuItem disabled={!existCurrentTrack} onClick={() => enqueueTrack(track)}>添加到播放列表</ContextMenuItem>
+        <ContextMenuItem disabled={disableEnqueue} onClick={() => enqueueTrack(track)}>添加到播放列表</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   );

@@ -13,12 +13,14 @@ import { throttle } from '@asmr-collections/shared';
 import { useMediaSrc } from './hooks/use-media-src';
 import { usePrefetchNext } from './hooks/use-prefetch-next';
 
-import { prepareTracks, usePlayback } from '~/hooks/use-playback';
 import { mediaStateAtom } from '~/hooks/use-media-state';
+import { settingOptionsAtom } from '~/hooks/use-setting-options';
+import { prepareTracks, usePlayback } from '~/hooks/use-playback';
 
 import { fetchTextTrackContent } from './utils';
 
 const openAtom = focusAtom(mediaStateAtom, optic => optic.prop('open'));
+const qualityAtom = focusAtom(settingOptionsAtom, optic => optic.prop('asmrone').prop('quality'));
 
 export function MediaPlayer() {
   const open = useAtomValue(openAtom);
@@ -32,20 +34,27 @@ function MediaPlayerInstance() {
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
   const { trigger: updatePlayback } = usePlayback();
 
-  const { mediaSrc, isTranscoded } = useMediaSrc(mediaState.currentTrack?.mediaStreamUrl);
+  const currentTrack = mediaState.currentTrack;
+
+  const quality = useAtomValue(qualityAtom);
+  const url = quality === 'high'
+    ? currentTrack?.mediaStreamUrl
+    : (currentTrack?.streamLowQualityUrl || currentTrack?.mediaStreamUrl);
+
+  const { mediaSrc, isTranscoded } = useMediaSrc(url);
 
   const nextTrack = useMemo(() => {
-    const currentIndex = mediaState.tracks?.findIndex(track => track.title === mediaState.currentTrack?.title);
+    const currentIndex = mediaState.tracks?.findIndex(track => track.title === currentTrack?.title);
     if (currentIndex === undefined || currentIndex === -1) return null;
 
     const nextIndex = currentIndex + 1;
     return mediaState.tracks?.at(nextIndex) || null;
-  }, [mediaState.currentTrack?.title, mediaState.tracks]);
+  }, [currentTrack?.title, mediaState.tracks]);
 
   const { triggerPrefetch } = usePrefetchNext(nextTrack?.mediaStreamUrl);
 
   const changeTrack = useCallback((next = false) => {
-    const currentIndex = mediaState.tracks?.findIndex(track => track.title === mediaState.currentTrack?.title);
+    const currentIndex = mediaState.tracks?.findIndex(track => track.title === currentTrack?.title);
     // index is 0
     if (currentIndex === undefined || currentIndex === -1) return;
 
@@ -54,13 +63,12 @@ function MediaPlayerInstance() {
 
     if (!nextTrack || nextIndex < 0) return;
     setMediaState(prev => ({ ...prev, currentTrack: nextTrack }));
-  }, [mediaState.currentTrack?.title, mediaState.tracks, setMediaState]);
+  }, [currentTrack?.title, mediaState.tracks, setMediaState]);
 
   const onLoadStart = useCallback(async (e: MediaPlayingEvent) => {
     // 清理已存在的字幕轨道
     e.target.textTracks.clear();
 
-    const currentTrack = mediaState.currentTrack;
     const subtitles = currentTrack?.subtitles;
 
     const src = subtitles?.url;
@@ -81,23 +89,23 @@ function MediaPlayerInstance() {
 
     e.target.textTracks.add(track);
     track.setMode('showing');
-  }, [mediaState.currentTrack]);
+  }, [currentTrack]);
 
   const onLoadedData = useCallback((e: MediaLoadedDataEvent) => {
-    if (mediaState.currentTrack?.position)
-      e.target.currentTime = mediaState.currentTrack.position;
-  }, [mediaState.currentTrack]);
+    if (currentTrack?.position)
+      e.target.currentTime = currentTrack.position;
+  }, [currentTrack]);
 
   const updatePlaybackFn = useCallback((currentTime: number, force = false) => {
     // 作品未收藏时不更新播放进度
     if (
       !mediaState.work
       || !mediaState.work.exists
-      || !mediaState.currentTrack
+      || !currentTrack
     ) return;
 
     const id = mediaState.work.id;
-    const track = mediaState.currentTrack;
+    const track = currentTrack;
     const tracks = mediaState.tracks;
 
     const position = Math.floor(currentTime);
@@ -105,7 +113,7 @@ function MediaPlayerInstance() {
     if (position === 0 && !force) return;
 
     updatePlayback({ id, track: prepareTracks(track), tracks: prepareTracks(tracks), position });
-  }, [mediaState.currentTrack, mediaState.tracks, mediaState.work, updatePlayback]);
+  }, [currentTrack, mediaState.tracks, mediaState.work, updatePlayback]);
 
   const throttledUpdatePlayback = useMemo(() => throttle(updatePlaybackFn, 10000), [updatePlaybackFn]);
 
@@ -136,11 +144,9 @@ function MediaPlayerInstance() {
   const updateMediaMetadata = useCallback(() => {
     if (
       !('mediaSession' in navigator)
-      || !mediaState.currentTrack
+      || !currentTrack
       || !mediaState.work
     ) return;
-
-    const currentTrack = mediaState.currentTrack;
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title: currentTrack.title,
@@ -153,7 +159,7 @@ function MediaPlayerInstance() {
 
     navigator.mediaSession.setActionHandler('previoustrack', () => changeTrack());
     navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(true));
-  }, [changeTrack, mediaState.currentTrack, mediaState.work]);
+  }, [changeTrack, currentTrack, mediaState.work]);
 
   return createPortal(
     <div className="relative h-15 max-sm:z-10">

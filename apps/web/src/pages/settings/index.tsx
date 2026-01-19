@@ -17,6 +17,7 @@ import { TranscodeSettings } from './components/transcode';
 import { StorageSkeleton } from './components/storage-skeleton';
 import { ASMRONEAPISettings } from './components/asmr-one-server';
 import { SmartPathSettings } from './components/smart-path-settings';
+import { ASMRONEQualitySettings } from './components/asmr-one-quality';
 
 const URLS = [
   { name: 'ASMR.ONE', url: 'https://asmr.one' },
@@ -59,6 +60,13 @@ function Settings() {
       >
         优先使用 ASMR.ONE 音声库
       </SettingItem>
+
+      <ASMRONEQualitySettings
+        value={options.asmrone.quality}
+        onChange={value => setOptions(d => {
+          d.asmrone.quality = value;
+        })}
+      />
 
       <ASMRONEAPISettings
         value={options.asmrone.api}

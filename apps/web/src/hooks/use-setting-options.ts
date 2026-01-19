@@ -10,6 +10,7 @@ export interface SettingOptions {
   asmrone: {
     api: string
     priority: boolean
+    quality: 'high' | 'low'
     recommender: boolean
   }
   storage: {
@@ -31,6 +32,7 @@ const DEFAULT_SETTINGS: SettingOptions = {
   asmrone: {
     api: 'https://api.asmr.one',
     priority: false,
+    quality: 'high',
     recommender: false
   },
   showWorkDetail: true,

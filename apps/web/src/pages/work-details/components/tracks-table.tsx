@@ -212,6 +212,9 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
 
                 const mediaType = item.type === 'text' ? 'text' : (isVideo ? 'video' : 'audio');
 
+                const disableEnqueue = !mediaState.currentTrack || !!mediaState.tracks
+                  ?.find(track => track.mediaDownloadUrl === item.mediaDownloadUrl);
+
                 return (
                   <TableRow
                     key={item.title}
@@ -240,10 +243,10 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
                           ))
                           .with('audio', () => (
                             <AudioItem
-                              existCurrentTrack={!!mediaState.currentTrack}
                               track={item}
                               onPlay={() => handlePlay(item)}
                               enqueueTrack={() => enqueueTrack(item)}
+                              disableEnqueue={disableEnqueue}
                             />
                           ))
                           .exhaustive()
