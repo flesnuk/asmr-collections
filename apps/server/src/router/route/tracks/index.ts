@@ -132,6 +132,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
         const item: Track = {
           type: ft,
           title: file.name,
+          hash: Bun.hash.rapidhash(encodePath).toString(36),
           mediaDownloadUrl: joinURL('/download', encodePath),
           mediaStreamUrl: joinURL('/stream', encodePath)
         };

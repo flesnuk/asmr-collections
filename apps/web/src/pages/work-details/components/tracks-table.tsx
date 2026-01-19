@@ -204,7 +204,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
 
             {
               groupByType?.media?.map(item => {
-                const isCurrentTrack = mediaState.currentTrack?.mediaDownloadUrl === item.mediaDownloadUrl;
+                const isCurrentTrack = mediaState.currentTrack?.hash === item.hash;
                 const videoFt = ['mp4', 'mkv', 'avi', 'mov'];
                 const isVideo = videoFt.includes(extname(item.title).toLowerCase());
 
@@ -213,7 +213,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
                 const mediaType = item.type === 'text' ? 'text' : (isVideo ? 'video' : 'audio');
 
                 const disableEnqueue = !mediaState.currentTrack || !!mediaState.tracks
-                  ?.find(track => track.mediaDownloadUrl === item.mediaDownloadUrl);
+                  ?.find(track => track.hash === item.hash);
 
                 return (
                   <TableRow
