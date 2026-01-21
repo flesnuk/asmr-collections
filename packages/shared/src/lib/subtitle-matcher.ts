@@ -176,7 +176,7 @@ export function lrcToVtt(text: string): string {
   const lines = text.split('\n');
   const vttLines = ['WEBVTT\n'];
 
-  const matchReg = /\[(\d+):(\d{2})(?:\.(\d{1,3}))?]/;
+  const matchReg = /\[(\d+):(\d{2})(?::(\d{2}))?(?:\.(\d{1,3}))?]/;
 
   // 2. 预处理：将 LRC 解析为 { totalMs, content } 结构
   const parsedLines = lines.reduce<Array<{ totalMs: number, content: string }>>((acc, line) => {
@@ -190,13 +190,16 @@ export function lrcToVtt(text: string): string {
     // 如果没有内容，也跳过
     if (!content) return acc;
 
-    const minutes = Number.parseInt(match[1], 10);
-    const seconds = Number.parseInt(match[2], 10);
-    const milliseconds = match[3]
-      ? Number.parseInt(match[3].padEnd(3, '0'), 10)
+    // 两种格式: mm:ss(.ms) 或 hh:mm:ss(.ms)。有第三段时第一段视为小时，否则视为分钟。
+    const hasHourSegment = match.at(3) !== undefined;
+    const hours = hasHourSegment ? Number.parseInt(match[1], 10) : 0;
+    const minutes = hasHourSegment ? Number.parseInt(match[2], 10) : Number.parseInt(match[1], 10);
+    const seconds = Number.parseInt(match[hasHourSegment ? 3 : 2], 10);
+    const milliseconds = match[4]
+      ? Number.parseInt(match[4].padEnd(3, '0'), 10)
       : 0;
 
-    const totalMs = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
+    const totalMs = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000 + milliseconds;
 
     // 将有效结果推入数组
     acc.push({ totalMs, content });
