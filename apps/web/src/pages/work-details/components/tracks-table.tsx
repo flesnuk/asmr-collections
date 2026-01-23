@@ -179,7 +179,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
         )
       }
 
-      <div className="mt-4 border rounded-md">
+      <div className="mt-4 border rounded-md overflow-hidden">
         <Table className="table-fixed">
           <TableBody>
             {
@@ -204,7 +204,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
 
             {
               groupByType?.media?.map(item => {
-                const isCurrentTrack = mediaState.currentTrack?.hash === item.hash;
+                const isActive = mediaState.currentTrack?.hash === item.hash;
                 const videoFt = ['mp4', 'mkv', 'avi', 'mov'];
                 const isVideo = videoFt.includes(extname(item.title).toLowerCase());
 
@@ -218,7 +218,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
                 return (
                   <TableRow
                     key={item.title}
-                    className={isCurrentTrack ? 'dark:bg-zinc-800 bg-slate-100' : ''}
+                    className={isActive ? 'dark:bg-neutral-800! bg-slate-200/80!' : ''}
                   >
                     <TableCell className="p-0 whitespace-normal h-12.5">
                       {
