@@ -81,7 +81,7 @@ export const playbackApp = new Hono()
     try {
       const prisma = getPrisma();
 
-      const playback = await prisma.playback.upsert({
+      await prisma.playback.upsert({
         where: { workId: id },
         create: {
           workId: id,
@@ -100,7 +100,7 @@ export const playbackApp = new Hono()
         }
       });
 
-      return c.json(playback);
+      return c.body(null, 200);
     } catch (e) {
       if (e instanceof Error && 'code' in e && e.code === 'P2003')
         return c.json(formatMessage('关联的作品不存在'), 404);
