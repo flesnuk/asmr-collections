@@ -71,33 +71,31 @@ function SortableItem(props: { current?: Track, track: Track, index: number, onC
   const { handleRef, ref, isDragging } = useSortable({ id: track.title, index });
 
   const isActive = current?.title === track.title;
+  const activeClass = isActive ? 'text-white' : 'text-black dark:text-white';
 
   return (
     <div
       ref={ref}
       className={cn(
-        'flex items-center justify-between px-2 py-1 text-sm mb-2 rounded-sm transition-colors',
-        'hover:bg-accent',
+        'grid grid-cols-[auto_1fr_auto] items-center',
+        'px-2 py-1 text-sm mb-2 rounded-sm transition-colors',
+        'hover:bg-accent cursor-pointer',
         isActive && 'bg-blue-500 text-white hover:bg-blue-500',
         isDragging && !isActive && 'bg-accent'
       )}
       title={track.title}
       onClick={onChange}
     >
-      <div className="flex items-center gap-1">
-        <Button
-          ref={handleRef}
-          type="button"
-          variant="link"
-          size="icon-sm"
-          className="cursor-grab"
-        >
-          <GripVerticalIcon className={isActive ? 'text-white' : 'text-black dark:text-white'} />
-        </Button>
-        <div className="max-w-54 sm:max-w-50.5 truncate cursor-pointer">
-          {track.title}
-        </div>
-      </div>
+      <Button
+        ref={handleRef}
+        type="button"
+        variant="link"
+        size="icon-sm"
+        className="cursor-grab"
+      >
+        <GripVerticalIcon className={activeClass} />
+      </Button>
+      <p className="truncate">{track.title}</p>
       <Button
         type="button"
         variant="link"
@@ -107,9 +105,8 @@ function SortableItem(props: { current?: Track, track: Track, index: number, onC
           removeTrack();
         }}
       >
-        <X className={isActive ? 'text-white' : 'text-black dark:text-white'} />
+        <X className={activeClass} />
       </Button>
     </div>
-
   );
 }
