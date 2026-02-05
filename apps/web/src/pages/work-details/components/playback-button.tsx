@@ -3,14 +3,14 @@ import { Button } from '~/components/ui/button';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import type { Playback } from '@asmr-collections/shared';
+import type { Playback, Tracks } from '@asmr-collections/shared';
 import type { Track } from '@asmr-collections/shared';
 
 interface PlaybackButtonProps {
   id: string
   currentPlayWorkId?: string
   playback: Playback | null
-  handlePlayback: (track: Track, position: number) => void
+  handlePlayback: (track: Track, externalData: { tracks: Tracks, position: number }) => void
 }
 
 export function PlaybackButton({ id, currentPlayWorkId, playback, handlePlayback }: PlaybackButtonProps) {
@@ -27,7 +27,7 @@ export function PlaybackButton({ id, currentPlayWorkId, playback, handlePlayback
         >
           <Button
             className="mb-4 bg-[#EC407A] hover:bg-[#EC407A] hover:opacity-90 text-white"
-            onClick={() => handlePlayback(playback.track, playback.position)}
+            onClick={() => handlePlayback(playback.track, playback)}
           >
             <ListVideoIcon className="mb-0.5" />
             继续上次播放

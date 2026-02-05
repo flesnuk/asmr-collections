@@ -86,16 +86,16 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
     [groupByType?.media]
   );
 
-  const handlePlay = (track: Track, position?: number) => {
+  const handlePlay = (track: Track, externalData?: { tracks: Tracks, position: number }) => {
     const currentSubtitle = subtitleMatcher.find(track.title);
 
     const currentTrack = {
       ...track,
       subtitles: currentSubtitle,
-      position
+      position: externalData?.position
     };
 
-    const tracks = filterTracks?.map(item => {
+    const tracks = externalData?.tracks ?? filterTracks?.map(item => {
       const subtitles = subtitleMatcher.find(item.title);
       return {
         ...item,
