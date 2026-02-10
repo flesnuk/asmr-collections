@@ -1,6 +1,9 @@
 import { ErrorBoundary as Boundary } from 'react-error-boundary';
 import type { FallbackProps } from 'react-error-boundary';
 
+import { match, P } from 'ts-pattern';
+import { HTTPError } from '@asmr-collections/shared';
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,11 +17,21 @@ import {
 import { Button } from '~/components/ui/button';
 
 function ErrorFallback({ error }: FallbackProps) {
-  let message = 'message' in error ? error.message : '未知错误';
-  if (error.data) {
-    message += ': ';
-    message += typeof error.data === 'object' ? Object.values(error.data).join(', ') : error.data;
-  }
+  const message = match(error)
+    .with(P.instanceOf(HTTPError), ({ message, data }) => {
+      if (data?.detail)
+        return `${message}: ${data.detail}`;
+
+      return message;
+    })
+    .with({ message: P.string, data: P._ }, ({ message, data }) => {
+      if (typeof data === 'object' && data !== null)
+        return `${message}: ${Object.values(data).join(', ')}`;
+      if (typeof data === 'string')
+        return `${message}: ${data}`;
+    })
+    .with({ message: P.string }, ({ message }) => message)
+    .otherwise(() => '未知错误');
 
   return (
     <div className="mt-24 space-y-4 px-4">
