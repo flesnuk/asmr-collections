@@ -68,6 +68,9 @@ pm2 start pnpm --name asmr-collections -- run server:build-start
 location ~ ^/api/work/batch/(create|update) {
     proxy_pass http://127.0.0.1:3000;
 
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    
     proxy_buffering off;
     proxy_read_timeout 24h;
 }
