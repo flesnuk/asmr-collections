@@ -66,11 +66,14 @@ async function getSimilar(id: string) {
   const prisma = getPrisma();
 
   const similarIds = await prisma.$queryRaw<Array<{ id: string }>>`
+    WITH target AS (
+      SELECT embedding FROM "Work" WHERE id = ${id}
+    )
     SELECT w.id
-    FROM "Work" w
-    JOIN "Work" target ON target.id = ${id}
+    FROM "Work" w, target
     WHERE w.embedding IS NOT NULL
       AND w.id != ${id}
+      AND target.embedding IS NOT NULL
     ORDER BY w.embedding <=> target.embedding
     LIMIT 10
   `;
