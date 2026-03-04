@@ -1,12 +1,13 @@
 import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table';
 
-import { FileImage, FileText, FolderClosed } from 'lucide-react';
+import { FileImage, FileText } from 'lucide-react';
 
 import { Link } from '~/components/link';
 import { FolderBreadcrumb } from '~/components/breadcrumb/folder-breadcrumb';
 
 import { VideoItem } from './video-item';
 import { AudioItem } from './audio-item';
+import { FolderItem } from './folder-item';
 import { PlaybackButton } from './playback-button';
 
 import { useAtom } from 'jotai';
@@ -125,7 +126,7 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
   };
 
   const enqueueTrack = (track: Track) => {
-    if (mediaState.tracks?.find(item => item.title === track.title)) return;
+    if (mediaState.tracks?.some(item => item.title === track.title)) return;
 
     const subtitles = subtitleMatcher.find(track.title);
     setMediaState(state => produce(state, draft => {
@@ -133,6 +134,25 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
         ...track,
         subtitles
       });
+    }));
+  };
+
+  // 添加目录中的音频至播放列表
+  const enqueueTracks = (target: Tracks | undefined) => {
+    if (!target) return;
+
+    const newTracks = target.reduce<Tracks>((acc, item) => {
+      if (item.type === 'audio' && !mediaState.tracks?.some(track => track.title === item.title)) {
+        const subtitles = subtitleMatcher.find(item.title);
+        acc.push({ ...item, subtitles });
+      }
+      return acc;
+    }, []);
+
+    if (newTracks.length === 0) return;
+
+    setMediaState(state => produce(state, draft => {
+      draft.tracks?.push(...newTracks);
     }));
   };
 
@@ -183,23 +203,17 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
         <Table className="table-fixed">
           <TableBody>
             {
-              groupByType?.folder?.map(item => (
-                <TableRow key={item.title}>
-                  <TableCell className="p-0 whitespace-normal h-12.5">
-                    <Link
-                      from="/work-details/$id"
-                      search={{ path: (searchPath ?? []).concat(item.title) }}
-                      className="flex items-center py-1"
-                    >
-                      <FolderClosed className="min-size-8 mx-4" color="#56CBFC" />
-                      <div>
-                        <p className="line-clamp-2">{item.title}</p>
-                        <small className="opacity-70">{item.children?.length ?? 0} 项目</small>
-                      </div>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))
+              groupByType?.folder?.map(item => {
+                const disabled =
+                  item.children?.filter(child => child.type === 'audio').length === 0 || !mediaState.currentTrack;
+                return (
+                  <TableRow key={item.title}>
+                    <TableCell className="p-0 whitespace-normal h-12.5">
+                      <FolderItem searchPath={searchPath} track={item} enqueueTracks={enqueueTracks} disabled={disabled} />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             }
 
             {
