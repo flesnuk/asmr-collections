@@ -67,3 +67,13 @@ export type Playback = Prisma.PlaybackModel
  * 
  */
 export type Storage = Prisma.StorageModel
+/**
+ * Model Playlist
+ * 
+ */
+export type Playlist = Prisma.PlaylistModel
+/**
+ * Model PlaylistWork
+ * 
+ */
+export type PlaylistWork = Prisma.PlaylistWorkModel

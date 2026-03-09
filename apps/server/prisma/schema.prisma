@@ -49,6 +49,7 @@ model Work {
   releaseDate      DateTime
   createdAt        DateTime                     @default(now())
   updatedAt        DateTime                     @updatedAt
+  playlistWorks    PlaylistWork[]
 }
 
 model Circle {
@@ -124,4 +125,27 @@ model Storage {
   updatedAt   DateTime @updatedAt
 
   @@index([priority])
+}
+
+model Playlist {
+  id        String         @id @default(uuid()) @db.Uuid
+  name      String
+  cover     String?
+  intro     String?
+  works     PlaylistWork[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model PlaylistWork {
+  playlistId String @db.Uuid
+  workId     String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  work       Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([playlistId, workId])
+  @@index([workId])
+  @@index([playlistId])
 }

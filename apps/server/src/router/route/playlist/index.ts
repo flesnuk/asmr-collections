@@ -1,0 +1,162 @@
+import { Hono } from 'hono';
+import { PlaylistSearchQuerySchema, PlaylistUpsertSchema } from '@asmr-collections/shared';
+
+import { getPrisma } from '~/lib/db';
+import { zValidator } from '~/lib/validator';
+import { formatError, formatMessage } from '~/router/utils';
+
+export const playlistApp = new Hono()
+  .get('/', zValidator('query', PlaylistSearchQuerySchema), async c => {
+    const { page, limit } = c.req.valid('query');
+
+    try {
+      const prisma = getPrisma();
+      const [total, data] = await prisma.$transaction([
+        prisma.playlist.count(),
+        prisma.playlist.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: { updatedAt: 'desc' }
+        })
+      ]);
+
+      return c.json({ page, limit, total, data });
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .get('/:id', zValidator('query', PlaylistSearchQuerySchema), async c => {
+    const { page, limit } = c.req.valid('query');
+    const id = c.req.param('id');
+
+    try {
+      const prisma = getPrisma();
+      const playlist = await prisma.playlist.findUnique({
+        where: { id },
+        include: {
+          _count: true,
+          works: {
+            include: {
+              work: {
+                include: {
+                  circle: true,
+                  series: true,
+                  artists: true,
+                  illustrators: true,
+                  genres: true,
+                  translationInfo: true
+                }
+              }
+            },
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { createdAt: 'desc' }
+          }
+        }
+      });
+
+      if (!playlist)
+        return c.json(formatMessage('播放列表不存在'), 404);
+
+      const total = playlist._count.works;
+
+      const data = {
+        id: playlist.id,
+        name: playlist.name,
+        cover: playlist.cover,
+        intro: playlist.intro,
+        createdAt: playlist.createdAt,
+        updatedAt: playlist.updatedAt,
+        work: playlist.works.map(w => w.work)
+      };
+
+      return c.json({ page, limit, total, data });
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .post('/', zValidator('json', PlaylistUpsertSchema), async c => {
+    const { name, cover, intro } = c.req.valid('json');
+
+    try {
+      const prisma = getPrisma();
+      const playlist = await prisma.playlist.create({
+        data: { name, cover, intro }
+      });
+
+      return c.json(playlist);
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .put('/:id', zValidator('json', PlaylistUpsertSchema), async c => {
+    const id = c.req.param('id');
+    const { name, cover, intro } = c.req.valid('json');
+
+    try {
+      const prisma = getPrisma();
+      const playlist = await prisma.playlist.update({
+        where: { id },
+        data: { name, cover, intro }
+      });
+
+      return c.json(playlist);
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .put('/:id/works/:workId', async c => {
+    const { id, workId } = c.req.param();
+
+    try {
+      const prisma = getPrisma();
+      const playlistWork = await prisma.playlistWork.create({
+        data: {
+          playlistId: id,
+          workId
+        }
+      });
+
+      return c.json(playlistWork);
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .delete('/:id', async c => {
+    const id = c.req.param('id');
+
+    try {
+      const prisma = getPrisma();
+      await prisma.playlist.delete({ where: { id } });
+
+      return c.json(formatMessage('已删除播放列表'));
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  })
+  .delete('/:id/works/:workId', async c => {
+    const { id, workId } = c.req.param();
+
+    try {
+      const prisma = getPrisma();
+      await prisma.playlistWork.delete({
+        where: {
+          playlistId_workId: {
+            playlistId: id,
+            workId
+          }
+        }
+      });
+
+      return c.json(formatMessage('已从播放列表中移除'));
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  });

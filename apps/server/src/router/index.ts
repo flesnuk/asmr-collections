@@ -9,6 +9,7 @@ import { tracksApp } from './route/tracks';
 import { libraryApp } from './route/library';
 import { storageApp } from './route/storage';
 import { playbackApp } from './route/playback';
+import { playlistApp } from './route/playlist';
 import { subtitlesApp } from './route/subtitles';
 
 export const api = new Hono()
@@ -21,4 +22,5 @@ export const api = new Hono()
   .route('/library', libraryApp)
   .route('/storage', storageApp)
   .route('/playback', playbackApp)
+  .route('/playlist', playlistApp)
   .route('/subtitles', subtitlesApp);

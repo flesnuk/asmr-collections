@@ -60,7 +60,9 @@ export const ModelName = {
   SubtitlesData: 'SubtitlesData',
   TranslationInfo: 'TranslationInfo',
   Playback: 'Playback',
-  Storage: 'Storage'
+  Storage: 'Storage',
+  Playlist: 'Playlist',
+  PlaylistWork: 'PlaylistWork'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -194,6 +196,28 @@ export const StorageScalarFieldEnum = {
 } as const
 
 export type StorageScalarFieldEnum = (typeof StorageScalarFieldEnum)[keyof typeof StorageScalarFieldEnum]
+
+
+export const PlaylistScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  cover: 'cover',
+  intro: 'intro',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlaylistScalarFieldEnum = (typeof PlaylistScalarFieldEnum)[keyof typeof PlaylistScalarFieldEnum]
+
+
+export const PlaylistWorkScalarFieldEnum = {
+  playlistId: 'playlistId',
+  workId: 'workId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlaylistWorkScalarFieldEnum = (typeof PlaylistWorkScalarFieldEnum)[keyof typeof PlaylistWorkScalarFieldEnum]
 
 
 export const SortOrder = {

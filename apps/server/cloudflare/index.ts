@@ -23,9 +23,13 @@ app.route('/api', api);
 app.route('/proxy', proxyApp);
 
 // web
-const spaRoutes = ['/work-details/*', '/settings', '/playback'];
-app.on('GET', spaRoutes, c => {
-  return c.env.ASSETS.fetch(new URL('/index.html', c.req.url));
+const spaRoutes = ['/work-details', '/settings', '/playback', '/playlist'];
+app.get('*', c => {
+  const { pathname } = new URL(c.req.url);
+  if (spaRoutes.some(route => pathname.startsWith(route)))
+    return c.env.ASSETS.fetch(new URL('/index.html', c.req.url));
+
+  return c.env.ASSETS.fetch(c.req.url);
 });
 
 export default {

@@ -47,4 +47,25 @@ workApp.get('/:id', async c => {
     console.error(e);
     return c.json(formatError(e), 500);
   }
-});
+})
+  .get('/:id/playlists', async c => {
+    const { id } = c.req.param();
+
+    try {
+      const prisma = getPrisma();
+
+      const playlists = await prisma.playlist.findMany({
+        where: {
+          works: {
+            some: { workId: id }
+          }
+        },
+        orderBy: { updatedAt: 'desc' }
+      });
+
+      return c.json(playlists);
+    } catch (e) {
+      console.error(e);
+      return c.json(formatError(e), 500);
+    }
+  });
