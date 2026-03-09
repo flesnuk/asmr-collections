@@ -41,7 +41,7 @@ export function BatchAddDialog({ open, setOpen }: { open: boolean, setOpen: (ope
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <WorkInput
             initialTip="自动捕获符合格式的 ID"
             value={createIds}

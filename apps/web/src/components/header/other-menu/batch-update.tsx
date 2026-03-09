@@ -41,7 +41,7 @@ export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>进度 ({progress.current}/{progress.total})</span>

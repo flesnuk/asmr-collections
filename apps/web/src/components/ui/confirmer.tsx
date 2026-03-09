@@ -4,6 +4,7 @@ import { createCallable } from "react-call";
 
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -11,7 +12,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
 
 interface ConfirmOptions {
   title?: React.ReactNode;
@@ -19,7 +19,7 @@ interface ConfirmOptions {
   cancelText?: React.ReactNode;
   actionText?: React.ReactNode;
   CancelProps?: React.ComponentProps<typeof AlertDialogCancel>;
-  ActionProps?: React.ComponentProps<typeof Button>;
+  ActionProps?: React.ComponentProps<typeof AlertDialogAction>;
 }
 
 const defaultOptions = {
@@ -44,15 +44,15 @@ const CallableConfirm = createCallable<ConfirmOptions, ConfirmResponse>(
         <AlertDialogContent className="w-100">
           <AlertDialogHeader>
             <AlertDialogTitle>{options.title}</AlertDialogTitle>
+            <AlertDialogDescription>{options.description}</AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogDescription>{options.description}</AlertDialogDescription>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="p-2.5">
             <AlertDialogCancel {...options.CancelProps}>
               {options.cancelText}
             </AlertDialogCancel>
-            <Button {...options.ActionProps} onClick={() => call.end(true)}>
+            <AlertDialogAction {...options.ActionProps} onClick={() => call.end(true)}>
               {options.actionText}
-            </Button>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

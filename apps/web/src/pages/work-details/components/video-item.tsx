@@ -57,8 +57,8 @@ export function VideoItem({ track, tracks, work }: VideoItemProps) {
           {track.duration ? <small className="opacity-70">{formatDuration(track.duration)}</small> : null}
         </div>
       </DialogTrigger>
-      <DialogContent className="p-2" onInteractOutside={e => e.preventDefault()}>
-        <DialogTitle className="text-md truncate w-[60%]" title={currentTrack.title}>
+      <DialogContent className="sm:max-w-lg" onInteractOutside={e => e.preventDefault()}>
+        <DialogTitle className="text-base truncate w-8/9" title={currentTrack.title}>
           {currentTrack.title}
         </DialogTitle>
         <DialogDescription className="sr-only">
@@ -67,7 +67,7 @@ export function VideoItem({ track, tracks, work }: VideoItemProps) {
         <video
           controls
           src={currentTrack.mediaDownloadUrl}
-          className="rounded-sm min-w-full min-h-40 sm:min-h-70"
+          className="rounded-sm w-full h-auto block"
           onCanPlay={updateMediaMetadata}
         />
         <DialogFooter className="gap-3">
