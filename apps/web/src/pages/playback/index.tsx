@@ -6,9 +6,9 @@ import { createLazyRoute, useSearch } from '@tanstack/react-router';
 import { ItemGroup } from '~/components/ui/item';
 
 import { Pagination } from '~/components/pagination';
+import { PrefetchSWR } from '~/components/prefetch-swr';
 import { PlaybackSkeleton } from './components/skeleton';
 import { PlaybackItem } from './components/playback-item';
-import { PrefetchNextPlayback } from './components/prefetch-next';
 
 import { notifyError } from '~/utils';
 import { withQuery } from '@asmr-collections/shared';
@@ -60,7 +60,7 @@ function Playback() {
         </AnimatePresence>
       </ItemGroup>
       <Pagination total={data.total} current={search.page} limit={search.limit} />
-      <PrefetchNextPlayback swrKey={nextSWRKey} />
+      <PrefetchSWR swrKey={nextSWRKey} />
     </motion.div>
   );
 }
