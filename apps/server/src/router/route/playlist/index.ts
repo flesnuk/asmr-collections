@@ -65,7 +65,7 @@ export const playlistApp = new Hono()
         id: playlist.id,
         name: playlist.name,
         cover: playlist.cover,
-        intro: playlist.intro,
+        description: playlist.description,
         createdAt: playlist.createdAt,
         updatedAt: playlist.updatedAt,
         work: playlist.works.map(w => w.work)
@@ -78,12 +78,12 @@ export const playlistApp = new Hono()
     }
   })
   .post('/', zValidator('json', PlaylistUpsertSchema), async c => {
-    const { name, cover, intro } = c.req.valid('json');
+    const { name, cover, description } = c.req.valid('json');
 
     try {
       const prisma = getPrisma();
       const playlist = await prisma.playlist.create({
-        data: { name, cover, intro }
+        data: { name, cover, description }
       });
 
       return c.json(playlist);
@@ -94,13 +94,13 @@ export const playlistApp = new Hono()
   })
   .put('/:id', zValidator('json', PlaylistUpsertSchema), async c => {
     const id = c.req.param('id');
-    const { name, cover, intro } = c.req.valid('json');
+    const { name, cover, description } = c.req.valid('json');
 
     try {
       const prisma = getPrisma();
       const playlist = await prisma.playlist.update({
         where: { id },
-        data: { name, cover, intro }
+        data: { name, cover, description }
       });
 
       return c.json(playlist);

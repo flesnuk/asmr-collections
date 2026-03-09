@@ -3,7 +3,7 @@ CREATE TABLE "Playlist" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "cover" TEXT,
-    "intro" TEXT,
+    "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

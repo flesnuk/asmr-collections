@@ -7,7 +7,7 @@ export interface ServerPlaylist {
   createdAt: Date
   updatedAt: Date
   cover: string | null
-  intro: string | null
+  description: string | null
 
   /**
    * The work only in `/:id` endpoint

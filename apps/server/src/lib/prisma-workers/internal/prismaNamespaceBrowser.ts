@@ -202,7 +202,7 @@ export const PlaylistScalarFieldEnum = {
   id: 'id',
   name: 'name',
   cover: 'cover',
-  intro: 'intro',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
