@@ -115,11 +115,26 @@ export const playlistApp = new Hono()
     try {
       const prisma = getPrisma();
       const playlistWork = await prisma.playlistWork.create({
+        include: {
+          playlist: {
+            select: { cover: true }
+          },
+          work: {
+            select: { cover: true }
+          }
+        },
         data: {
           playlistId: id,
           workId
         }
       });
+
+      if (!playlistWork.playlist.cover) {
+        await prisma.playlist.update({
+          where: { id },
+          data: { cover: playlistWork.work.cover }
+        });
+      }
 
       return c.json(playlistWork);
     } catch (e) {
