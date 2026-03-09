@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { IndexBaseSearchSchema, PlaybackBaseSearchSchema, RootBaseSearchSchema, WorkDetailsBaseSearchSchema } from '@asmr-collections/shared';
+import { IndexBaseSearchSchema, PlaybackBaseSearchSchema, PlaylistBaseSearchSchema, RootBaseSearchSchema, WorkDetailsBaseSearchSchema } from '@asmr-collections/shared';
 
 import { getStoredValue } from './utils';
 import { ROOT_DEFAULT_SEARCH_VALUES } from '@asmr-collections/shared';
@@ -17,3 +17,5 @@ export const IndexSearchSchema = IndexBaseSearchSchema;
 export const WorkDetailsSearchSchema = WorkDetailsBaseSearchSchema;
 
 export const PlaybackSearchSchema = PlaybackBaseSearchSchema;
+
+export const PlaylistSearchSchema = PlaylistBaseSearchSchema;

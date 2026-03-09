@@ -48,6 +48,9 @@ export function WorkDetailsMenu() {
           <DropdownMenuItem onClick={() => navigate({ to: '/playback' })}>
             播放记录
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate({ to: '/playlists' })}>
+            播放列表
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate({ to: '/settings' })}>
             设置
             <DropdownMenuShortcut>⌘,</DropdownMenuShortcut>

@@ -25,3 +25,7 @@ export function mutateTracks(id: string) {
 export function mutateSimilar(id: string) {
   return mutate(mutateKey(`/api/work/similar/${id}`));
 };
+
+export function mutatePlaylists() {
+  return mutate(mutateKey('/api/playlist'));
+}

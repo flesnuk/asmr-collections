@@ -16,7 +16,7 @@ import RootLayout from '~/layout';
 import { NotFound } from '~/components/not-found';
 
 import { preloadWorkDetails } from './preload';
-import { RootSearchSchema, IndexSearchSchema, PlaybackSearchSchema, WorkDetailsSearchSchema } from './schemas';
+import { RootSearchSchema, IndexSearchSchema, PlaybackSearchSchema, WorkDetailsSearchSchema, PlaylistSearchSchema } from './schemas';
 
 import { INDEX_DEFAULT_SEARCH_VALUES, ROOT_DEFAULT_SEARCH_VALUES } from '@asmr-collections/shared';
 
@@ -82,12 +82,32 @@ const PlaybackRoute = createRoute({
   }
 }).lazy(() => import('~/pages/playback').then(d => d.default));
 
+const PlaylistsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/playlists',
+  validateSearch: PlaylistSearchSchema,
+  search: {
+    middlewares: [stripSearchParams(INDEX_DEFAULT_SEARCH_VALUES)]
+  }
+}).lazy(() => import('~/pages/playlists').then(d => d.default));
+
+const PlaylistRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/playlists/$id',
+  validateSearch: PlaylistSearchSchema,
+  search: {
+    middlewares: [stripSearchParams(INDEX_DEFAULT_SEARCH_VALUES)]
+  }
+}).lazy(() => import('~/pages/playlists/playlist').then(d => d.default));
+
 const router = createRouter({
   routeTree: rootRoute.addChildren([
     indexRoute,
     workDetailsRoute,
     SettingsRoute,
-    PlaybackRoute
+    PlaybackRoute,
+    PlaylistsRoute,
+    PlaylistRoute
   ]),
   defaultNotFoundComponent: NotFound,
   defaultPreload: 'intent',

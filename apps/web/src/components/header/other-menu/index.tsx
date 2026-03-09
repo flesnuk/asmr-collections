@@ -72,6 +72,9 @@ export function OtherMenu() {
           <MenubarItem onClick={() => navigate({ to: '/playback' })}>
             播放记录
           </MenubarItem>
+          <MenubarItem onClick={() => navigate({ to: '/playlists' })}>
+            播放列表
+          </MenubarItem>
           <MenubarItem onClick={() => navigate({ to: '/settings' })}>
             设置
             <MenubarShortcut>⌘,</MenubarShortcut>

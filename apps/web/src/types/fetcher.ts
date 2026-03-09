@@ -4,7 +4,7 @@ export type WorkAPI =
   | 'work/update/:id'
   | 'work/delete/:id'
   | 'work/info/:id'
-  | 'work/:id'
+  | 'work/:id' | 'work/:id/playlists'
   | 'work/similar/:id'
   | 'work/batch/create' | 'work/batch/update';
 
@@ -19,6 +19,8 @@ export type LibraryAPI =
   | 'library/ffmpeg';
 export type SubtitlesAPI =
   | 'subtitles/:id';
+export type PlaylistAPI =
+  | 'playlist/:id';
 
 export type FetcherKey =
   | `${Base}/${WorkAPI}`
@@ -27,4 +29,5 @@ export type FetcherKey =
   | `${Base}/${GenresAPI}`
   | `${Base}/${TracksAPI}`
   | `${Base}/${LibraryAPI}`
+  | `${Base}/${PlaylistAPI}`
   | (string & {});
