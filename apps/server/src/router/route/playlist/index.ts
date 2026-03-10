@@ -138,6 +138,12 @@ export const playlistApp = new Hono()
 
       return c.json(playlistWork);
     } catch (e) {
+      if (e instanceof Error && 'code' in e && e.code === 'P2003')
+        return c.json(formatError('关联的播放列表或作品不存在'), 404);
+
+      if (e instanceof Error && 'code' in e && e.code === 'P2002')
+        return c.json(formatError('该作品已在播放列表中'), 409);
+
       console.error(e);
       return c.json(formatError(e), 500);
     }
