@@ -55,9 +55,9 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
       return logger.error(validationData.error);
     }
 
-    const { validIds, isEmpty } = validationData.data.works;
+    const { validIds, isValid } = validationData.data.works;
 
-    const desc = isEmpty ? undefined : `尝试导入 ${validIds.length} 个作品`;
+    const desc = isValid ? `尝试导入 ${validIds.length} 个作品` : undefined;
 
     if (isEdit) {
       if (!playlist) {
@@ -144,7 +144,7 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
             </Field>
             <Field>
               <FieldLabel htmlFor="playlist-import">导入作品</FieldLabel>
-              <Textarea id="playlist-import" placeholder="请输入作品 ID，将自动识别导入" name="works" />
+              <Textarea className="resize-none max-h-42" id="playlist-import" placeholder="请输入作品 ID，将自动识别导入" name="works" />
             </Field>
           </FieldGroup>
         </form>

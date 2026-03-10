@@ -7,21 +7,13 @@ export interface ParsedWorkInput {
 }
 
 export function parseWorkInput(input: string | undefined): ParsedWorkInput {
-  if (!input) {
-    return {
-      isEmpty: true,
-      isValid: false,
-      validIds: []
-    };
-  }
-
   const stats: ParsedWorkInput = {
-    isEmpty: input.trim().length === 0,
+    isEmpty: !input || input.trim() === '',
     isValid: false,
     validIds: []
   };
 
-  const matches = input.match(WORK_ID_REGEX);
+  const matches = input?.match(WORK_ID_REGEX);
   if (!matches) return stats;
 
   stats.validIds = Array.from(new Set(matches.map(id => id.toUpperCase())));
