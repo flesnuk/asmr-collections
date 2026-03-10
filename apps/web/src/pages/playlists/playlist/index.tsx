@@ -4,6 +4,7 @@ import { PrefetchSWR } from '~/components/prefetch-swr';
 import { ButtonGroup } from '~/components/ui/button-group';
 import { ErrorBoundary } from '~/components/error-boundary';
 
+import { PlaylistSkeleton } from '../components/skeleton';
 import { PlaylistDialog } from '../components/playlist-dialog';
 import { PlaylistDelete } from '../components/playlist-delete';
 
@@ -74,7 +75,7 @@ function PlaylistWrapper() {
   return (
     <ErrorBoundary key={id}>
       <div className="max-w-7xl mx-auto mt-4">
-        <Suspense fallback="loading">
+        <Suspense fallback={<PlaylistSkeleton />}>
           <Playlist />
         </Suspense>
       </div>

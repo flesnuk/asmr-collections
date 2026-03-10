@@ -1,7 +1,7 @@
 import { ItemGroup } from '~/components/ui/item';
 import { Pagination } from '~/components/pagination';
 import { PrefetchSWR } from '~/components/prefetch-swr';
-import { PlaylistSkeleton } from './components/skeleton';
+import { PlaylistsSkeleton } from './components/skeleton';
 import { PlaylistItem } from './components/playlist-item';
 import { PlaylistDialog } from './components/playlist-dialog';
 
@@ -72,7 +72,7 @@ function PlaylistsWrapper() {
         <h2 className="text-2xl font-medium">播放列表</h2>
         <PlaylistDialog type="create" />
       </div>
-      <Suspense fallback={<PlaylistSkeleton />}>
+      <Suspense fallback={<PlaylistsSkeleton />}>
         <Playlists />
       </Suspense>
     </div>
