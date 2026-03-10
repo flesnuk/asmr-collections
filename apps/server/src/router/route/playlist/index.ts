@@ -14,13 +14,34 @@ export const playlistApp = new Hono()
       const [total, data] = await prisma.$transaction([
         prisma.playlist.count(),
         prisma.playlist.findMany({
+          include: {
+            works: {
+              select: {
+                work: {
+                  select: {
+                    id: true
+                  }
+                }
+              }
+            }
+          },
           skip: (page - 1) * limit,
           take: limit,
           orderBy: { updatedAt: 'desc' }
         })
       ]);
 
-      return c.json({ page, limit, total, data });
+      const response = data.map(playlist => ({
+        id: playlist.id,
+        name: playlist.name,
+        cover: playlist.cover,
+        description: playlist.description,
+        createdAt: playlist.createdAt,
+        updatedAt: playlist.updatedAt,
+        works: playlist.works.map(w => w.work)
+      }));
+
+      return c.json({ page, limit, total, data: response });
     } catch (e) {
       console.error(e);
       return c.json(formatError(e), 500);
@@ -68,7 +89,7 @@ export const playlistApp = new Hono()
         description: playlist.description,
         createdAt: playlist.createdAt,
         updatedAt: playlist.updatedAt,
-        work: playlist.works.map(w => w.work)
+        works: playlist.works.map(w => w.work)
       };
 
       return c.json({ page, limit, total, data });

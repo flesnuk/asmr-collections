@@ -10,9 +10,9 @@ export interface ServerPlaylist {
   description: string | null
 
   /**
-   * The work only in `/:id` endpoint
+   * This works is only valid in the `/:id` endpoint, while the endpoint (`/`) only returns the works -> work id
    */
-  work: ServerWork
+  works: ServerWork[]
 }
 
 export type Playlist = Jsonify<ServerPlaylist>;

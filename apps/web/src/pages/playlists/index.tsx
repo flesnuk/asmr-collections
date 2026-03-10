@@ -1,6 +1,7 @@
 import { ItemGroup } from '~/components/ui/item';
 import { Pagination } from '~/components/pagination';
 import { PrefetchSWR } from '~/components/prefetch-swr';
+import { PlaylistSkeleton } from './components/skeleton';
 import { PlaylistItem } from './components/playlist-item';
 import { PlaylistDialog } from './components/playlist-dialog';
 
@@ -15,7 +16,6 @@ import { fetcher } from '~/lib/fetcher';
 import { withQuery } from '@asmr-collections/shared';
 
 import type { PlaylistsResponse } from '@asmr-collections/shared';
-import { PlaylistSkeleton } from './components/skeleton';
 
 function Playlists() {
   const search = useSearch({ from: '/playlists' });
@@ -70,7 +70,7 @@ function PlaylistsWrapper() {
     <div className="max-w-4xl mx-auto mt-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-medium">播放列表</h2>
-        <PlaylistDialog />
+        <PlaylistDialog type="create" />
       </div>
       <Suspense fallback={<PlaylistSkeleton />}>
         <Playlists />
