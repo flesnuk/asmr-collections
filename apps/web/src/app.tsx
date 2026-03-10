@@ -43,7 +43,7 @@ export default function App() {
       animate={{ opacity: 1 }}
       transition={{ duration: .2 }}
     >
-      <Works data={data} />
+      <Works data={data.data} />
       <Pagination total={data.total} current={search.page} limit={search.limit} />
 
       {/** 预渲染下一页的数据 */}
