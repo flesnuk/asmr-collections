@@ -6,8 +6,9 @@ import { useCallback, useRef, useState } from 'react';
 import { logger } from '~/lib/logger';
 import { fetcher } from '~/lib/fetcher';
 import { mutateWorks } from '~/lib/mutation';
-import { notifyError, parseWorkInput, writeClipboard } from '~/utils';
+import { notifyError, writeClipboard } from '~/utils';
 
+import { parseWorkInput } from '@asmr-collections/shared';
 import type { BatchLogType, BatchSSEData, BatchSSEEvent } from '@asmr-collections/shared';
 
 export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boolean) => void, isSync = false) {

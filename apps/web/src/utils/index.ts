@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 import type { ExternalToast } from 'sonner';
 
-import { extname, HTTPError, WORK_ID_REGEX } from '@asmr-collections/shared';
+import { extname, HTTPError } from '@asmr-collections/shared';
 
 import type { Tracks } from '@asmr-collections/shared';
 
@@ -78,24 +78,6 @@ export function findSmartPath(tracks: Tracks, patterns: string[]): string[] | un
       if (result) return result;
     }
   }
-}
-
-export function parseWorkInput(input: string) {
-  const stats = {
-    isEmpty: input.trim().length === 0,
-    isValid: false,
-    validIds: [] as string[]
-  };
-
-  if (!input) return stats;
-
-  const matches = input.match(WORK_ID_REGEX);
-  if (!matches) return stats;
-
-  stats.validIds = Array.from(new Set(matches.map(id => id.toUpperCase())));
-  stats.isValid = stats.validIds.length > 0;
-
-  return stats;
 }
 
 export const externalUrl = {

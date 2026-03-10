@@ -29,3 +29,7 @@ export function mutateSimilar(id: string) {
 export function mutatePlaylists() {
   return mutate(mutateKey('/api/playlist'));
 }
+
+export function mutatePlaylist(id: string) {
+  return mutate(mutateKey(`/api/playlist/${id}`));
+}

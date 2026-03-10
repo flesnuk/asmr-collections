@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 
-import { parseWorkInput } from '~/utils';
+import { parseWorkInput } from '@asmr-collections/shared';
 import { mutateSimilar, mutateWorks } from '~/lib/mutation';
 
 export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {

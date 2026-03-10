@@ -19,7 +19,8 @@ export const playlistApp = new Hono()
               select: {
                 work: {
                   select: {
-                    id: true
+                    id: true,
+                    cover: true
                   }
                 }
               }
@@ -34,7 +35,7 @@ export const playlistApp = new Hono()
       const response = data.map(playlist => ({
         id: playlist.id,
         name: playlist.name,
-        cover: playlist.cover,
+        cover: playlist.cover ?? playlist.works.at(-1)?.work.cover,
         description: playlist.description,
         createdAt: playlist.createdAt,
         updatedAt: playlist.updatedAt,
@@ -85,7 +86,7 @@ export const playlistApp = new Hono()
       const data = {
         id: playlist.id,
         name: playlist.name,
-        cover: playlist.cover,
+        cover: playlist.cover ?? playlist.works.at(-1)?.work.cover,
         description: playlist.description,
         createdAt: playlist.createdAt,
         updatedAt: playlist.updatedAt,
@@ -99,13 +100,23 @@ export const playlistApp = new Hono()
     }
   })
   .post('/', zValidator('json', PlaylistUpsertSchema), async c => {
-    const { name, cover, description } = c.req.valid('json');
+    const { name, cover, description, works } = c.req.valid('json');
 
     try {
       const prisma = getPrisma();
       const playlist = await prisma.playlist.create({
         data: { name, cover, description }
       });
+
+      if (works.validIds.length > 0) {
+        await prisma.playlistWork.createMany({
+          data: works.validIds.map(workId => ({
+            playlistId: playlist.id,
+            workId
+          })),
+          skipDuplicates: true
+        });
+      }
 
       return c.json(playlist);
     } catch (e) {
@@ -115,7 +126,7 @@ export const playlistApp = new Hono()
   })
   .put('/:id', zValidator('json', PlaylistUpsertSchema), async c => {
     const id = c.req.param('id');
-    const { name, cover, description } = c.req.valid('json');
+    const { name, cover, description, works } = c.req.valid('json');
 
     try {
       const prisma = getPrisma();
@@ -123,6 +134,16 @@ export const playlistApp = new Hono()
         where: { id },
         data: { name, cover, description }
       });
+
+      if (works.validIds.length > 0) {
+        await prisma.playlistWork.createMany({
+          data: works.validIds.map(workId => ({
+            playlistId: playlist.id,
+            workId
+          })),
+          skipDuplicates: true
+        });
+      }
 
       return c.json(playlist);
     } catch (e) {

@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '../ui/input-group';
 
 import { cn } from '~/lib/utils';
-import { parseWorkInput } from '~/utils';
+import { parseWorkInput } from '@asmr-collections/shared';
 
 type WorkInputProps = React.ComponentProps<typeof InputGroupInput> & {
   value: string

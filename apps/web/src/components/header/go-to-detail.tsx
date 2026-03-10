@@ -4,7 +4,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { WorkInput } from '../work-input';
 import { ArrowRight } from 'lucide-react';
 
-import { parseWorkInput } from '~/utils';
+import { parseWorkInput } from '@asmr-collections/shared';
 
 const route = getRouteApi('/work-details/$id');
 

@@ -1,6 +1,7 @@
 import { Input } from '~/components/ui/input';
 import { Loading } from '~/components/loading';
 import { Button } from '~/components/ui/button';
+import { Textarea } from '~/components/ui/textarea';
 import { Field, FieldGroup, FieldLabel } from '~/components/ui/field';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '~/components/ui/dialog';
 
@@ -11,7 +12,7 @@ import { useState } from 'react';
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 
 import { logger } from '~/lib/logger';
-import { mutatePlaylists } from '~/lib/mutation';
+import { mutatePlaylist, mutatePlaylists } from '~/lib/mutation';
 import { PlaylistUpsertSchema } from '@asmr-collections/shared';
 
 import type { Playlist } from '@asmr-collections/shared';
@@ -22,7 +23,6 @@ interface PlaylistDialogProps {
   trigger?: React.ReactNode
 }
 
-// TODO: 导入作品
 export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps) {
   const [open, setOpen] = useState(false);
   const [action, isLoading] = useToastMutation(`playlist-${type}`);
@@ -45,13 +45,18 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
   const submitAction = (formData: FormData) => {
     const validationData = PlaylistUpsertSchema.safeParse({
       name: formData.get('name'),
-      description: formData.get('description')
+      description: formData.get('description'),
+      works: formData.get('works')
     });
 
     if (!validationData.success) {
       toast.error('表单验证失败，请检查输入');
       return logger.error(validationData.error);
     }
+
+    const { validIds, isEmpty } = validationData.data.works;
+
+    const desc = isEmpty ? undefined : `尝试导入 ${validIds.length} 个作品`;
 
     if (isEdit) {
       if (!playlist) {
@@ -72,9 +77,10 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
           loading: '更新中...',
           success: '更新成功',
           error: '更新失败',
+          description: desc,
           finally() {
             clear();
-            mutatePlaylists();
+            mutatePlaylist(playlist.id);
           }
         }
       });
@@ -95,6 +101,7 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
         loading: '创建中...',
         success: '创建成功',
         error: '创建失败',
+        description: desc,
         finally() {
           clear();
           mutatePlaylists();
@@ -132,7 +139,11 @@ export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps)
             </Field>
             <Field>
               <FieldLabel htmlFor="playlist-description">描述</FieldLabel>
-              <Input id="playlist-description" placeholder="请输入描述" name="description" defaultValue={playlist?.description ?? undefined} />
+              <Textarea id="playlist-description" placeholder="请输入描述" name="description" defaultValue={playlist?.description ?? undefined} />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="playlist-import">导入作品</FieldLabel>
+              <Textarea id="playlist-import" placeholder="请输入作品 ID，将自动识别导入" name="works" />
             </Field>
           </FieldGroup>
         </form>

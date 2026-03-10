@@ -18,7 +18,7 @@ import { memo, useState } from 'react';
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 
 import { externalUrl } from '~/utils';
-import { mutateWorkInfo, mutateWorks } from '~/lib/mutation';
+import { mutatePlaylist, mutateWorkInfo, mutateWorks } from '~/lib/mutation';
 
 import { fetcher } from '~/lib/fetcher';
 
@@ -332,7 +332,10 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
       toastOps: {
         loading: '添加到播放列表中...',
         success: '添加成功',
-        error: '添加失败'
+        error: '添加失败',
+        finally() {
+          mutatePlaylist(playlistId);
+        }
       }
     });
   };
@@ -344,7 +347,10 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
       toastOps: {
         loading: '从播放列表中移除中...',
         success: '移除成功',
-        error: '移除失败'
+        error: '移除失败',
+        finally() {
+          mutatePlaylist(playlistId);
+        }
       }
     });
   };
