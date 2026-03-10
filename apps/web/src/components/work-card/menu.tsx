@@ -1,14 +1,17 @@
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { confirm } from '../ui/confirmer';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 import { Link } from '../link';
+import { Loading } from '../loading';
+import { PlaylistDialog } from '~/pages/playlists/components/playlist-dialog';
 
-import { MenuIcon } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon, MenuIcon, PlusIcon } from 'lucide-react';
 
 import { extname, formatISODate, withQuery } from '@asmr-collections/shared';
 
+import useSWR from 'swr';
 import { toast } from 'sonner';
 import { memo, useState } from 'react';
 
@@ -17,7 +20,9 @@ import { useToastMutation } from '~/hooks/use-toast-fetch';
 import { externalUrl } from '~/utils';
 import { mutateWorkInfo, mutateWorks } from '~/lib/mutation';
 
-import type { Work } from '@asmr-collections/shared';
+import { fetcher } from '~/lib/fetcher';
+
+import type { Work, PlaylistsResponse } from '@asmr-collections/shared';
 
 interface Props {
   work: Work
@@ -100,6 +105,7 @@ export const Menu = memo(({ work }: Props) => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <SubtitlesSubMenu id={work.id} existsSubtitles={work.subtitles} onClose={() => setOpen(false)} />
+        <PlaylistSubMenu workId={work.id} />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
@@ -282,6 +288,127 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
           <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled={subtitlesIsMutating}>
             删除字幕
           </DropdownMenuItem>
+        </DropdownMenuSubContent>
+      </DropdownMenuPortal>
+    </DropdownMenuSub>
+  );
+}
+
+export function PlaylistSubMenu({ workId}: { workId: string }) {
+  const [pagination, setPagination] = useState({ page: 1, limit: 8 });
+
+  const swrKey = withQuery('/api/playlist', {
+    page: pagination.page,
+    limit: pagination.limit
+  });
+
+  const { data, isLoading, error } = useSWR<PlaylistsResponse>(swrKey, fetcher);
+
+  const [addToPlaylistAction, addToPlaylistIsMutating] = useToastMutation('playlist-add');
+  const [deleteFromPlaylistAction, deleteFromPlaylistIsMutating] = useToastMutation('playlist-delete');
+
+  const totalPages = Math.max(1, Math.ceil(data?.total ? data.total / pagination.limit : 0));
+  const canPrev = pagination.page > 1;
+  const canNext = pagination.page < totalPages;
+
+  const handlePrevPage = () => {
+    if (!canPrev)
+      return;
+
+    setPagination(prev => ({ ...prev, page: prev.page - 1 }));
+  };
+
+  const handleNextPage = () => {
+    if (!canNext)
+      return;
+
+    setPagination(prev => ({ ...prev, page: prev.page + 1 }));
+  };
+
+  const handleAddToPlaylist = (playlistId: string) => {
+    addToPlaylistAction({
+      key: `/api/playlist/${playlistId}/works/${workId}`,
+      fetchOps: { method: 'PUT' },
+      toastOps: {
+        loading: '添加到播放列表中...',
+        success: '添加成功',
+        error: '添加失败'
+      }
+    });
+  };
+
+  const handleDeleteFromPlaylist = (playlistId: string) => {
+    deleteFromPlaylistAction({
+      key: `/api/playlist/${playlistId}/works/${workId}`,
+      fetchOps: { method: 'DELETE' },
+      toastOps: {
+        loading: '从播放列表中移除中...',
+        success: '移除成功',
+        error: '移除失败'
+      }
+    });
+  };
+
+  const onCheckedChange = (playlistId: string, checked: boolean) => {
+    if (checked)
+      handleAddToPlaylist(playlistId);
+    else
+      handleDeleteFromPlaylist(playlistId);
+  };
+
+  if (isLoading || !data || error) {
+    return (
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>播放列表</DropdownMenuSubTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuSubContent className="flex justify-center h-14 items-center">
+            <Loading isLoading={isLoading} />
+            {error && <DropdownMenuItem disabled>加载失败</DropdownMenuItem>}
+          </DropdownMenuSubContent>
+        </DropdownMenuPortal>
+      </DropdownMenuSub>
+    );
+  }
+
+  return (
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger>播放列表</DropdownMenuSubTrigger>
+      <DropdownMenuPortal>
+        <DropdownMenuSubContent>
+          {data.data.map(playlist => (
+            <DropdownMenuCheckboxItem
+              key={playlist.id}
+              checked={playlist.works.some(w => w.id === workId)}
+              onCheckedChange={checked => onCheckedChange(playlist.id, checked)}
+              disabled={addToPlaylistIsMutating || deleteFromPlaylistIsMutating}
+              className="max-w-32"
+            >
+              <span className="min-w-0 wrap-break-word line-clamp-2">
+                {playlist.name}
+              </span>
+            </DropdownMenuCheckboxItem>
+          ))}
+          {data.data.length === 0 && (
+            <DropdownMenuItem disabled>
+              暂无播放列表
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
+          <div className="text-sm flex justify-between items-center gap-2">
+            <Button size="icon-sm" variant="ghost" onClick={handlePrevPage} disabled={!canPrev}><ChevronLeftIcon className="size-5 shrink-0" /></Button>
+            <span>{pagination.page}/{totalPages}</span>
+            <Button size="icon-sm" variant="ghost" onClick={handleNextPage} disabled={!canNext}><ChevronRightIcon className="size-5 shrink-0" /></Button>
+          </div>
+          <DropdownMenuSeparator />
+          <PlaylistDialog
+            type="create"
+            trigger={
+              <DropdownMenuItem className="justify-center" onSelect={e => e.preventDefault()}>
+                <PlusIcon className="size-5 shrink-0" />
+                创建播放列表
+              </DropdownMenuItem>
+            }
+          />
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>

@@ -19,10 +19,11 @@ import type { Playlist } from '@asmr-collections/shared';
 interface PlaylistDialogProps {
   type: 'create' | 'edit'
   playlist?: Playlist
+  trigger?: React.ReactNode
 }
 
 // TODO: 导入作品
-export function PlaylistDialog({ type, playlist }: PlaylistDialogProps) {
+export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps) {
   const [open, setOpen] = useState(false);
   const [action, isLoading] = useToastMutation(`playlist-${type}`);
 
@@ -102,10 +103,10 @@ export function PlaylistDialog({ type, playlist }: PlaylistDialogProps) {
     });
   };
 
-  let trigger = <Button variant="secondary">编辑</Button>;
+  let triggerNode = <Button variant="secondary">编辑</Button>;
 
   if (!isEdit) {
-    trigger = (
+    triggerNode = (
       <Button variant="secondary">
         <PlusIcon />
         创建
@@ -116,7 +117,7 @@ export function PlaylistDialog({ type, playlist }: PlaylistDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        {trigger}
+        {trigger ?? triggerNode}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

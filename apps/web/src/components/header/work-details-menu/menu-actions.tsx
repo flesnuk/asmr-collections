@@ -1,7 +1,7 @@
 import { confirm } from '~/components/ui/confirmer';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator } from '~/components/ui/dropdown-menu';
 
-import { SubtitlesSubMenu } from '~/components/work-card/menu';
+import { PlaylistSubMenu, SubtitlesSubMenu } from '~/components/work-card/menu';
 
 import { UpdateMenu } from './update';
 import { ClearCacheMenu } from './clear-cache';
@@ -73,6 +73,7 @@ export function MenuActions({ id}: { id: string }) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <SubtitlesSubMenu id={id} existsSubtitles />
+              <PlaylistSubMenu workId={id} />
             </>
           ))
           .with(false, () => (
