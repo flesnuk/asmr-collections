@@ -60,7 +60,7 @@ function Playlist() {
             </ButtonGroup>
           </div>
         </div>
-        <p className="text-muted-foreground wrap-break-word p-2.5 bg-card rounded-md">{data.data.description}</p>
+        {data.data.description && <p className="text-muted-foreground wrap-break-word p-2.5 bg-card rounded-md">{data.data.description}</p>}
       </div>
       <Works data={data.data.works} className="grid-cols-[repeat(auto-fill,minmax(16rem,1fr))]" />
       <Pagination total={data.total} current={page} limit={limit} />
