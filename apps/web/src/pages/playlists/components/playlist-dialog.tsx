@@ -23,6 +23,7 @@ interface PlaylistDialogProps {
   trigger?: React.ReactNode
 }
 
+// TODO: 加一个 cover 选择栏，选择 work 作为封面
 export function PlaylistDialog({ type, playlist, trigger }: PlaylistDialogProps) {
   const [open, setOpen] = useState(false);
   const [action, isLoading] = useToastMutation(`playlist-${type}`);
