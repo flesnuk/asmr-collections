@@ -33,6 +33,7 @@ export const RootBaseSearchSchema: z.ZodObject<{
   subtitles: z.ZodOptional<z.ZodBoolean>
   illustratorId: z.ZodOptional<z.ZodNumber>
   artistCount: z.ZodOptional<z.ZodNumber>
+  seed: z.ZodOptional<z.ZodString>
 }> = z.object({
   circleId: z.string().optional(),
   seriesId: z.string().optional(),
@@ -52,7 +53,8 @@ export const RootBaseSearchSchema: z.ZodObject<{
   multilingual: z.boolean().optional(),
   subtitles: z.boolean().optional(),
   illustratorId: z.number().optional(),
-  artistCount: z.number().optional()
+  artistCount: z.number().optional(),
+  seed: z.string().optional()
 });
 
 export const RootSearchQuerySchema: z.ZodObject<{
@@ -85,6 +87,7 @@ export const RootSearchQuerySchema: z.ZodObject<{
   illustratorId: z.ZodOptional<z.ZodCoercedNumber>
   subtitles: z.ZodOptional<z.ZodCoercedBoolean>
   artistCount: z.ZodOptional<z.ZodCoercedNumber>
+  seed: z.ZodOptional<z.ZodString>
 }> = RootBaseSearchSchema.extend({
   artistId: stringToOptionalNumberArray,
   genres: stringToOptionalNumberArray,
@@ -134,6 +137,7 @@ export const IndexSearchQuerySchema: z.ZodObject<{
   illustratorId: z.ZodOptional<z.ZodCoercedNumber>
   subtitles: z.ZodOptional<z.ZodCoercedBoolean>
   artistCount: z.ZodOptional<z.ZodCoercedNumber>
+  seed: z.ZodOptional<z.ZodString>
   page: z.ZodCoercedNumber
   limit: z.ZodCoercedNumber
 }> = RootSearchQuerySchema.extend({

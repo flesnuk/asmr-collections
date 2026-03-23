@@ -110,3 +110,7 @@ export function formatTimeAgoIntl(date: Date | string | number, lang = 'zh-CN'):
 
   return rtf.format(Math.round(diff / year), 'year');
 }
+
+export function createRandomSeed() {
+  return crypto.randomUUID().replaceAll('-', '').slice(0, 16);
+};

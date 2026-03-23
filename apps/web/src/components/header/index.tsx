@@ -34,7 +34,7 @@ export function Header() {
   return (
     <div className="fixed top-0 w-full z-10 bg-background">
       <div className="max-w-7xl mx-auto flex justify-between items-center h-(--navbar-height) p-4 gap-2">
-        <Link className="font-bold text-lg" to="/" search={{ order: 'desc', sort: 'releaseDate', filterOp: 'and' }}>ASMR</Link>
+        <Link className="font-bold text-lg" to="/">ASMR</Link>
         <div className="flex items-center gap-2">
           <SearchBar search={search} key={search.keyword} />
 

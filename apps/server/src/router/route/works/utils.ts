@@ -4,11 +4,23 @@ import type { IndexSearchQuerySchema } from '@asmr-collections/shared';
 import type { WorkInclude } from '~/lib/prisma/models';
 import type { Prisma, PrismaClient } from '~/lib/prisma/client';
 
+import { createHash } from 'node:crypto';
+
 import { storage } from '~/storage';
 import { getPrisma } from '~/lib/db';
 import { generateEmbedding } from '~/ai/jina';
 
 export type FindManyWorksQuery = Parameters<PrismaClient['work']['findMany']>[0];
+
+export function sortIdsBySeed(ids: string[], seed: string) {
+  return ids
+    .map(id => ({
+      id,
+      hash: createHash('sha256').update(`${seed}:${id}`).digest('hex')
+    }))
+    .sort((a, b) => a.hash.localeCompare(b.hash))
+    .map(item => item.id);
+}
 
 export function whereBuilder(query: z.infer<typeof IndexSearchQuerySchema>) {
   const {

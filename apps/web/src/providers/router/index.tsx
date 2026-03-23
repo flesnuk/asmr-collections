@@ -18,6 +18,8 @@ import { NotFound } from '~/components/not-found';
 import { preloadWorkDetails } from './preload';
 import { RootSearchSchema, IndexSearchSchema, PlaybackSearchSchema, WorkDetailsSearchSchema, PlaylistSearchSchema } from './schemas';
 
+import { createRandomSeed } from '~/utils';
+
 import { INDEX_DEFAULT_SEARCH_VALUES, ROOT_DEFAULT_SEARCH_VALUES } from '@asmr-collections/shared';
 
 export type RootSearchParams = InferFullSearchSchema<typeof rootRoute>;
@@ -41,16 +43,18 @@ const indexRoute = createRoute({
   validateSearch: IndexSearchSchema,
   getParentRoute: () => rootRoute,
   path: '/',
-  head: () => ({
-    links: [{
-      rel: 'preload',
-      href: `/api/works?order=desc&sort=releaseDate&filterOp=and&page=${INDEX_DEFAULT_SEARCH_VALUES.page}&limit=${INDEX_DEFAULT_SEARCH_VALUES.limit}`,
-      as: 'fetch',
-      crossOrigin: 'anonymous'
-    }]
-  }),
   search: {
-    middlewares: [stripSearchParams(INDEX_DEFAULT_SEARCH_VALUES)]
+    middlewares: [
+      stripSearchParams(INDEX_DEFAULT_SEARCH_VALUES),
+      ({ search, next }) => {
+        const result = next(search);
+
+        if (result.sort === 'random' && !result.seed)
+          return { ...result, seed: createRandomSeed() };
+
+        return result;
+      }
+    ]
   },
   component: () => <App />
 });

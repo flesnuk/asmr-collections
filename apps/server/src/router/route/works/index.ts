@@ -9,7 +9,7 @@ import { getPrisma } from '~/lib/db';
 import { zValidator } from '~/lib/validator';
 import { formatError } from '~/router/utils';
 
-import { categorizeWorks, findManyByArtistCount, findManyByEmbedding, whereBuilder } from './utils';
+import { categorizeWorks, findManyByArtistCount, findManyByEmbedding, sortIdsBySeed, whereBuilder } from './utils';
 
 export const worksApp = new Hono();
 
@@ -17,7 +17,7 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
   const query = c.req.valid('query');
 
   // pagination
-  const { page, limit } = query;
+  const { page, limit, seed } = query;
 
   // filter
   const { artistCount, storageFilter } = query;
@@ -74,11 +74,10 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
         select: { id: true }
       });
 
-      // 这里可能重复随机到相同的 id
-      // TODO: 可以用 seed 优化，保证每次分页结果不重复 但是懒得做
-      const shuffledIds = allIds
-        .map(item => item.id)
-        .sort(() => Math.random() - 0.5);
+      const shuffledIds = sortIdsBySeed(
+        allIds.map(item => item.id),
+        seed ?? 'random'
+      );
 
       const total = shuffledIds.length;
 
@@ -90,11 +89,14 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
         include: queryArgs.include
       });
 
+      const idToIndex = new Map(slicedIds.map((id, index) => [id, index]));
+      const sorted = works.sort((a, b) => (idToIndex.get(a.id) ?? 0) - (idToIndex.get(b.id) ?? 0));
+
       return c.json({
         page,
         limit,
         total,
-        data: works
+        data: sorted
       });
     }
 
