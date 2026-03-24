@@ -2,16 +2,34 @@ import type { Prisma } from '~/lib/prisma/client';
 
 import type { FindManyWorksQuery } from './utils';
 
+import { createHash } from 'node:crypto';
+
 import { Hono } from 'hono';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- ig
+import { LRUCache } from 'lru-cache';
 import { IndexSearchQuerySchema } from '@asmr-collections/shared';
 
 import { getPrisma } from '~/lib/db';
+import { ttl } from '~/lib/cachified';
 import { zValidator } from '~/lib/validator';
 import { formatError } from '~/router/utils';
 
 import { categorizeWorks, findManyByArtistCount, findManyByEmbedding, sortIdsBySeed, whereBuilder } from './utils';
 
 export const worksApp = new Hono();
+
+const randomSortCache = new LRUCache<string, string[]>({
+  max: 50,
+  ttl: ttl.minute(30)
+});
+
+function createRandomSortCacheKey(where: Prisma.WorkWhereInput, seed: string) {
+  return createHash('sha256')
+    .update(seed)
+    .update('\0')
+    .update(JSON.stringify(where))
+    .digest('hex');
+}
 
 worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
   const query = c.req.valid('query');
@@ -69,15 +87,24 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
     const prisma = getPrisma();
 
     if (sort === 'random') {
-      const allIds = await prisma.work.findMany({
-        where: queryArgs.where,
-        select: { id: true }
-      });
+      const randomSeed = seed ?? 'random';
+      const randomCacheKey = createRandomSortCacheKey(queryArgs.where ?? {}, randomSeed);
 
-      const shuffledIds = sortIdsBySeed(
-        allIds.map(item => item.id),
-        seed ?? 'random'
-      );
+      let shuffledIds = randomSortCache.get(randomCacheKey);
+
+      if (!shuffledIds) {
+        const allIds = await prisma.work.findMany({
+          where: queryArgs.where,
+          select: { id: true }
+        });
+
+        shuffledIds = sortIdsBySeed(
+          allIds.map(item => item.id),
+          randomSeed
+        );
+
+        randomSortCache.set(randomCacheKey, shuffledIds);
+      }
 
       const total = shuffledIds.length;
 
