@@ -4,6 +4,7 @@ import { SettingItem } from './setting-item';
 
 import { toast } from 'sonner';
 import useSWRImmutable from 'swr/immutable';
+import { useTranslation } from '~/lib/i18n';
 
 import { useTranscodeOptions } from '~/hooks/use-transcode-options';
 
@@ -23,21 +24,23 @@ const bitrateOptions = [
 
 export function TranscodeSettings({ disabled }: { disabled?: boolean }) {
   const [options, setOptions] = useTranscodeOptions();
+  const { t } = useTranslation();
+
   const { data, error, isLoading } = useSWRImmutable<{ exists: boolean }>('/api/library/ffmpeg', fetcher, {
-    onError: e => notifyError(e, 'FFmpeg 状态获取失败')
+    onError: e => notifyError(e, t('FFmpeg 状态获取失败'))
   });
 
   const onValueChange = (value: string) => {
     const newValue = value as TranscodeMode;
 
     if (error)
-      return notifyError(error, 'FFmpeg 状态获取失败');
+      return notifyError(error, t('FFmpeg 状态获取失败'));
 
     if (isLoading || !data)
-      return toast.warning('正在获取 FFmpeg 状态，请稍后再试');
+      return toast.warning(t('正在获取 FFmpeg 状态，请稍后再试'));
 
     if (!data.exists && newValue !== 'disable')
-      return toast.error('FFmpeg 二进制不存在，无法启用转码功能');
+      return toast.error(t('FFmpeg 二进制不存在，无法启用转码功能'));
 
     setOptions(d => {
       d.mode = newValue;
@@ -55,7 +58,7 @@ export function TranscodeSettings({ disabled }: { disabled?: boolean }) {
       <SettingItem
         id="storage-transcode-mode"
         disabled={disabled}
-        description="仅对 WAV 以及 FLAC 格式的音频文件生效，不支持 WebDAV"
+        description={t('仅对 WAV 以及 FLAC 格式的音频文件生效，不支持 WebDAV')}
         action={
           <Select
             value={options.mode}
@@ -67,20 +70,20 @@ export function TranscodeSettings({ disabled }: { disabled?: boolean }) {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="persistence">持久启用</SelectItem>
-                <SelectItem value="temporary">临时启用</SelectItem>
-                <SelectItem value="disable">禁用</SelectItem>
+                <SelectItem value="persistence">{t('持久启用')}</SelectItem>
+                <SelectItem value="temporary">{t('临时启用')}</SelectItem>
+                <SelectItem value="disable">{t('禁用')}</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         }
       >
-        启用转码功能
+        {t('启用转码功能')}
       </SettingItem>
       <SettingItem
         id="storage-transcode-bitrate"
         disabled={disabled}
-        description="转码后音频的比特率，数值越大音质越好但文件体积也越大"
+        description={t('转码后音频的比特率，数值越大音质越好但文件体积也越大')}
         action={
           <Select
             value={options.bitrate.toString()}
@@ -102,7 +105,7 @@ export function TranscodeSettings({ disabled }: { disabled?: boolean }) {
           </Select>
         }
       >
-        转码比特率
+        {t('转码比特率')}
       </SettingItem>
     </>
   );

@@ -1,4 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
+import { useTranslation } from '~/lib/i18n';
 
 import { SettingItem } from './setting-item';
 
@@ -15,11 +16,13 @@ const options = [
 ];
 
 export function ASMRONEAPISettings({ value, onChange }: Props) {
+  const { t } = useTranslation();
+
   return (
     <SettingItem
       id="asmr-one-api"
-      name="ASMR.ONE API 地址"
-      description="选择用于获取 ASMR.ONE 数据的 API 地址"
+      name={t('ASMR.ONE API 地址')}
+      description={t('选择用于获取 ASMR.ONE 数据的 API 地址')}
       action={
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger>
@@ -35,7 +38,7 @@ export function ASMRONEAPISettings({ value, onChange }: Props) {
         </Select>
       }
     >
-      选择 ASMR.ONE API 地址
+      {t('选择 ASMR.ONE API 地址')}
     </SettingItem>
   );
 }

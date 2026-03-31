@@ -5,6 +5,8 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 
 import { setStoredValue } from '~/providers/router/utils';
 
+import { useTranslation } from '~/lib/i18n';
+
 const sortOptions = [
   {
     label: '售价',
@@ -49,13 +51,14 @@ const sortOptions = [
 ];
 
 export function SortMenu() {
+  const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 
   return (
     <MenubarMenu>
       <MenubarTrigger>
-        排序
+        {t('排序')}
       </MenubarTrigger>
       <MenubarContent align="center">
         <MenubarRadioGroup
@@ -68,7 +71,7 @@ export function SortMenu() {
             navigate({ to: '/', search: exclude(['page', 'keyword'], { order: newValue }) });
           }}
         >
-          {([{ label: '正序', value: 'asc' }, { label: '倒序', value: 'desc' }]).map(({ label, value }) => (
+          {([{ label: t('正序'), value: 'asc' }, { label: t('倒序'), value: 'desc' }]).map(({ label, value }) => (
             <MenubarRadioItem
               key={value}
               value={value}
@@ -89,7 +92,7 @@ export function SortMenu() {
             }}
           >
             {sortOptions.map(({ label, value }) => (
-              <MenubarRadioItem key={value} value={value} onSelect={e => e.preventDefault()}>{label}</MenubarRadioItem>
+              <MenubarRadioItem key={value} value={value} onSelect={e => e.preventDefault()}>{t(label)}</MenubarRadioItem>
             ))}
           </MenubarRadioGroup>
         </MenubarGroup>

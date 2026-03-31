@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import type { Data } from '@asmr-collections/shared';
+import { useTranslation } from '~/lib/i18n';
 
 interface Props {
   genres: Array<Data<number>>
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function GenresPopover({ genres, searchGenres }: Props) {
+  const { t } = useTranslation();
   const [selectedGenres, setSelectedGenres] = useState(searchGenres ?? []);
 
   // 路由更新后，弹出框不受影响啊，只改了 search
@@ -56,7 +58,7 @@ export function GenresPopover({ genres, searchGenres }: Props) {
   return (
     <Popover key={forceClose}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="lg" className="flex-1">查看标签</Button>
+        <Button variant="outline" size="lg" className="flex-1">{t('查看标签')}</Button>
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-wrap gap-2 mb-2">
@@ -96,7 +98,7 @@ export function GenresPopover({ genres, searchGenres }: Props) {
             search={prev => ({ ...prev, genres: selectedGenres, page: undefined, keyword: undefined })}
             onClick={() => setForceClose(Math.random())}
           >
-            筛选
+            {t('筛选')}
           </Link>
         </Button>
       </PopoverContent>

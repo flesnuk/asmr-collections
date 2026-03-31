@@ -13,8 +13,10 @@ import { useAtomValue } from 'jotai';
 import { useNavigate } from '@tanstack/react-router';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { storageOptionsAtom } from '~/hooks/use-setting-options';
+import { useTranslation } from '~/lib/i18n';
 
 export function FilterMenu() {
+  const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ export function FilterMenu() {
   return (
     <MenubarMenu>
       <MenubarTrigger>
-        筛选
+        {t('筛选')}
       </MenubarTrigger>
       <MenubarContent className="max-[400px]:min-w-40">
         <MenubarGroup>
@@ -41,7 +43,7 @@ export function FilterMenu() {
             }}
             onSelect={e => e.preventDefault()}
           >
-            多语言
+            {t('多语言')}
           </MenubarCheckboxItem>
           <MenubarCheckboxItem
             checked={search.subtitles}
@@ -53,7 +55,7 @@ export function FilterMenu() {
             }}
             onSelect={e => e.preventDefault()}
           >
-            带字幕
+            {t('带字幕')}
           </MenubarCheckboxItem>
           <Activity mode={settings.enabled ? 'visible' : 'hidden'}>
             <MenubarCheckboxItem
@@ -80,10 +82,10 @@ export function FilterMenu() {
             }}
           >
             <MenubarRadioItem value="and" onSelect={e => e.preventDefault()}>
-              与
+              {t('与')}
             </MenubarRadioItem>
             <MenubarRadioItem value="or" onSelect={e => e.preventDefault()}>
-              或
+              {t('或')}
             </MenubarRadioItem>
           </MenubarRadioGroup>
           <MenubarSeparator />

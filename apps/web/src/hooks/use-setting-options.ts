@@ -5,7 +5,10 @@ import { focusAtom } from 'jotai-optics';
 
 import { toMerged } from '@asmr-collections/shared';
 
+export type Language = 'en' | 'zh' | 'ja';
+
 export interface SettingOptions {
+  language: Language
   showWorkDetail: boolean
   asmrone: {
     api: string
@@ -29,6 +32,7 @@ export interface SettingOptions {
 }
 
 const DEFAULT_SETTINGS: SettingOptions = {
+  language: 'zh',
   asmrone: {
     api: 'https://api.asmr.one',
     priority: false,
