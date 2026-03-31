@@ -1,11 +1,10 @@
 import { useAtomValue } from 'jotai';
 import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
-import zh from '../i18n/zh';
 import ja from '../i18n/ja';
 import en from '../i18n/en';
 
-const dicts = { zh, ja, en };
+const dicts = { ja, en };
 
 export function useTranslation() {
   const settings = useAtomValue(settingOptionsAtom);
