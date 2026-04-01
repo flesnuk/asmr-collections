@@ -1,5 +1,5 @@
 import { MediaPlayer as VidstackPlayer, MediaProvider, MEDIA_KEY_SHORTCUTS, TextTrack } from '@vidstack/react';
-import type { MediaLoadedDataEvent, MediaPauseEvent, MediaPlayingEvent, MediaTimeUpdateEventDetail } from '@vidstack/react';
+import type { MediaLoadedDataEvent, MediaPauseEvent, MediaPlayingEvent, MediaTimeUpdateEventDetail, MediaCanPlayEvent } from '@vidstack/react';
 
 import { AudioPlayerLayout } from './layout';
 
@@ -161,6 +161,16 @@ function MediaPlayerInstance() {
     navigator.mediaSession.setActionHandler('nexttrack', () => changeTrack(true));
   }, [changeTrack, currentTrack, mediaState.work]);
 
+  const onCanPlay = useCallback((_detail: any, nativeEvent: MediaCanPlayEvent) => {
+    updateMediaMetadata();
+    
+    try {
+      (nativeEvent.target as any).play()?.catch(() => {});
+    } catch {
+      // ignore
+    }
+  }, [updateMediaMetadata]);
+
   return createPortal(
     <div className="relative h-15 max-sm:z-10">
       <div className="fixed bottom-0 w-full">
@@ -170,7 +180,7 @@ function MediaPlayerInstance() {
           onLoadStart={onLoadStart}
           onLoadedData={onLoadedData}
           onTimeUpdate={onTimeUpdate}
-          onCanPlay={updateMediaMetadata}
+          onCanPlay={onCanPlay}
           onEnded={onEnded}
           onPause={onPause}
           onSeeked={onSeeked}
