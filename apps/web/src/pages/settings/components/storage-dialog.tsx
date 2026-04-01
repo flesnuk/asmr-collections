@@ -165,7 +165,7 @@ export function StorageDialog({ actionType, data, mutate, storageId }: StorageDi
           <SettingInput
             id="storage-desc"
             name="storage-desc"
-            placeholder={t('Description')}
+            placeholder={t('备注')}
             value={form.description ?? ''}
             onChange={e => onChange('description', e.target.value)}
           >

@@ -7,53 +7,54 @@ import { setStoredValue } from '~/providers/router/utils';
 
 import { useTranslation } from '~/lib/i18n';
 
-const sortOptions = [
-  {
-    label: '售价',
-    value: 'price'
-  },
-  {
-    label: '销量',
-    value: 'sales'
-  },
-  {
-    label: '评分',
-    value: 'rate'
-  },
-  {
-    label: '评分人数',
-    value: 'rateCount'
-  },
-  {
-    label: '收藏人数',
-    value: 'wishlistCount'
-  },
-  {
-    label: '评论人数',
-    value: 'reviewCount'
-  },
-  {
-    label: '收藏时间',
-    value: 'createdAt'
-  },
-  {
-    label: '更新时间',
-    value: 'updatedAt'
-  },
-  {
-    label: '发售时间',
-    value: 'releaseDate'
-  },
-  {
-    label: '随机排序',
-    value: 'random'
-  }
-];
-
 export function SortMenu() {
+
   const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
+
+  const sortOptions = [
+    {
+      label: t('售价'),
+      value: 'price'
+    },
+    {
+      label: t('销量'),
+      value: 'sales'
+    },
+    {
+      label: t('评分'),
+      value: 'rate'
+    },
+    {
+      label: t('评分人数'),
+      value: 'rateCount'
+    },
+    {
+      label: t('收藏人数'),
+      value: 'wishlistCount'
+    },
+    {
+      label: t('评论人数'),
+      value: 'reviewCount'
+    },
+    {
+      label: t('收藏时间'),
+      value: 'createdAt'
+    },
+    {
+      label: t('更新时间'),
+      value: 'updatedAt'
+    },
+    {
+      label: t('发售时间'),
+      value: 'releaseDate'
+    },
+    {
+      label: t('随机排序'),
+      value: 'random'
+    }
+  ];
 
   return (
     <MenubarMenu>
@@ -92,7 +93,7 @@ export function SortMenu() {
             }}
           >
             {sortOptions.map(({ label, value }) => (
-              <MenubarRadioItem key={value} value={value} onSelect={e => e.preventDefault()}>{t(label)}</MenubarRadioItem>
+              <MenubarRadioItem key={value} value={value} onSelect={e => e.preventDefault()}>{label}</MenubarRadioItem>
             ))}
           </MenubarRadioGroup>
         </MenubarGroup>

@@ -5,10 +5,12 @@ import { WorkInput } from '../work-input';
 import { ArrowRight } from 'lucide-react';
 
 import { parseWorkInput } from '@asmr-collections/shared';
+import { useTranslation } from '~/lib/i18n';
 
 const route = getRouteApi('/work-details/$id');
 
 export function GoToDetail() {
+  const { t } = useTranslation();
   const [id, setId] = useState('');
   const navigate = route.useNavigate();
 
@@ -27,8 +29,8 @@ export function GoToDetail() {
         placeholder="RJ114514"
         value={id}
         onValueChange={v => setId(v)}
-        initialTip="输入 ID 前往作品详情"
-        validTip="按回车或点击按钮前往"
+        initialTip={t('输入 ID 前往作品详情')}
+        validTip={t('按回车或点击按钮前往')}
         tipIcon={<ArrowRight />}
         onKeyUp={e => {
           if (e.key === 'Enter')

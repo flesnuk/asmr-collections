@@ -9,6 +9,7 @@ import { findSmartPath, notifyError } from '~/utils';
 
 import { logger } from '~/lib/logger';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import type { Tracks, TracksResponse, SubtitleInfo } from '@asmr-collections/shared';
 
@@ -29,6 +30,7 @@ interface InternalResult { data: Tracks, trackStorage?: TracksResponse['storage'
 
 // eslint-disable-next-line sukka/bool-param-default -- Need to distinguish undefined
 export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[]) => void, hasSubtitles?: boolean, searchPath?: string[]) {
+  const { t } = useTranslation();
   const settings = useAtomValue(settingOptionsAtom);
   const storage = settings.storage;
 
@@ -123,7 +125,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
     }
 
     if (!result) {
-      if (error) return { error: new Error('获取音频数据失败', { cause: error }) };
+      if (error) return { error: new Error(t('获取音频数据失败'), { cause: error }) };
 
       return null;
     }
@@ -141,7 +143,7 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
         return { ...tracksData, externalSubtitles };
       } catch (e) {
         logger.error(e, '尝试加载数据库字幕失败');
-        notifyError(e, '尝试加载数据库字幕失败');
+        notifyError(e, t('尝试加载数据库字幕失败'));
         return tracksData;
       }
     }

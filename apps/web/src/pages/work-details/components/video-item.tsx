@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Di
 import { FileVideo } from 'lucide-react';
 
 import { useCallback, useState } from 'react';
+import { useTranslation } from '~/lib/i18n';
 
 import { formatDuration } from '@asmr-collections/shared';
 
@@ -16,6 +17,7 @@ interface VideoItemProps {
 }
 
 export function VideoItem({ track, tracks, work }: VideoItemProps) {
+  const { t } = useTranslation();
   const [currentTrack, setCurrentTrack] = useState(() => track);
 
   const changeTrack = useCallback((next = false) => {
@@ -62,7 +64,7 @@ export function VideoItem({ track, tracks, work }: VideoItemProps) {
           {currentTrack.title}
         </DialogTitle>
         <DialogDescription className="sr-only">
-          视频播放器
+          {t('视频播放器')}
         </DialogDescription>
         <video
           controls
@@ -71,8 +73,8 @@ export function VideoItem({ track, tracks, work }: VideoItemProps) {
           onCanPlay={updateMediaMetadata}
         />
         <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={() => changeTrack()}>上一个</Button>
-          <Button variant="outline" onClick={() => changeTrack(true)}>下一个</Button>
+          <Button variant="outline" onClick={() => changeTrack()}>{t('上一个')}</Button>
+          <Button variant="outline" onClick={() => changeTrack(true)}>{t('下一个')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

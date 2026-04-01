@@ -7,6 +7,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Loading } from '~/components/loading';
+import { useTranslation } from '~/lib/i18n';
 
 import { HTTPError } from '@asmr-collections/shared';
 
@@ -33,6 +34,7 @@ export function FilterPanel<T extends string | number>({
   selectedData,
   isCheck
 }: Props<T>) {
+  const { t } = useTranslation();
   const [input, setInput] = useState('');
 
   const filtered = useMemo(() => {
@@ -91,7 +93,7 @@ export function FilterPanel<T extends string | number>({
       <Virtualized asChild className="overscroll-contain">
         <CommandList className="h-48 no-scrollbar">
           <Activity mode={!error && !isLoading && (filtered.length === 0) ? 'visible' : 'hidden'}>
-            <CommandEmpty>无结果</CommandEmpty>
+            <CommandEmpty>{t('无结果')}</CommandEmpty>
           </Activity>
           <CommandGroup>
             <Loading isLoading={isLoading} className="w-full mx-auto mt-[50%]" />

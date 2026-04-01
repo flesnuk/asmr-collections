@@ -6,6 +6,7 @@ import { focusAtom } from 'jotai-optics';
 import { mediaStateAtom } from '~/hooks/use-media-state';
 
 import { NativeSelect, NativeSelectOption } from '~/components/ui/native-select';
+import { useTranslation } from '~/lib/i18n';
 
 import { fetchTextTrackContent } from '../../utils';
 
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function SubtitleSelector({ allSubtitles }: Props) {
+  const { t } = useTranslation();
   const [currentTrack, setCurrentTrack] = useAtom(currentTrackAtom);
 
   const player = useMediaPlayer();
@@ -56,7 +58,7 @@ export function SubtitleSelector({ allSubtitles }: Props) {
 
   return (
     <NativeSelect
-      title="字幕选择"
+      title={t('字幕选择')}
       id="subtitle-selector"
       value={currentSubtitle?.title || ''}
       onChange={e => handleChange(e.target.value)}
@@ -65,7 +67,7 @@ export function SubtitleSelector({ allSubtitles }: Props) {
         wrapper: 'max-w-[60%]'
       }}
     >
-      <NativeSelectOption value="">选择字幕</NativeSelectOption>
+      <NativeSelectOption value="">{t('选择字幕')}</NativeSelectOption>
       {subtitles.map(subtitle => (
         <NativeSelectOption key={subtitle.title} value={subtitle.title}>
           {subtitle.title}

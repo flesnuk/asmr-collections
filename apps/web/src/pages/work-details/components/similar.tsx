@@ -7,6 +7,7 @@ import { useSimilar } from '~/hooks/use-similar';
 import Autoplay from 'embla-carousel-autoplay';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 import type { Work } from '@asmr-collections/shared';
 
@@ -16,6 +17,7 @@ interface SimilarWorksProps {
 }
 
 export const SimilarWorks = memo(({ work, exists }: SimilarWorksProps) => {
+  const { t } = useTranslation();
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
   const { data } = useSimilar(work.id, !!exists);
 
@@ -24,7 +26,7 @@ export const SimilarWorks = memo(({ work, exists }: SimilarWorksProps) => {
 
   return (
     <section className="mt-8">
-      <h2 className="text-2xl font-bold mb-4">相似作品</h2>
+      <h2 className="text-2xl font-bold mb-4">{t('相似作品')}</h2>
       <Carousel
         opts={{
           align: 'start',

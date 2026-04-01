@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '../ui/input-group';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 import { parseWorkInput } from '@asmr-collections/shared';
 
 type WorkInputProps = React.ComponentProps<typeof InputGroupInput> & {
@@ -32,6 +33,7 @@ export function WorkInput(props: WorkInputProps) {
   } = props;
 
   const [isFocused, setIsFocused] = useState(false);
+  const { t } = useTranslation();
 
   const { validIds, isEmpty, isValid } = useMemo(() => parseWorkInput(value), [value]);
 
@@ -44,8 +46,8 @@ export function WorkInput(props: WorkInputProps) {
     if (initialTip && isEmpty)
       return initialTip;
     if (isValid)
-      return validTip || `识别到 ${validIds.length} 个有效 ID`;
-    return 'ID 格式错误';
+      return validTip || `${t('识别到')} ${validIds.length} ${t('个有效 ID')}`;
+    return t('ID 格式错误');
   };
 
   // 处于聚焦状态，并且非空或有初始提示，且不在加载中

@@ -10,10 +10,12 @@ import { withQuery } from '@asmr-collections/shared';
 
 import { notifyError } from '~/utils';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import type { WorksResponse } from '@asmr-collections/shared';
 
 export default function App() {
+  const { t } = useTranslation();
   const _search = useSearch({ from: '/' });
 
   // 确保 limit 和 page 在最后面，防止 key 变化
@@ -28,7 +30,7 @@ export default function App() {
     : withQuery('/api/works', { ...search, page: search.page + 1 });
 
   const { data, error, isLoading } = useSWR<WorksResponse>(key, fetcher, {
-    onError: err => notifyError(err, '获取作品列表失败'),
+    onError: err => notifyError(err, t('获取作品列表失败')),
     revalidateOnFocus: !disableReMutate,
     revalidateIfStale: !disableReMutate
   });

@@ -53,7 +53,7 @@ export function WorkPreview({ workId, originalId, ...props }: WorkPreviewProps) 
             className="flex justify-center gap-2 items-center text-muted-foreground"
           >
             <Spinner className="size-5" />
-            <span className="text-sm">{t('Loading preview...')}</span>
+            <span className="text-sm">{t('正在加载试听...')}</span>
           </motion.div>
         )}
       </AnimatePresence>

@@ -12,12 +12,14 @@ import { createLazyRoute, useSearch } from '@tanstack/react-router';
 
 import { notifyError } from '~/utils';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import { withQuery } from '@asmr-collections/shared';
 
 import type { PlaylistsResponse } from '@asmr-collections/shared';
 
 function Playlists() {
+  const { t } = useTranslation();
   const search = useSearch({ from: '/playlists' });
 
   const swrKey = withQuery('/api/playlist', {
@@ -31,12 +33,12 @@ function Playlists() {
   });
 
   const { data } = useSWR<PlaylistsResponse>(swrKey, fetcher, {
-    onError: e => notifyError(e, '获取播放列表失败'),
+    onError: e => notifyError(e, t('获取播放列表失败')),
     suspense: true
   });
 
   if (!data || data.data.length === 0)
-    return <div className="text-center text-muted-foreground mt-[10%]">暂无播放列表</div>;
+    return <div className="text-center text-muted-foreground mt-[10%]">{t('暂无播放列表')}</div>;
 
   return (
     <motion.div
@@ -66,10 +68,11 @@ function Playlists() {
 }
 
 function PlaylistsWrapper() {
+  const { t } = useTranslation();
   return (
     <div className="max-w-4xl mx-auto mt-4">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-medium">播放列表</h2>
+        <h2 className="text-2xl font-medium">{t('播放列表')}</h2>
         <PlaylistDialog type="create" />
       </div>
       <Suspense fallback={<PlaylistsSkeleton />}>

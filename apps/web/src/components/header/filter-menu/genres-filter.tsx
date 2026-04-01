@@ -12,13 +12,15 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { notifyError } from '~/utils';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
 export function GenresFilter() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useSWR<Array<Data<number>>>('/api/field/genre', fetcher, {
-    onError: error => notifyError(error, '获取标签列表失败')
+    onError: error => notifyError(error, t('获取标签列表失败'))
   });
 
   const { search, exclude } = useGenerateSearch();
@@ -55,14 +57,14 @@ export function GenresFilter() {
   return (
     <MenubarSub>
       <MenubarSubTrigger className={cn('transition-opacity', search.genres?.length ? 'opacity-100' : 'opacity-60')}>
-        标签
+        {t('标签')}
       </MenubarSubTrigger>
       <MenubarSubContent>
         <FilterPanel
-          placeholder="筛选标签..."
+          placeholder={t('筛选标签...')}
           isLoading={isLoading}
           error={error}
-          errorText="获取标签列表失败"
+          errorText={t('获取标签列表失败')}
           data={data}
           handleSelect={handleSelect}
           selectedData={search.genres}

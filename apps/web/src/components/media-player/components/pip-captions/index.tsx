@@ -10,6 +10,7 @@ import { floatingCaptionsOpenAtom } from '../../hooks/use-floating-open';
 
 import { notifyError } from '~/utils';
 import { logger } from '~/lib/logger';
+import { useTranslation } from '~/lib/i18n';
 
 interface DocumentPictureInPictureOptions {
   width?: number
@@ -22,6 +23,7 @@ interface DocumentPictureInPicture extends EventTarget {
 }
 
 export function PipCaptions() {
+  const { t } = useTranslation();
   const { activeCue } = useActiveCue();
 
   const pipWindowRef = useRef<Window | null>(null);
@@ -36,7 +38,7 @@ export function PipCaptions() {
       const initPiP = async () => {
         try {
           if (!('documentPictureInPicture' in window))
-            throw new Error('暂不支持移动端');
+            throw new Error(t('暂不支持移动端'));
 
           const pip = await (window.documentPictureInPicture as DocumentPictureInPicture).requestWindow({
             width: 400,
@@ -59,7 +61,7 @@ export function PipCaptions() {
           setFloatingCaptionsOpen(false);
         } catch (err) {
           setPipOpen(false);
-          notifyError(err, '开启画中画失败');
+          notifyError(err, t('开启画中画失败'));
           logger.error(err, '开启画中画失败');
         }
       };

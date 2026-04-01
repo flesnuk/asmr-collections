@@ -16,6 +16,7 @@ import { PictureInPicture2Icon, PictureInPictureIcon, RefreshCwIcon, RefreshCwOf
 import { SubtitleSelector } from './subtitle-selector';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600)
@@ -40,6 +41,7 @@ interface SubtitlesProps {
 }
 
 export function Subtitles({ scrollAreaRef }: SubtitlesProps) {
+  const { t } = useTranslation();
   const remote = useMediaRemote();
   const media = useMediaContext();
 
@@ -84,7 +86,7 @@ export function Subtitles({ scrollAreaRef }: SubtitlesProps) {
   }, []);
 
   if (!allSubtitles || allSubtitles.length === 0)
-    return <div className="w-full my-8 text-center text-sm">暂无字幕</div>;
+    return <div className="w-full my-8 text-center text-sm">{t('暂无字幕')}</div>;
 
   return (
     <div className="relative">
@@ -96,7 +98,7 @@ export function Subtitles({ scrollAreaRef }: SubtitlesProps) {
             size="icon-sm"
             className="text-sm"
             onClick={() => setOpenPipCaptions(p => !p)}
-            title={openPipCaptions ? '关闭字幕画中画' : '开启字幕画中画'}
+            title={openPipCaptions ? t('关闭字幕画中画') : t('开启字幕画中画')}
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div

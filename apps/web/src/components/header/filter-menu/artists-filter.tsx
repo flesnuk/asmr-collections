@@ -12,13 +12,15 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { notifyError } from '~/utils';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
 export function ArtistsFilter() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useSWR<Array<Data<number>>>('/api/field/artist', fetcher, {
-    onError: error => notifyError(error, '获取声优列表失败')
+    onError: error => notifyError(error, t('获取声优列表失败'))
   });
 
   const { search, exclude } = useGenerateSearch();
@@ -54,12 +56,12 @@ export function ArtistsFilter() {
   return (
     <MenubarSub>
       <MenubarSubTrigger className={cn('transition-opacity', search.artistId?.length ? 'opacity-100' : 'opacity-60')}>
-        声优
+        {t('声优')}
       </MenubarSubTrigger>
       <MenubarSubContent>
         <MenubarSub>
           <MenubarSubTrigger className={cn('transition-opacity', search.artistCount ? 'opacity-100' : 'opacity-60')}>
-            人数
+            {t('人数')}
           </MenubarSubTrigger>
           <MenubarSubContent>
             {[1, 2, 3, 4, 5, 6].map(count => (
@@ -81,10 +83,10 @@ export function ArtistsFilter() {
         </MenubarSub>
         <MenubarSeparator />
         <FilterPanel
-          placeholder="筛选声优..."
+          placeholder={t('筛选声优...')}
           isLoading={isLoading}
           error={error}
-          errorText="获取声优列表失败"
+          errorText={t('获取声优列表失败')}
           data={data}
           handleSelect={handleSelect}
           selectedData={search.artistId}

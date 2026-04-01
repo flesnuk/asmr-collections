@@ -14,10 +14,12 @@ import { notifyError } from '~/utils';
 import { withQuery } from '@asmr-collections/shared';
 
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import type { PlaybacksResponse } from '@asmr-collections/shared';
 
 function Playback() {
+  const { t } = useTranslation();
   const search = useSearch({ from: '/playback' });
 
   const swrKey = withQuery('/api/playback', {
@@ -31,12 +33,12 @@ function Playback() {
   });
 
   const { data, mutate } = useSWR<PlaybacksResponse>(swrKey, fetcher, {
-    onError: e => notifyError(e, '获取播放列表失败'),
+    onError: e => notifyError(e, t('获取播放列表失败')),
     suspense: true
   });
 
   if (!data || data.data.length === 0)
-    return <div className="text-center text-muted-foreground mt-[10%]">暂无播放记录</div>;
+    return <div className="text-center text-muted-foreground mt-[10%]">{t('暂无播放记录')}</div>;
 
   return (
     <motion.div
@@ -66,9 +68,10 @@ function Playback() {
 }
 
 function PlaybackSuspense() {
+  const { t } = useTranslation();
   return (
     <div className="max-w-4xl mx-auto mt-4">
-      <h2 className="text-2xl font-medium mb-6">最近播放</h2>
+      <h2 className="text-2xl font-medium mb-6">{t('最近播放')}</h2>
       <Suspense fallback={<PlaybackSkeleton />}>
         <Playback />
       </Suspense>

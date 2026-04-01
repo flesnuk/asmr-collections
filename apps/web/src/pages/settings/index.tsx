@@ -43,24 +43,28 @@ function Settings() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-4.5 max-w-2xl mx-auto mt-4 px-4 pb-8"
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="font-semibold text-sm">{t('Language')}</h3>
-        </div>
-        <Select
-          value={options.language || 'zh'}
-          onValueChange={val => setOptions(d => { d.language = val as Language; })}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en">English</SelectItem>
-            <SelectItem value="zh">简体中文</SelectItem>
-            <SelectItem value="ja">日本語</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <SettingItem
+        id="language-setting"
+        name={t('语言')}
+        description="语言 / Language / 言語"
+        action={
+          <Select
+            value={options.language || 'zh'}
+            onValueChange={val => setOptions(d => { d.language = val as Language; })}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="zh">简体中文</SelectItem>
+              <SelectItem value="ja">日本語</SelectItem>
+            </SelectContent>
+          </Select>
+        }
+      >
+        {t('语言')}
+      </SettingItem>
 
       <Separator />
 

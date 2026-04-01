@@ -2,6 +2,7 @@ import { useTheme } from 'next-themes';
 import { match } from 'ts-pattern';
 import { MenubarRadioGroup, MenubarRadioItem, MenubarSub, MenubarSubContent, MenubarSubTrigger } from '~/components/ui/menubar';
 import { DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from '../ui/dropdown-menu';
+import { useTranslation } from '~/lib/i18n';
 
 const themeToText = {
   light: '亮色模式',
@@ -14,13 +15,14 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ menuType }: ThemeToggleProps) {
+  const { t } = useTranslation();
   const { setTheme, theme } = useTheme();
 
   return match(menuType)
     .with('menubar', () => (
       <MenubarSub>
         <MenubarSubTrigger>
-          主题切换
+          {t('主题切换')}
         </MenubarSubTrigger>
         <MenubarSubContent>
           <MenubarRadioGroup
@@ -33,7 +35,7 @@ export function ThemeToggle({ menuType }: ThemeToggleProps) {
                   key={_theme}
                   value={_theme}
                 >
-                  {themeToText[_theme]}
+                  {t(themeToText[_theme])}
                 </MenubarRadioItem>
               ))}
           </MenubarRadioGroup>
@@ -43,7 +45,7 @@ export function ThemeToggle({ menuType }: ThemeToggleProps) {
     .with('dropdown', () => (
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>
-          主题切换
+          {t('主题切换')}
         </DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
           <DropdownMenuRadioGroup
@@ -56,7 +58,7 @@ export function ThemeToggle({ menuType }: ThemeToggleProps) {
                   key={_theme}
                   value={_theme}
                 >
-                  {themeToText[_theme]}
+                  {t(themeToText[_theme])}
                 </DropdownMenuRadioItem>
               ))}
           </DropdownMenuRadioGroup>

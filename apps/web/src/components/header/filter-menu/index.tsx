@@ -70,7 +70,7 @@ export function FilterMenu() {
               }}
               onSelect={e => e.preventDefault()}
             >
-              本地{search.storageFilter === 'exclude' ? '没' : ''}有
+              {search.storageFilter === 'exclude' ? t('本地没有') : t('本地有')}
             </MenubarCheckboxItem>
           </Activity>
           <MenubarSeparator />

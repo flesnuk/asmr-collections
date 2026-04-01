@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 const AGE_OPTIONS = [
   { label: '全年龄', value: 1 },
@@ -12,6 +13,7 @@ const AGE_OPTIONS = [
 ] as const;
 
 export function AgeCategory() {
+  const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ export function AgeCategory() {
   return (
     <MenubarSub>
       <MenubarSubTrigger className={cn('transition-opacity', search.age ? 'opacity-100' : 'opacity-60')}>
-        年龄分级
+        {t('年龄分级')}
       </MenubarSubTrigger>
       <MenubarSubContent>
         {AGE_OPTIONS
@@ -48,7 +50,7 @@ export function AgeCategory() {
               onCheckedChange={() => handleSelect(value)}
               onSelect={e => e.preventDefault()}
             >
-              {label}
+              {label === '全年龄' ? t('全年龄') : label}
             </MenubarCheckboxItem>
           ))}
       </MenubarSubContent>

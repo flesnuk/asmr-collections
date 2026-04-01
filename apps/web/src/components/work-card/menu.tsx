@@ -271,7 +271,7 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
 
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>字幕</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>{t('字幕')}</DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
           <DropdownMenuItem onSelect={e => e.preventDefault()} disabled={subtitlesIsMutating}>
