@@ -5,6 +5,7 @@ import * as cheerio from 'cheerio';
 import { fetcher } from './fetcher';
 
 const BASE_URI = 'https://www.dlsite.com';
+const PROXY_URI = process.env.DLSITE_PROXY_URI;
 
 /** Maps locale cookie value (e.g. 'zh-cn') to DLsite query param format (e.g. 'zh_CN') */
 function toDLsiteLocale(locale: string): string {
@@ -15,13 +16,20 @@ function toDLsiteLocale(locale: string): string {
 
 export async function fetchDLsiteInfo(id: string, locale = 'zh-cn'): Promise<WorkInfo | null> {
   const dlLocale = toDLsiteLocale(locale);
-  const product = await fetcher<Record<string, DLsiteResponse> | unknown[]>(`${BASE_URI}/home/product/info/ajax?product_id=${id}&locale=${dlLocale}`);
+
+  let currentBaseUri = BASE_URI;
+  let product = await fetcher<Record<string, DLsiteResponse> | unknown[]>(`${currentBaseUri}/home/product/info/ajax?product_id=${id}&locale=${dlLocale}`);
+
+  if (Array.isArray(product) && PROXY_URI) {
+    currentBaseUri = PROXY_URI;
+    product = await fetcher<Record<string, DLsiteResponse> | unknown[]>(`${currentBaseUri}/home/product/info/ajax?product_id=${id}&locale=${dlLocale}`);
+  }
 
   if (Array.isArray(product))
     return null;
 
   const data = product[id];
-  const other = await parserDLsiteHTML(id, locale);
+  const other = await parserDLsiteHTML(id, locale, currentBaseUri);
 
   return {
     id,
@@ -54,9 +62,9 @@ export async function fetchDLsiteInfo(id: string, locale = 'zh-cn'): Promise<Wor
   };
 }
 
-async function parserDLsiteHTML(id: string, locale = 'zh-cn') {
+async function parserDLsiteHTML(id: string, locale = 'zh-cn', baseUri = BASE_URI) {
   const dlLocale = toDLsiteLocale(locale);
-  const str = await fetcher<string>(`${BASE_URI}/maniax/work/=/product_id/${id}.html/?locale=${dlLocale}`, {
+  const str = await fetcher<string>(`${baseUri}/maniax/work/=/product_id/${id}.html/?locale=${dlLocale}`, {
     headers: {
       Cookie: `locale=${locale}`
     }
