@@ -7,11 +7,13 @@ import { logger } from '~/lib/logger';
 import { fetcher } from '~/lib/fetcher';
 import { mutateWorks } from '~/lib/mutation';
 import { notifyError, writeClipboard } from '~/utils';
+import { useTranslation } from '~/lib/i18n';
 
 import { parseWorkInput } from '@asmr-collections/shared';
 import type { BatchLogType, BatchSSEData, BatchSSEEvent } from '@asmr-collections/shared';
 
 export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boolean) => void, isSync = false) {
+  const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [logs, setLogs] = useImmer<Array<{ id: string, type: BatchLogType, message: string }>>([]);
   const [progress, setProgress] = useState({ current: 0, total: 0, percent: 0 });
@@ -28,7 +30,7 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
 
     setLogs([]);
     setIsProcessing(true);
-    toastIdRef.current = toast.loading('正在建立 SSE 连接...');
+    toastIdRef.current = toast.loading(t('正在建立 SSE 连接...'));
     logger.info('正在建立 SSE 连接');
 
     try {
@@ -40,7 +42,7 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
         const { validIds: targetIds, isValid, isEmpty } = parseWorkInput(createIds);
 
         if ((!isValid || isEmpty) && !isSync) {
-          toast.warning('请输入有效 ID');
+          toast.warning(t('请输入有效 ID'));
           return;
         }
 
@@ -98,7 +100,7 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
             logger.info(stats, '获取到 end 事件，操作结束');
           })
           .with({ event: 'error' }, ({ data }) => {
-            toast.error(`操作失败: ${data.message}`, {
+            toast.error(`${t('操作失败')}: ${data.message}`, {
               id: toastIdRef.current,
               description: data.details
             });
@@ -109,7 +111,7 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
 
       es.addEventListener('open', () => {
         logger.info('SSE 已建立连接');
-        toast.success('SSE 连接已建立', { id: toastIdRef.current });
+        toast.success(t('SSE 连接已建立'), { id: toastIdRef.current });
       });
 
       es.addEventListener('start', e => handleEvent(e.lastEventId, 'start', e.data));
@@ -129,13 +131,13 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
           return es.close();
         }
 
-        toast.error('SSE 连接错误', { id: toastIdRef.current });
+        toast.error(t('SSE 连接错误'), { id: toastIdRef.current });
         logger.error(e, 'SSE 连接错误');
         es.close();
       });
     } catch (err) {
       setIsProcessing(false);
-      notifyError(err, '启动批量操作失败', {
+      notifyError(err, t('启动批量操作失败'), {
         id: toastIdRef.current
       });
     }
@@ -146,11 +148,11 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
       eventSourceRef.current.close();
 
       setLogs(p => {
-        p.push({ id: Date.now().toString(), type: 'warning', message: '操作已被用户取消' });
+        p.push({ id: Date.now().toString(), type: 'warning', message: t('操作已被用户取消') });
       });
 
-      toast.info('已停止', {
-        description: '操作已被用户取消',
+      toast.info(t('已停止'), {
+        description: t('操作已被用户取消'),
         id: toastIdRef.current
       });
       logger.info('用户取消了操作');
@@ -163,13 +165,13 @@ export function useBatchOperation(type: 'update' | 'create', setOpen: (open: boo
       const errorData = logs.filter(({ type }) => type === 'error' || type === 'warning');
       writeClipboard(JSON.stringify(errorData, null, 2));
     } else {
-      toast.warning('没有错误日志');
+      toast.warning(t('没有错误日志'));
     }
   };
 
   const handleOpenChange = (val: boolean) => {
     if (!val && isProcessing) {
-      toast.warning('请先等待操作完成或点击停止');
+      toast.warning(t('请先等待操作完成或点击停止'));
       return;
     }
     setCreateIds('');

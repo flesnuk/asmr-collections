@@ -1,3 +1,4 @@
+import { useTranslation } from '~/lib/i18n';
 import { Button } from '~/components/ui/button';
 
 import { SettingItem } from './setting-item';
@@ -5,7 +6,8 @@ import { SettingItem } from './setting-item';
 import { useToastMutation } from '~/hooks/use-toast-fetch';
 import { RefreshCwIcon } from 'lucide-react';
 
-export function GenresSettings({ api}: { api: string }) {
+export function GenresSettings({ api }: { api: string }) {
+  const { t } = useTranslation();
   const [action, isLoading] = useToastMutation('genres-sync');
 
   const onClick = () => {
@@ -17,9 +19,9 @@ export function GenresSettings({ api}: { api: string }) {
         body: JSON.stringify({ api })
       },
       toastOps: {
-        loading: '正在同步标签...',
-        success: '标签同步完成',
-        error: '标签同步失败'
+        loading: t('正在同步标签...'),
+        success: t('标签同步完成'),
+        error: t('标签同步失败')
       }
     });
   };
@@ -27,7 +29,7 @@ export function GenresSettings({ api}: { api: string }) {
   return (
     <SettingItem
       id="genres-sync-from-asmr-one"
-      description="同步数据库的标签为和谐之前的名称"
+      description={t('同步数据库的标签为和谐之前的名称')}
       action={
         <Button
           variant="outline"
@@ -39,7 +41,7 @@ export function GenresSettings({ api}: { api: string }) {
         </Button>
       }
     >
-      同步标签
+      {t('同步标签')}
     </SettingItem>
   );
 }

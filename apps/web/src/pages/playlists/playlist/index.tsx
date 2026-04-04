@@ -15,6 +15,7 @@ import { createLazyRoute, getRouteApi } from '@tanstack/react-router';
 
 import { notifyError } from '~/utils';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 import { withQuery } from '@asmr-collections/shared';
 
 import type { PlaylistResponse } from '@asmr-collections/shared';
@@ -22,6 +23,7 @@ import type { PlaylistResponse } from '@asmr-collections/shared';
 const { useSearch, useParams } = getRouteApi('/playlists/$id');
 
 function Playlist() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { page, limit } = useSearch();
 
@@ -36,12 +38,12 @@ function Playlist() {
   });
 
   const { data } = useSWR<PlaylistResponse>(swrKey, fetcher, {
-    onError: e => notifyError(e, '获取播放列表失败'),
+    onError: e => notifyError(e, t('获取播放列表失败')),
     suspense: true
   });
 
   if (!data)
-    throw new Error('播放列表不存在');
+    throw new Error(t('播放列表不存在'));
 
   return (
     <motion.div

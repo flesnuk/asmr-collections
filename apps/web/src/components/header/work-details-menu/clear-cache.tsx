@@ -9,9 +9,13 @@ import { settingOptionsAtom } from '~/hooks/use-setting-options';
 
 import { mutateTracks } from '~/lib/mutation';
 
+import { useTranslation } from '~/lib/i18n';
+
 const apiAtom = focusAtom(settingOptionsAtom, optic => optic.prop('asmrone').prop('api'));
 
-export function ClearCacheMenu({ id}: { id: string }) {
+export function ClearCacheMenu({ id }: { id: string }) {
+  const { t } = useTranslation();
+
   const [clearTracksAction, m1] = useToastMutation('clear-tracks-cache');
   const api = useAtomValue(apiAtom);
 
@@ -24,9 +28,9 @@ export function ClearCacheMenu({ id}: { id: string }) {
       key,
       fetchOps: { method: 'POST' },
       toastOps: {
-        loading: '正在清理曲目缓存...',
-        success: '曲目缓存已清理',
-        error: '清理曲目缓存失败',
+        loading: `${id} ${t('正在清理曲目缓存...')}`,
+        success: `${id} ${t('曲目缓存已清理')}`,
+        error: `${id} ${t('清理曲目缓存失败')}`,
         finally() {
           mutateTracks(id);
         }
@@ -36,11 +40,11 @@ export function ClearCacheMenu({ id}: { id: string }) {
 
   return (
     <DropdownMenuItem
-      title="清理获取 tracks 的缓存"
+      title={t('清理获取 tracks 的缓存')}
       disabled={isMutating}
       onClick={handleClear}
     >
-      清理缓存
+      {t('清理缓存')}
     </DropdownMenuItem>
   );
 }

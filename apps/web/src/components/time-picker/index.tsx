@@ -22,6 +22,7 @@ import { motion } from 'framer-motion';
 
 import { cn } from '~/lib/utils';
 import { logger } from '~/lib/logger';
+import { useTranslation } from '~/lib/i18n';
 
 interface TimePickerProps {
   onConfirm: (timestamp: number) => void
@@ -40,6 +41,7 @@ const HOUR_VALUES = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const MINUTE_VALUES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 export function TimePicker({ onConfirm, onCancelTimer, open, setOpen }: TimePickerProps) {
+  const { t } = useTranslation();
   const currently = new Date();
   const [hour, setHour] = useState(() => {
     const currentHour = getHours(currently);
@@ -201,9 +203,9 @@ export function TimePicker({ onConfirm, onCancelTimer, open, setOpen }: TimePick
         showCloseButton={false}
         onOpenAutoFocus={e => e.preventDefault()}
       >
-        <DialogTitle className="sr-only">选择时间</DialogTitle>
+        <DialogTitle className="sr-only">{t('选择时间')}</DialogTitle>
         <DialogDescription className="sr-only">
-          选择一个时间以设置睡眠模式的停止播放时间
+          {t('选择一个时间以设置睡眠模式的停止播放时间')}
         </DialogDescription>
         <div className="w-full mx-auto rounded-sm overflow-hidden select-none">
           {/* Header */}
@@ -391,7 +393,7 @@ export function TimePicker({ onConfirm, onCancelTimer, open, setOpen }: TimePick
             size="sm"
             variant="ghost"
           >
-            取消定时
+            {t('取消定时')}
           </Button>
           <div className="flex gap-4">
             <Button
@@ -401,7 +403,7 @@ export function TimePicker({ onConfirm, onCancelTimer, open, setOpen }: TimePick
               size="sm"
               variant="ghost"
             >
-              取消
+              {t('取消')}
             </Button>
             <Button
               onClick={() => {
@@ -427,7 +429,7 @@ export function TimePicker({ onConfirm, onCancelTimer, open, setOpen }: TimePick
               size="sm"
               variant="ghost"
             >
-              确定
+              {t('确定')}
             </Button>
           </div>
         </div>

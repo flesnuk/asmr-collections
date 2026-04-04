@@ -1,4 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
+import { useTranslation } from '~/lib/i18n';
 
 import { SettingItem } from './setting-item';
 
@@ -7,17 +8,19 @@ interface Props {
   onChange: (value: 'high' | 'low') => void
 }
 
-const options = [
-  { label: '质量优先', value: 'high' },
-  { label: '流畅优先', value: 'low' }
-];
-
 export function ASMRONEQualitySettings({ value, onChange }: Props) {
+  const { t } = useTranslation();
+
+  const options = [
+    { label: t('质量优先'), value: 'high' },
+    { label: t('体积优先'), value: 'low' }
+  ];
+
   return (
     <SettingItem
       id="asmr-one-quality"
-      name="ASMR.ONE 音质"
-      description="获取音频时的质量偏好"
+      name={t('ASMR.ONE 音质')}
+      description={t('获取音频时的质量偏好')}
       action={
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger>
@@ -33,7 +36,7 @@ export function ASMRONEQualitySettings({ value, onChange }: Props) {
         </Select>
       }
     >
-      选择 ASMR.ONE 音质
+      {t('选择 ASMR.ONE 音质')}
     </SettingItem>
   );
 }

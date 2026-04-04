@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../ui/spinner';
 import { cn } from '~/lib/utils';
 
+import { useTranslation } from '~/lib/i18n';
+
 async function fetcher<T>(key: string) {
   return fetchJsonp<T>(callbackName => `${key}&callback=${callbackName}`);
 }
@@ -22,6 +24,7 @@ interface WorkPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function WorkPreview({ workId, originalId, ...props }: WorkPreviewProps) {
+  const { t } = useTranslation();
   const key = withQuery('https://chobit.cc/api/v1/dlsite/embed', { workno: originalId ?? workId });
   const [iframeLoading, setIframeLoading] = useState(true);
 
@@ -50,7 +53,7 @@ export function WorkPreview({ workId, originalId, ...props }: WorkPreviewProps) 
             className="flex justify-center gap-2 items-center text-muted-foreground"
           >
             <Spinner className="size-5" />
-            <span className="text-sm">正在加载试听...</span>
+            <span className="text-sm">{t('正在加载试听...')}</span>
           </motion.div>
         )}
       </AnimatePresence>

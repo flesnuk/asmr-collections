@@ -23,6 +23,7 @@ import { formatISODate } from '@asmr-collections/shared';
 
 import { cn } from '~/lib/utils';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import type { Work } from '@asmr-collections/shared';
 
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export function WorkCard({ work, showMenus = true, showImageBadge = true }: Props) {
+  const { t } = useTranslation();
   const options = useAtomValue(storageOptionsAtom);
 
   const { search, exclude, include } = useGenerateSearch();
@@ -42,7 +44,7 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
     : null;
 
   const { data } = useSWRImmutable<{ exists: boolean }>(existsApi, fetcher, {
-    onError: error => notifyError(error, '检查是否存在于音声库时出错')
+    onError: error => notifyError(error, t('检查是否存在于音声库时出错'))
   });
 
   return (
@@ -62,11 +64,11 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
             <Badge
               className="absolute top-2 left-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-copy"
               onClick={() => {
-                writeClipboard(work.id, 'ID 已复制到剪贴板');
+                writeClipboard(work.id, t('ID 已复制到剪贴板'));
               }}
             >
               {work.id}
-              {work.subtitles ? <span>带字幕</span> : null}
+              {work.subtitles ? <span>{t('带字幕')}</span> : null}
             </Badge>
             <Badge
               className={cn(
@@ -78,14 +80,14 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
               )}
             >
               {match(work.ageCategory)
-                .with(1, () => '全年龄')
+                .with(1, () => t('全年龄'))
                 .with(2, () => 'R15')
                 .otherwise(() => 'R18')}
             </Badge>
             {data?.exists === false
               ? (
                 <Badge className="absolute top-2 right-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-default">
-                  不存在于本地库
+                  {t('不存在于本地库')}
                 </Badge>
               )
               : null}

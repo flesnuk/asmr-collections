@@ -7,12 +7,14 @@ import { Volume1Icon, Volume2 } from 'lucide-react';
 import { Time, TimeSlider, VolumeSlider } from '@vidstack/react';
 
 import { isIOSSafari } from '../../utils';
+import { useTranslation } from '~/lib/i18n';
 
 export function PlayerPageMain() {
+  const { t } = useTranslation();
   const mediaState = useAtomValue(mediaStateAtom);
 
-  const title = mediaState.currentTrack?.title || '未知曲目';
-  const workTitle = mediaState.work?.name || '未知作品';
+  const title = mediaState.currentTrack?.title || t('未知曲目');
+  const workTitle = mediaState.work?.name || t('未知作品');
 
   const showVolumeSlider = !isIOSSafari();
 

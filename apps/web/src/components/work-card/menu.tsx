@@ -23,12 +23,14 @@ import { mutatePlaylist, mutateWorkInfo, mutateWorks } from '~/lib/mutation';
 import { fetcher } from '~/lib/fetcher';
 
 import type { Work, PlaylistsResponse } from '@asmr-collections/shared';
+import { useTranslation } from '~/lib/i18n';
 
 interface Props {
   work: Work
 }
 
 export const Menu = memo(({ work }: Props) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const [updateAction, updateIsMutating] = useToastMutation('update');
@@ -38,9 +40,9 @@ export const Menu = memo(({ work }: Props) => {
       key: `/api/work/update/${work.id}`,
       fetchOps: { method: 'PUT' },
       toastOps: {
-        loading: `${work.id} 数据更新中...`,
-        success: `${work.id} 数据更新成功`,
-        error: `${work.id} 数据更新失败`,
+        loading: `${work.id} ${t('数据更新中')}...`,
+        success: `${work.id} ${t('数据更新成功')}`,
+        error: `${work.id} ${t('数据更新失败')}`,
         finally() {
           setOpen(false);
           mutateWorks();
@@ -53,8 +55,8 @@ export const Menu = memo(({ work }: Props) => {
 
   const handleDelete = async () => {
     const yes = await confirm({
-      title: '确定要删除收藏吗?',
-      description: '认真考虑哦'
+      title: t('确定要删除收藏吗?'),
+      description: t('认真考虑哦')
     });
     if (!yes) return;
 
@@ -62,9 +64,9 @@ export const Menu = memo(({ work }: Props) => {
       key: `/api/work/delete/${work.id}`,
       fetchOps: { method: 'DELETE' },
       toastOps: {
-        loading: `${work.id} 删除中...`,
-        success: `${work.id} 删除成功`,
-        error: `${work.id} 删除失败`,
+        loading: `${work.id} ${t('删除中...')}...`,
+        success: `${work.id} ${t('删除成功')}`,
+        error: `${work.id} ${t('删除失败')}`,
         finally() {
           setOpen(false);
           mutateWorks();
@@ -88,19 +90,19 @@ export const Menu = memo(({ work }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 max-[400px]:w-40" onInteractOutside={() => setOpen(false)}>
         <DropdownMenuLabel>
-          作品菜单
+          {t('作品菜单')}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem disabled={updateIsMutating} onClick={handleUpdate}>
-            数据更新
+            {t('数据更新')}
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
             onClick={handleDelete}
             disabled={deleteIsMutating}
           >
-            删除收藏
+            {t('删除收藏')}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -109,43 +111,43 @@ export const Menu = memo(({ work }: Props) => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>作品详情</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>{t('作品详情')}</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem>
-                  售价：{work.price}
+                  {t('售价')}：{work.price}
                   <sup className="font-bold">(JPY)</sup>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  评分：{work.rate}
+                  {t('评分')}：{work.rate}
                   <sup className="font-bold">({work.rateCount})</sup>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  销量：{work.sales}
+                  {t('销量')}：{work.sales}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  收藏数：{work.wishlistCount}
+                  {t('收藏数')}：{work.wishlistCount}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  赏析数：{work.reviewCount}
+                  {t('赏析数')}：{work.reviewCount}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  发售日期：{formatISODate(work.releaseDate)}
+                  {t('发售日期')}：{formatISODate(work.releaseDate)}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  收藏日期：{formatISODate(work.createdAt)}
+                  {t('收藏日期')}：{formatISODate(work.createdAt)}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  更新日期：{formatISODate(work.updatedAt)}
+                  {t('更新日期')}：{formatISODate(work.updatedAt)}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>语言版本</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>{t('语言版本')}</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                {work.languageEditions.length === 0 && <DropdownMenuItem>没有其它版本</DropdownMenuItem>}
+                {work.languageEditions.length === 0 && <DropdownMenuItem>{t('没有其它版本')}</DropdownMenuItem>}
                 {work.languageEditions.map(languageEdition => (
                   <DropdownMenuItem asChild key={languageEdition.workId}>
                     <Link to={externalUrl.dlsite(languageEdition.workId)} isExternal showAnchorIcon>
@@ -177,11 +179,12 @@ export const Menu = memo(({ work }: Props) => {
 });
 
 export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string, existsSubtitles: boolean, onClose?: () => void }) {
+  const { t } = useTranslation();
   const [subtitlesAction, subtitlesIsMutating] = useToastMutation('subtitles');
 
   const handleUpload = async (subtitles?: FileList | null) => {
     if (!subtitles || subtitles.length === 0) {
-      toast.error('请选择字幕文件');
+      toast.error(t('请选择字幕文件'));
       return;
     }
     const formdata = new FormData();
@@ -194,8 +197,8 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
     if (!['zip'].includes(fileExt) || fileSize > 2 * 1024 * 1024) {
       toast.error(
         <div>
-          <p>文件格式仅支持 <code>zip</code></p>
-          <p>并且大小不超过 <code>2MB</code></p>
+          <p>{t('文件格式仅支持')} <code>zip</code></p>
+          <p>{t('并且大小不超过')} <code>2MB</code></p>
         </div>
       );
       return;
@@ -205,8 +208,8 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
 
     if (existsSubtitles) {
       const yes = await confirm({
-        title: '可能已存在字幕，确定要覆盖吗?',
-        description: '覆盖后不可恢复'
+        title: t('可能已存在字幕，确定要覆盖吗?'),
+        description: t('覆盖后不可恢复')
       });
       if (!yes) return;
     }
@@ -218,14 +221,14 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
         body: formdata
       },
       toastOps: {
-        loading: `${id} 字幕上传中...`,
+        loading: `${id} ${t('字幕上传中...')}`,
         success() {
           // 重新请求字幕信息
           mutateWorkInfo(id);
-          return `${id} 字幕上传成功`;
+          return `${id} ${t('字幕上传成功')}`;
         },
-        error: `${id} 字幕上传失败`,
-        description: `上传的字幕名称为: ${file.name}`
+        error: `${id} ${t('字幕上传失败')}`,
+        description: `${t('上传的字幕名称为:')} ${file.name}`
       }
     });
 
@@ -234,18 +237,18 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
 
   const handleDownload = () => {
     if (!existsSubtitles)
-      return toast.error('字幕不存在');
+      return toast.error(t('字幕不存在'));
 
     window.open(withQuery(`/api/subtitles/${id}`, { action: 'download' }));
   };
 
   const handleDelete = async () => {
     if (!existsSubtitles)
-      return toast.error('字幕不存在');
+      return toast.error(t('字幕不存在'));
 
     const yes = await confirm({
-      title: '确定要删除字幕吗?',
-      description: '认真考虑哦'
+      title: t('确定要删除字幕吗?'),
+      description: t('认真考虑哦')
     });
 
     if (!yes) return;
@@ -256,19 +259,19 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
         method: 'DELETE'
       },
       toastOps: {
-        loading: `${id} 字幕删除中...`,
+        loading: `${id} ${t('字幕删除中...')}`,
         success() {
           mutateWorkInfo(id);
-          return `${id} 字幕删除成功`;
+          return `${id} ${t('字幕删除成功')}`;
         },
-        error: `${id} 字幕删除失败`
+        error: `${id} ${t('字幕删除失败')}`
       }
     });
   };
 
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>字幕</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>{t('字幕')}</DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
           <DropdownMenuItem onSelect={e => e.preventDefault()} disabled={subtitlesIsMutating}>
@@ -279,14 +282,14 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
               onChange={e => handleUpload(e.target.files)}
             />
             <Label htmlFor="subtitles-file-upload" className="leading-5 w-full">
-              上传字幕
+              {t('上传字幕')}
             </Label>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDownload} disabled={subtitlesIsMutating}>
-            下载字幕
+            {t('下载字幕')}
           </DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={handleDelete} disabled={subtitlesIsMutating}>
-            删除字幕
+            {t('删除字幕')}
           </DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
@@ -294,7 +297,8 @@ export function SubtitlesSubMenu({ id, existsSubtitles, onClose }: { id: string,
   );
 }
 
-export function PlaylistSubMenu({ workId}: { workId: string }) {
+export function PlaylistSubMenu({ workId }: { workId: string }) {
+  const { t } = useTranslation();
   const [pagination, setPagination] = useState({ page: 1, limit: 8 });
 
   const swrKey = withQuery('/api/playlist', {
@@ -330,9 +334,9 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
       key: `/api/playlist/${playlistId}/works/${workId}`,
       fetchOps: { method: 'PUT' },
       toastOps: {
-        loading: '添加到播放列表中...',
-        success: '添加成功',
-        error: '添加失败',
+        loading: t('添加到播放列表中...'),
+        success: t('添加成功'),
+        error: t('添加失败'),
         finally() {
           mutatePlaylist(playlistId);
         }
@@ -345,9 +349,9 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
       key: `/api/playlist/${playlistId}/works/${workId}`,
       fetchOps: { method: 'DELETE' },
       toastOps: {
-        loading: '从播放列表中移除中...',
-        success: '移除成功',
-        error: '移除失败',
+        loading: t('从播放列表中移除中...'),
+        success: t('移除成功'),
+        error: t('移除失败'),
         finally() {
           mutatePlaylist(playlistId);
         }
@@ -365,11 +369,11 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
   if (isLoading || !data || error) {
     return (
       <DropdownMenuSub>
-        <DropdownMenuSubTrigger>播放列表</DropdownMenuSubTrigger>
+        <DropdownMenuSubTrigger>{t('播放列表')}</DropdownMenuSubTrigger>
         <DropdownMenuPortal>
           <DropdownMenuSubContent className="flex justify-center h-14 items-center">
             <Loading isLoading={isLoading} />
-            {error && <DropdownMenuItem disabled>加载失败</DropdownMenuItem>}
+            {error && <DropdownMenuItem disabled>{t('加载失败')}</DropdownMenuItem>}
           </DropdownMenuSubContent>
         </DropdownMenuPortal>
       </DropdownMenuSub>
@@ -378,7 +382,7 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
 
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>播放列表</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>{t('播放列表')}</DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
           {data.data.map(playlist => (
@@ -396,7 +400,7 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
           ))}
           {data.data.length === 0 && (
             <DropdownMenuItem disabled>
-              暂无播放列表
+              {t('暂无播放列表')}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
@@ -411,7 +415,7 @@ export function PlaylistSubMenu({ workId}: { workId: string }) {
             trigger={
               <DropdownMenuItem className="justify-center" onSelect={e => e.preventDefault()}>
                 <PlusIcon className="size-5 shrink-0" />
-                创建播放列表
+                {t('创建播放列表')}
               </DropdownMenuItem>
             }
           />

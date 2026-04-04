@@ -16,6 +16,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { useShortcut } from '~/hooks/use-shortcut';
 import { storageOptionsAtom } from '~/hooks/use-setting-options';
+import { useTranslation } from '~/lib/i18n';
 
 export function OtherMenu() {
   const [showAddWorkDialog, setShowAddWorkDialog] = useState(false);
@@ -30,11 +31,13 @@ export function OtherMenu() {
   useShortcut('u', () => setShowBatchUpdateDialog(p => !p));
   useShortcut('i', () => setShowAddWorkDialog(p => !p));
 
+  const { t } = useTranslation();
+
   return (
     <>
       <MenubarMenu>
         <MenubarTrigger>
-          菜单
+          {t('菜单')}
         </MenubarTrigger>
         <MenubarContent align="end">
           <GoToDetail />
@@ -42,18 +45,18 @@ export function OtherMenu() {
           <MenubarItem
             onClick={() => setShowAddWorkDialog(p => !p)}
           >
-            添加作品
+            {t('添加作品')}
             <MenubarShortcut>⌘I</MenubarShortcut>
           </MenubarItem>
           <MenubarItem
             onClick={() => setShowBatchAddDialog(p => !p)}
           >
-            批量添加
+            {t('批量添加')}
           </MenubarItem>
           <MenubarItem
             onClick={() => setShowBatchUpdateDialog(p => !p)}
           >
-            批量更新
+            {t('批量更新')}
             <MenubarShortcut>⌘U</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />
@@ -62,7 +65,7 @@ export function OtherMenu() {
             onClick={() => setShowSyncStorageDialog(p => !p)}
             disabled={!storage.enabled}
           >
-            同步音声库
+            {t('同步音声库')}
           </MenubarItem>
           <MenubarSeparator />
           <HiddenImage menuType="menubar" />
@@ -70,13 +73,13 @@ export function OtherMenu() {
           <ThemeToggle menuType="menubar" />
           <MenubarSeparator />
           <MenubarItem onClick={() => navigate({ to: '/playback' })}>
-            播放记录
+            {t('播放记录')}
           </MenubarItem>
           <MenubarItem onClick={() => navigate({ to: '/playlists' })}>
-            播放列表
+            {t('播放列表')}
           </MenubarItem>
           <MenubarItem onClick={() => navigate({ to: '/settings' })}>
-            设置
+            {t('设置')}
             <MenubarShortcut>⌘,</MenubarShortcut>
           </MenubarItem>
         </MenubarContent>

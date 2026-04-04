@@ -2,6 +2,7 @@ import { ListVideoIcon } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from '~/lib/i18n';
 
 import type { Playback, Tracks } from '@asmr-collections/shared';
 import type { Track } from '@asmr-collections/shared';
@@ -14,6 +15,7 @@ interface PlaybackButtonProps {
 }
 
 export function PlaybackButton({ id, currentPlayWorkId, playback, handlePlayback }: PlaybackButtonProps) {
+  const { t } = useTranslation();
   const show = playback && !(currentPlayWorkId === id);
 
   return (
@@ -30,7 +32,7 @@ export function PlaybackButton({ id, currentPlayWorkId, playback, handlePlayback
             onClick={() => handlePlayback(playback.track, playback)}
           >
             <ListVideoIcon className="mb-0.5" />
-            继续上次播放
+            {t('继续上次播放')}
           </Button>
         </motion.div>
       )}

@@ -9,10 +9,12 @@ import { focusAtom } from 'jotai-optics';
 
 import { useSimilar } from '~/hooks/use-similar';
 import { mediaStateAtom } from '~/hooks/use-media-state';
+import { useTranslation } from '~/lib/i18n';
 
 const workAtom = focusAtom(mediaStateAtom, optic => optic.prop('work'));
 
 export function Similar() {
+  const { t } = useTranslation();
   // 打开播放器时一定存在
   const { id } = useAtomValue(workAtom)!;
 
@@ -34,7 +36,7 @@ export function Similar() {
               {item.name}
             </ItemTitle>
             <Button variant="secondary" asChild>
-              <Link to="/work-details/$id" params={{ id: item.id }}>详情</Link>
+              <Link to="/work-details/$id" params={{ id: item.id }}>{t('详情')}</Link>
             </Button>
           </ItemContent>
         </Item>

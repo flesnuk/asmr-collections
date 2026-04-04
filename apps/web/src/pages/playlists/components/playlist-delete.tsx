@@ -4,20 +4,22 @@ import { confirm } from '~/components/ui/confirmer';
 
 import { useNavigate } from '@tanstack/react-router';
 import { useToastMutation } from '~/hooks/use-toast-fetch';
+import { useTranslation } from '~/lib/i18n';
 
 interface Props {
   id: string
 }
 
 export function PlaylistDelete({ id }: Props) {
+  const { t } = useTranslation();
   const [action, isLoading] = useToastMutation('playlist-delete');
 
   const navigate = useNavigate();
 
   const onDelete = async () => {
     const yes = await confirm({
-      title: '确定要删除这个播放列表吗？',
-      description: '删除后将无法恢复',
+      title: t('确定要删除这个播放列表吗？'),
+      description: t('删除后将无法恢复'),
       ActionProps: {
         variant: 'destructive'
       }
@@ -31,12 +33,12 @@ export function PlaylistDelete({ id }: Props) {
         method: 'DELETE'
       },
       toastOps: {
-        loading: '删除中...',
+        loading: t('删除中...'),
         success() {
           navigate({ to: '/playlists' });
-          return '删除成功';
+          return t('删除成功');
         },
-        error: '删除失败'
+        error: t('删除失败')
       }
     });
   };
@@ -44,7 +46,7 @@ export function PlaylistDelete({ id }: Props) {
   return (
     <Button variant="destructive" onClick={onDelete} disabled={isLoading}>
       <Loading isLoading={isLoading} />
-      删除
+      {t('删除')}
     </Button>
   );
 }

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from '~/lib/i18n';
 
 import { SettingItem } from './setting-item';
 import { SettingInput } from './setting-input';
@@ -14,6 +15,8 @@ interface SmartPathSettingsProps {
 }
 
 export function SmartPathSettings({ options, setOptions }: SmartPathSettingsProps) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <SettingItem
@@ -21,7 +24,7 @@ export function SmartPathSettings({ options, setOptions }: SmartPathSettingsProp
         checked={options.enabled}
         onCheckedChange={checked => setOptions('enabled', checked)}
       >
-        启用智能路径
+        {t('启用智能路径')}
       </SettingItem>
 
       <motion.div
@@ -58,7 +61,7 @@ export function SmartPathSettings({ options, setOptions }: SmartPathSettingsProp
             setOptions('pattern', value.split(','));
           }}
         >
-          音频类型偏好
+          {t('音频类型偏好')}
         </SettingInput>
       </motion.div>
     </div>

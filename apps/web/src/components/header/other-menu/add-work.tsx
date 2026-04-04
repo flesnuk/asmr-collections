@@ -10,8 +10,10 @@ import { useToastMutation } from '~/hooks/use-toast-fetch';
 
 import { parseWorkInput } from '@asmr-collections/shared';
 import { mutateSimilar, mutateWorks } from '~/lib/mutation';
+import { useTranslation } from '~/lib/i18n';
 
 export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
+  const { t } = useTranslation();
   const [id, setId] = useState<string>('');
 
   const [createAction, isMutating] = useToastMutation<{ message?: string }>('create');
@@ -25,15 +27,15 @@ export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open
       key: `/api/work/create/${validIds[0]}`,
       fetchOps: { method: 'POST' },
       toastOps: {
-        loading: `${id} 添加中...`,
+        loading: `${id} ${t('添加中...')}`,
         success() {
-          return `${id} 添加成功`;
+          return `${id} ${t('添加成功')}`;
         },
         description(data) {
           return data.message;
         },
         error() {
-          return `${id} 添加失败`;
+          return `${id} ${t('添加失败')}`;
         },
         finally() {
           mutateWorks();
@@ -48,7 +50,7 @@ export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open
       open={open}
       onOpenChange={isOpen => {
         if (isMutating) {
-          toast.warning('请先等待添加完成');
+          toast.warning(t('请先等待添加完成'));
         } else {
           setId('');
           setOpen(isOpen);
@@ -57,20 +59,20 @@ export function AddWorkDialog({ open, setOpen }: { open: boolean, setOpen: (open
     >
       <DialogContent className="rounded-lg max-w-[90%] sm:max-w-md" onInteractOutside={e => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>添加作品</DialogTitle>
-          <DialogDescription>从 DLsite 添加作品</DialogDescription>
+          <DialogTitle>{t('添加作品')}</DialogTitle>
+          <DialogDescription>{t('从 DLsite 添加作品')}</DialogDescription>
         </DialogHeader>
         <div className="flex gap-4">
           <WorkInput
-            placeholder="作品 ID"
+            placeholder={t('作品 ID')}
             value={id}
-            initialTip="支持 R/B/V ID"
-            validTip="按回车或点击按钮添加"
+            initialTip={t('支持 R/B/V ID')}
+            validTip={t('按回车或点击按钮添加')}
             onValueChange={v => setId(v)}
             onKeyUp={e => e.key === 'Enter' && handleCreate()}
           />
           <Button variant="outline" onClick={handleCreate} disabled={buttonDisabled}>
-            添加
+            {t('添加')}
           </Button>
         </div>
       </DialogContent>

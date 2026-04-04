@@ -1,12 +1,15 @@
 /* eslint-disable @eslint-react/no-array-index-key -- skeleton only */
 import { Skeleton } from '~/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
+import { useTranslation } from '~/lib/i18n';
 
 export function StorageSkeleton() {
+  const { t } = useTranslation();
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">存储设置</h2>
+        <h2 className="text-lg font-semibold">{t('存储设置')}</h2>
         <Skeleton className="w-24 h-9" />
       </div>
       <div className="border rounded-md">
@@ -14,10 +17,10 @@ export function StorageSkeleton() {
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-15">ID</TableHead>
-              <TableHead className="min-w-25">名称</TableHead>
-              <TableHead className="min-w-20">优先级</TableHead>
-              <TableHead className="min-w-30">备注</TableHead>
-              <TableHead className="min-w-45">操作</TableHead>
+              <TableHead className="min-w-25">{t('名称')}</TableHead>
+              <TableHead className="min-w-20">{t('优先级')}</TableHead>
+              <TableHead className="min-w-30">{t('备注')}</TableHead>
+              <TableHead className="min-w-45">{t('操作')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

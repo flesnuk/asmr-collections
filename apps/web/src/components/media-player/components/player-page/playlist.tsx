@@ -10,10 +10,12 @@ import { DragDropProvider } from '@dnd-kit/react';
 import { useSortable, isSortable } from '@dnd-kit/react/sortable';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 import type { Track } from '@asmr-collections/shared';
 
 export function Playlist() {
+  const { t } = useTranslation();
   const [mediaState, setMediaState] = useAtom(mediaStateAtom);
 
   const current = mediaState.currentTrack;
@@ -30,7 +32,7 @@ export function Playlist() {
   };
 
   if (!tracks || tracks.length === 0)
-    return <div className="w-full my-8 text-center">暂无曲目</div>;
+    return <div className="w-full my-8 text-center">{t('暂无曲目')}</div>;
 
   return (
     <div className="mt-4">

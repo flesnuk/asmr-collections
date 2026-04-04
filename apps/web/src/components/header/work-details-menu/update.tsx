@@ -4,7 +4,11 @@ import { DropdownMenuItem } from '~/components/ui/dropdown-menu';
 
 import { mutateSimilar, mutateWorkInfo } from '~/lib/mutation';
 
+import { useTranslation } from '~/lib/i18n';
+
 export function UpdateMenu({ id }: { id: string }) {
+  const { t } = useTranslation();
+
   const [updateAction, updateIsMutating] = useToastMutation('update');
 
   const update = () => {
@@ -12,9 +16,9 @@ export function UpdateMenu({ id }: { id: string }) {
       key: `/api/work/update/${id}`,
       fetchOps: { method: 'PUT' },
       toastOps: {
-        loading: `${id} 数据更新中...`,
-        success: `${id} 数据更新成功`,
-        error: `${id} 数据更新失败`,
+        loading: `${id} ${t('数据更新中')}...`,
+        success: `${id} ${t('数据更新成功')}`,
+        error: `${id} ${t('数据更新失败')}`,
         finally() {
           mutateWorkInfo(id);
         }
@@ -27,9 +31,9 @@ export function UpdateMenu({ id }: { id: string }) {
       key: `/api/work/update/embedding/${id}`,
       fetchOps: { method: 'PUT' },
       toastOps: {
-        loading: `${id} 向量信息更新中...`,
-        success: `${id} 向量信息更新成功`,
-        error: `${id} 向量信息更新失败`,
+        loading: `${id} ${t('向量信息更新中...')}`,
+        success: `${id} ${t('向量信息更新成功')}`,
+        error: `${id} ${t('向量信息更新失败')}`,
         finally() {
           mutateSimilar(id);
         }
@@ -40,10 +44,10 @@ export function UpdateMenu({ id }: { id: string }) {
   return (
     <>
       <DropdownMenuItem disabled={updateIsMutating} onClick={update}>
-        更新信息
+        {t('更新信息')}
       </DropdownMenuItem>
       <DropdownMenuItem disabled={updateIsMutating} onClick={updateVector}>
-        更新向量
+        {t('更新向量')}
       </DropdownMenuItem>
     </>
   );
