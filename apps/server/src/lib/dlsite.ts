@@ -6,14 +6,22 @@ import { fetcher } from './fetcher';
 
 const BASE_URI = 'https://www.dlsite.com';
 
-export async function fetchDLsiteInfo(id: string): Promise<WorkInfo | null> {
-  const product = await fetcher<Record<string, DLsiteResponse> | unknown[]>(`${BASE_URI}/home/product/info/ajax?product_id=${id}&locale=zh_CN`);
+/** Maps locale cookie value (e.g. 'zh-cn') to DLsite query param format (e.g. 'zh_CN') */
+function toDLsiteLocale(locale: string): string {
+  if (locale.startsWith('en')) return 'en_US';
+  if (locale.startsWith('ja')) return 'ja_JP';
+  return 'zh_CN';
+}
+
+export async function fetchDLsiteInfo(id: string, locale = 'zh-cn'): Promise<WorkInfo | null> {
+  const dlLocale = toDLsiteLocale(locale);
+  const product = await fetcher<Record<string, DLsiteResponse> | unknown[]>(`${BASE_URI}/home/product/info/ajax?product_id=${id}&locale=${dlLocale}`);
 
   if (Array.isArray(product))
     return null;
 
   const data = product[id];
-  const other = await parserDLsiteHTML(id);
+  const other = await parserDLsiteHTML(id, locale);
 
   return {
     id,
@@ -46,10 +54,11 @@ export async function fetchDLsiteInfo(id: string): Promise<WorkInfo | null> {
   };
 }
 
-async function parserDLsiteHTML(id: string) {
-  const str = await fetcher<string>(`${BASE_URI}/maniax/work/=/product_id/${id}.html/?locale=zh_CN`, {
+async function parserDLsiteHTML(id: string, locale = 'zh-cn') {
+  const dlLocale = toDLsiteLocale(locale);
+  const str = await fetcher<string>(`${BASE_URI}/maniax/work/=/product_id/${id}.html/?locale=${dlLocale}`, {
     headers: {
-      Cookie: 'locale=zh-cn'
+      Cookie: `locale=${locale}`
     }
   });
 
@@ -67,10 +76,10 @@ async function parserDLsiteHTML(id: string) {
   $('table#work_outline').find('th').each((_, el) => {
     const text = $(el).text().trim();
 
-    if (text === '声优')
+    if (text === '声優' || text === '声优' || text === 'Voice Actor')
       artists = $(el).parent('tr').find('td a').map((_, el) => $(el).text().trim()).toArray();
 
-    else if (text === '插画')
+    else if (text === 'イラスト' || text === '插画' || text === 'Illustration')
       illustrators = $(el).parent('tr').find('td a').map((_, el) => $(el).text().trim()).toArray();
   });
 
@@ -81,7 +90,8 @@ async function parserDLsiteHTML(id: string) {
     };
   }).toArray();
 
-  const intro = $('meta[name="description"]').attr('content')?.replace(/「DLsite.*/, '').trim() ?? '';
+  const quote = locale === 'en-us' ? '"' : '「';
+  const intro = $('meta[name="description"]').attr('content')?.replace(new RegExp(`${quote}DLsite.*`), '').trim() ?? '';
 
   return {
     id,

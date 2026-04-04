@@ -1,6 +1,7 @@
 import type { WorkInfo } from '~/types/source';
 
 import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
 import { HTTPError } from '@asmr-collections/shared';
 
 import { getPrisma } from '~/lib/db';
@@ -9,27 +10,30 @@ import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { findwork, formatError, formatMessage, saveCoverImage } from '~/router/utils';
 
 import { clearSimilarCache } from './similar';
+import { getT } from '~/i18n';
 
 export const createApp = new Hono();
 
 createApp.post('/create/:id', async c => {
   const { id } = c.req.param();
+  const locale = getCookie(c, 'locale') ?? 'zh-cn';
+  const t = getT(locale);
 
   let data: WorkInfo | null;
   let embedding: number[] | undefined;
 
   try {
-    data = await fetchDLsiteInfo(id);
+    data = await fetchDLsiteInfo(id, locale);
   } catch (e) {
     console.error(e);
     return c.json(formatError(e), 500);
   }
 
-  if (!data) return c.json(formatMessage('DLsite 不存在此作品'), 404);
+  if (!data) return c.json(formatMessage(t('DLsite 不存在此作品')), 404);
 
   try {
     if (await findwork(id))
-      return c.json(formatMessage('作品已收藏'), 400);
+      return c.json(formatMessage(t('作品已收藏')), 400);
   } catch (e) {
     console.error(e);
     return c.json(formatError(e), 500);
@@ -44,14 +48,14 @@ createApp.post('/create/:id', async c => {
     else if (e instanceof Error)
       embeddingError = new HTTPError(e.message, 500);
 
-    console.error(`${id} 生成向量失败`, e);
+    console.error(t('{id} 生成向量失败', { id }), e);
   }
 
   try {
     const coverPath = await saveCoverImage(data.image_main, id);
     data.image_main = coverPath ?? data.image_main;
   } catch (e) {
-    console.error('保存 cover 图片失败', e);
+    console.error(t('保存 cover 图片失败'), e);
   }
 
   const prisma = getPrisma();
@@ -65,7 +69,7 @@ createApp.post('/create/:id', async c => {
       await clearSimilarCache(id);
     }
 
-    const errorText = embeddingError ? `Jina API 生成向量失败: ${embeddingError.data?.detail ?? embeddingError.message}` : '';
+    const errorText = embeddingError ? `Jina API ${t('生成向量失败')}: ${embeddingError.data?.detail ?? embeddingError.message}` : '';
 
     return c.json(formatMessage(errorText, work));
   } catch (e) {
