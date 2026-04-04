@@ -11,18 +11,14 @@ import { BadgeMenu } from './badge-menu';
 import { GenresPopover } from './genres-popover';
 import { AuditionDrawer } from './audition-drawer';
 
-import { storageOptionsAtom } from '~/hooks/use-setting-options';
 
 import { match } from 'ts-pattern';
-import { useAtomValue } from 'jotai';
-import useSWRImmutable from 'swr/immutable';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 
-import { notifyError, writeClipboard } from '~/utils';
+import { writeClipboard } from '~/utils';
 import { formatISODate } from '@asmr-collections/shared';
 
 import { cn } from '~/lib/utils';
-import { fetcher } from '~/lib/fetcher';
 import { useTranslation } from '~/lib/i18n';
 
 import type { Work } from '@asmr-collections/shared';
@@ -35,17 +31,7 @@ interface Props {
 
 export function WorkCard({ work, showMenus = true, showImageBadge = true }: Props) {
   const { t } = useTranslation();
-  const options = useAtomValue(storageOptionsAtom);
-
   const { search, exclude, include } = useGenerateSearch();
-
-  const existsApi = options.showMissingTags && showImageBadge
-    ? `/api/library/exists/${work.id}`
-    : null;
-
-  const { data } = useSWRImmutable<{ exists: boolean }>(existsApi, fetcher, {
-    onError: error => notifyError(error, t('检查是否存在于音声库时出错'))
-  });
 
   return (
     <Card className="bg-zinc-100 dark:bg-zinc-900 overflow-hidden grid grid-rows-[auto_auto_1fr] h-full py-0 gap-2">
@@ -84,11 +70,27 @@ export function WorkCard({ work, showMenus = true, showImageBadge = true }: Prop
                 .with(2, () => 'R15')
                 .otherwise(() => 'R18')}
             </Badge>
-            {data?.exists === false
+            {work.playlists && work.playlists.length > 0
               ? (
-                <Badge className="absolute top-2 right-2 bg-[#795548] dark:text-white font-bold shadow-md cursor-default">
-                  {t('不存在于本地库')}
-                </Badge>
+                <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+                  {work.playlists.slice(0, 3).map(playlist => (
+                    <Link key={playlist.id} to="/playlists/$id" params={{ id: playlist.id }}>
+                      <Badge
+                        className="bg-indigo-600 dark:bg-indigo-500 dark:text-white font-bold shadow-md cursor-pointer max-w-[10rem] truncate hover:bg-indigo-700 dark:hover:bg-indigo-400 transition-colors"
+                        title={playlist.name}
+                      >
+                        {playlist.name}
+                      </Badge>
+                    </Link>
+                  ))}
+                  {work.playlists.length > 3
+                    ? (
+                      <Badge className="bg-indigo-800 dark:bg-indigo-700 dark:text-white font-bold shadow-md cursor-default">
+                        +{work.playlists.length - 3}
+                      </Badge>
+                    )
+                    : null}
+                </div>
               )
               : null}
           </>

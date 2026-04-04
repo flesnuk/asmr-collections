@@ -52,8 +52,23 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
     artists: true,
     illustrators: true,
     genres: true,
-    translationInfo: true
+    translationInfo: true,
+    playlistWorks: {
+      include: {
+        playlist: {
+          select: { id: true, name: true }
+        }
+      }
+    }
   };
+
+  function mapPlaylists<T extends { playlistWorks?: Array<{ playlist: { id: string; name: string } }> }>(work: T) {
+    const { playlistWorks, ...rest } = work;
+    return {
+      ...rest,
+      playlists: (playlistWorks ?? []).map(pw => pw.playlist)
+    };
+  }
 
   const where = whereBuilder(query);
 
@@ -66,8 +81,10 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
   };
 
   try {
-    if (embedding)
-      return c.json(await findManyByEmbedding(embedding, include));
+    if (embedding) {
+      const result = await findManyByEmbedding(embedding, include);
+      return c.json({ ...result, data: result.data.map(mapPlaylists) });
+    }
 
     if (storageFilter) {
       const { stored, orphaned } = await categorizeWorks();
@@ -123,12 +140,14 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
         page,
         limit,
         total,
-        data: sorted
+        data: sorted.map(mapPlaylists)
       });
     }
 
-    if (artistCount)
-      return c.json(await findManyByArtistCount(queryArgs, artistCount, page, limit));
+    if (artistCount) {
+      const result = await findManyByArtistCount(queryArgs, artistCount, page, limit);
+      return c.json({ ...result, data: result.data.map(mapPlaylists) });
+    }
 
     const [works, total] = await prisma.$transaction([
       prisma.work.findMany({
@@ -143,7 +162,7 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
       page,
       limit,
       total,
-      data: works
+      data: works.map(mapPlaylists)
     });
   } catch (e) {
     console.error(e);

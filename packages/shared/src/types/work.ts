@@ -58,6 +58,7 @@ export interface ServerWork {
   subtitlesData?: {
     data: File
   }
+  playlists?: Array<{ id: string; name: string }>
   createdAt: Date
   updatedAt: Date
 }
