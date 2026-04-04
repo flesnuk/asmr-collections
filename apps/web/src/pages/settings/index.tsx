@@ -14,6 +14,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~
 import { useTranslation } from '~/lib/i18n';
 import type { Language } from '~/hooks/use-setting-options';
 
+const LOCALE_MAP: Record<Language, string> = {
+  zh: 'zh-cn',
+  en: 'en-us',
+  ja: 'ja-jp'
+};
+
+function setLocaleCookie(lang: Language) {
+  const locale = LOCALE_MAP[lang] ?? 'zh-cn';
+  document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 import { GenresSettings } from './components/genres';
 import { StorageSettings } from './components/storage';
 import { SettingItem } from './components/setting-item';
@@ -50,7 +61,11 @@ function Settings() {
         action={
           <Select
             value={options.language || 'zh'}
-            onValueChange={val => setOptions(d => { d.language = val as Language; })}
+            onValueChange={val => {
+              const lang = val as Language;
+              setOptions(d => { d.language = lang; });
+              setLocaleCookie(lang);
+            }}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue />
