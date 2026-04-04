@@ -105,6 +105,7 @@ export function whereBuilder(query: z.infer<typeof IndexSearchQuerySchema>) {
       OR: [
         { id: { equals: keyword, mode: 'insensitive' } },
         { name: { contains: keyword, mode: 'insensitive' } },
+        { intro: { contains: keyword, mode: 'insensitive' } },
         { circle: { name: { contains: keyword, mode: 'insensitive' } } },
         { series: { name: { contains: keyword, mode: 'insensitive' } } },
         { artists: { some: { name: { contains: keyword, mode: 'insensitive' } } } },
