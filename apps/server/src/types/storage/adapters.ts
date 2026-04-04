@@ -19,6 +19,7 @@ export type StorageAdapter<T extends StorageType = StorageType> = T extends unkn
 export interface FileStat {
   name: string
   type: 'file' | 'directory'
+  realpath?: string
 }
 
 export abstract class StorageAdapterBase<T extends StorageType = StorageType> {

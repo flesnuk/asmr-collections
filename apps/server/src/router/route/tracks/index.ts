@@ -114,7 +114,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
   const [folderTracks, fileTracks] = await Promise.all([
     folderQueue.all(
       folders
-        .map(folder => generateTracks(join(path, folder.name), adapter)
+        .map(folder => generateTracks(join(folder.realpath ?? path, folder.name), adapter)
           .then(children => ({ type: 'folder' as const, title: folder.name, children })))
     ),
     fileQueue.all(
@@ -127,7 +127,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
           .with('.jpg', '.jpeg', '.png', '.gif', '.webp', () => 'image' as const)
           .otherwise(() => 'other' as const);
 
-        const encodePath = encodeURIComponent(joinURL(path, file.name));
+        const encodePath = encodeURIComponent(joinURL(file.realpath ?? path, file.name));
 
         const item: Track = {
           type: ft,
@@ -143,7 +143,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
             let metadata: IAudioMetadata | undefined;
 
             if (adapter.type === 'local') {
-              const _f = adapter.file(join(path, file.name));
+              const _f = adapter.file(join(file.realpath ?? path, file.name));
               const filepath = _f.path;
 
               metadata = await parseFile(filepath, {
@@ -151,7 +151,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
                 duration: true
               });
             } else {
-              const _f = await adapter.file(join(path, file.name));
+              const _f = await adapter.file(join(file.realpath ?? path, file.name));
               const head = await _f.stream(0, AUDIO_HEADER_SIZE);
 
               metadata = await parseStream(Readable.fromWeb(head));
@@ -161,7 +161,7 @@ async function generateTracks(path: string, adapter: StorageAdapter): Promise<Tr
             if (duration)
               item.duration = duration;
           } catch (e) {
-            console.warn(`无法解析音频文件元数据: ${join(path, file.name)}, 错误信息: ${(e as Error).message}`);
+            console.warn(`无法解析音频文件元数据: ${join(file.realpath ?? path, file.name)}, 错误信息: ${(e as Error).message}`);
           }
         }
 

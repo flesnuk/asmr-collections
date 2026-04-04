@@ -102,8 +102,12 @@ export class StorageManager {
       const items = await adapter.readdir();
 
       for (const item of items) {
-        if (item.type === 'directory' && WORK_ID_EXACT_REGEX.test(item.name))
-          set.add(item.name);
+        if (item.type === 'directory') {
+          const matchResult = item.name.match(WORK_ID_EXACT_REGEX);
+          if (matchResult) {
+            set.add(matchResult[0].toUpperCase());
+          }
+        }
       }
     }
 

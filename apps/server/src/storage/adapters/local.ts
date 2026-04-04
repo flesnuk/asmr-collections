@@ -47,9 +47,53 @@ export class LocalStorageAdapter implements StorageAdapterBase<'local'> {
     }
   }
 
+  async findActualRelativePath(userPath: string): Promise<string> {
+    const segments = userPath.split('/').filter(Boolean);
+    if (segments.length === 0) return '';
+
+    const firstSegment = segments[0];
+
+    if (firstSegment.startsWith('RJ')) {
+      try {
+        await fs.access(this.resolvePath(userPath));
+        return userPath;
+      } catch {
+        try {
+          const entries = await fs.readdir(this.baseDir, { withFileTypes: true });
+          const matches = entries.filter((e: any) => e.isDirectory() && e.name.startsWith(firstSegment));
+          
+          for (const match of matches) {
+            const candidateSegments = [...segments];
+            candidateSegments[0] = match.name;
+            const candidatePath = candidateSegments.join('/');
+            
+            try {
+              await fs.access(this.resolvePath(candidatePath));
+              return candidatePath;
+            } catch {
+              // try next candidate
+            }
+          }
+          
+          // Fallback if none completely exists
+          if (matches.length > 0) {
+            const candidateSegments = [...segments];
+            candidateSegments[0] = matches[0].name;
+            return candidateSegments.join('/');
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    return userPath;
+  }
+
   async exists(path: string): Promise<boolean> {
     try {
-      await fs.access(this.resolvePath(path));
+      const actualPath = await this.findActualRelativePath(path);
+      await fs.access(this.resolvePath(actualPath));
       return true;
     } catch {
       return false;
@@ -57,15 +101,18 @@ export class LocalStorageAdapter implements StorageAdapterBase<'local'> {
   }
 
   async readdir(path?: string): Promise<FileStat[]> {
-    const entries = await fs.readdir(this.resolvePath(path), { withFileTypes: true });
+    const actualPath = path ? await this.findActualRelativePath(path) : '';
+    const entries = await fs.readdir(this.resolvePath(actualPath), { withFileTypes: true });
 
     return entries.map(entry => ({
       name: entry.name,
-      type: entry.isDirectory() ? 'directory' : 'file'
+      type: entry.isDirectory() ? 'directory' : 'file',
+      realpath: actualPath
     }));
   }
 
   file(path: string): FileResult<'local'> {
+    console.log("file", path);
     const file = Bun.file(this.resolvePath(path));
 
     function chunk(begin = 0, end?: number): BunFile {
