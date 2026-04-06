@@ -5,7 +5,7 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 
 import { getPrisma } from '~/lib/db';
-import { generateEmbedding } from '~/ai/jina';
+import { generateEmbedding } from '~/ai';
 import { zValidator } from '~/lib/validator';
 import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { findwork, formatError, formatMessage, saveCoverImage } from '~/router/utils';

@@ -5,7 +5,7 @@ import { getCookie } from 'hono/cookie';
 import { HTTPError } from '@asmr-collections/shared';
 
 import { getPrisma } from '~/lib/db';
-import { generateEmbedding } from '~/ai/jina';
+import { generateEmbedding } from '~/ai';
 import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { findwork, formatError, formatMessage, saveCoverImage } from '~/router/utils';
 
@@ -69,7 +69,7 @@ createApp.post('/create/:id', async c => {
       await clearSimilarCache(id);
     }
 
-    const errorText = embeddingError ? `Jina API ${t('生成向量失败')}: ${embeddingError.data?.detail ?? embeddingError.message}` : '';
+    const errorText = embeddingError ? `Embedding API ${t('生成向量失败')}: ${embeddingError.data?.detail ?? embeddingError.message}` : '';
 
     return c.json(formatMessage(errorText, work));
   } catch (e) {

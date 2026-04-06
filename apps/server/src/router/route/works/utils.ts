@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 
 import { storage } from '~/storage';
 import { getPrisma } from '~/lib/db';
-import { generateEmbedding } from '~/ai/jina';
+import { generateEmbedding } from '~/ai';
 
 export type FindManyWorksQuery = Parameters<PrismaClient['work']['findMany']>[0];
 
@@ -135,7 +135,7 @@ export async function findManyByEmbedding(text: string, include: WorkInclude) {
 
   const _i = await prisma.$queryRaw<Array<{ id: string }>>`
     SELECT id FROM "Work"
-    ORDER BY embedding <=> ${vectorString}::vector
+    ORDER BY embedding <#> ${vectorString}::vector
     LIMIT 20;
   `;
 

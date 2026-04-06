@@ -74,7 +74,7 @@ async function getSimilar(id: string) {
     WHERE w.embedding IS NOT NULL
       AND w.id != ${id}
       AND target.embedding IS NOT NULL
-    ORDER BY w.embedding <=> target.embedding
+    ORDER BY w.embedding <#> target.embedding
     LIMIT 10
   `;
 

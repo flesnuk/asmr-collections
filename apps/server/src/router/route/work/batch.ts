@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-loop-func -- batch */
 /* eslint-disable no-await-in-loop -- batch */
+/* eslint-disable @typescript-eslint/no-floating-promises -- background embedding tasks */
 
 import type { SSEStreamingApi } from 'hono/streaming';
 import type { BatchResult, BatchSendEventFn, BatchSSEEvent, BatchSSEEvents } from '@asmr-collections/shared';
@@ -15,7 +16,7 @@ import { newQueue } from '@henrygd/queue/rl';
 
 import { storage } from '~/storage';
 import { getPrisma } from '~/lib/db';
-import { generateEmbedding } from '~/ai/jina';
+import { generateEmbedding } from '~/ai';
 import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { formatError, formatMessage, saveCoverImage } from '~/router/utils';
 import { getT } from '~/i18n';
@@ -26,6 +27,8 @@ import { updateWork } from './update';
 const createQueue = newQueue(10);
 const updateQueue = newQueue(10);
 const fetchQueue = newQueue(10, 5, 1000); // 每秒最多 5 个请求
+// Jina AI rate limit: 100 RPM → conservador: 2 concurrent, máx 2 cada 1500ms (~80 RPM)
+const jinaQueue = newQueue(2, 2, 1500);
 
 // 全局状态锁，防止多次触发
 let isBatchRunning = false;
@@ -165,15 +168,6 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
           if (c.req.raw.signal.aborted)
             return;
 
-          let embedding: number[] | undefined;
-          try {
-            embedding = await generateEmbedding(data);
-          } catch (e) {
-            const message = (e instanceof Error) ? e.message : t('未知错误');
-            console.error(`${id} 生成向量失败`, message);
-            await sendEvent('log', { type: 'warning', message: `${id} ${t('生成向量失败')}` });
-          }
-
           try {
             const coverPath = await saveCoverImage(data.image_main, id);
             if (coverPath) data.image_main = coverPath;
@@ -184,11 +178,6 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
 
           try {
             await createWork(data, id);
-            if (embedding) {
-              const vectorString = `[${embedding.join(',')}]`;
-              await prisma.$executeRaw`UPDATE "Work" SET embedding = ${vectorString}::vector WHERE id = ${id}`;
-            }
-
             result.success.push(id);
 
             currentStep += 1;
@@ -208,6 +197,24 @@ batchApp.on(['GET', 'POST'], '/batch/create', async c => {
           await createQueue.all(createTasks);
         } catch (e) {
           console.error(e);
+        }
+
+        for (const { id, data } of validData) {
+          if (result.success.includes(id)) {
+            jinaQueue.add(async () => {
+              try {
+                const embedding = await generateEmbedding(data);
+                if (embedding) {
+                  const vectorString = `[${embedding.join(',')}]`;
+                  await prisma.$executeRaw`UPDATE "Work" SET embedding = ${vectorString}::vector WHERE id = ${id}`;
+                }
+              } catch (e) {
+                const message = (e instanceof Error) ? e.message : t('未知错误');
+                console.error(`${id} 生成向量失败`, message);
+                await sendEvent('log', { type: 'warning', message: `${id} ${t('生成向量失败')}` });
+              }
+            });
+          }
         }
 
         await sendEvent('log', { type: 'info', message: t('第 {batchIndex} 批：成功 {success} 个，失败 {failed} 个', { batchIndex, success: result.success.length, failed: result.failed.length }) });
@@ -249,11 +256,15 @@ batchApp.get('/batch/update', c => {
     const result: BatchResult = { success: [], failed: [] };
 
     try {
-      const targetIds = await prisma.work.findMany({
-        select: { id: true },
-        orderBy: { updatedAt: 'asc' }
-      })
-        .then(works => works.map(w => w.id));
+      const [allWorks, worksWithoutEmbedding] = await Promise.all([
+        prisma.work.findMany({
+          select: { id: true },
+          orderBy: { updatedAt: 'asc' }
+        }),
+        prisma.$queryRaw<{ id: string }[]>`SELECT id FROM "Work" WHERE embedding IS NULL`
+      ]);
+      const targetIds = allWorks.map((w: { id: string }) => w.id);
+      const missingEmbeddingIds = new Set(worksWithoutEmbedding.map(w => w.id));
 
       const totalSteps = targetIds.length;
       let currentStep = 0;
@@ -344,6 +355,24 @@ batchApp.get('/batch/update', c => {
           console.error(e);
         }
 
+        for (const { id, data } of validData) {
+          if (result.success.includes(id) && missingEmbeddingIds.has(id)) {
+            jinaQueue.add(async () => {
+              try {
+                const embedding = await generateEmbedding(data);
+                if (embedding) {
+                  const vectorString = `[${embedding.join(',')}]`;
+                  await prisma.$executeRaw`UPDATE "Work" SET embedding = ${vectorString}::vector WHERE id = ${id}`;
+                }
+              } catch (e) {
+                const message = (e instanceof Error) ? e.message : t('未知错误');
+                console.error(`${id} 生成向量失败 (update)`, message);
+                await sendEvent('log', { type: 'warning', message: `${id} ${t('生成向量失败')}` });
+              }
+            });
+          }
+        }
+
         await sendEvent('log', { type: 'info', message: t('第 {batchIndex} 批：成功 {success} 个，失败 {failed} 个', { batchIndex, success: result.success.length, failed: result.failed.length }) });
       }
 
@@ -367,6 +396,7 @@ function handleAbort() {
   fetchQueue.clear();
   updateQueue.clear();
   createQueue.clear();
+  jinaQueue.clear();
 };
 
 function createSendEvent(stream: SSEStreamingApi): BatchSendEventFn {
