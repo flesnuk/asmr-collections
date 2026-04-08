@@ -5,7 +5,7 @@ import { Activity, Suspense, useCallback } from 'react';
 
 import { formatChineseDate } from '@asmr-collections/shared';
 
-import { ImageIcon, MicIcon, TagIcon } from 'lucide-react';
+import { ImageIcon, MicIcon } from 'lucide-react';
 
 import { Link } from '~/components/link';
 import { Image } from '~/components/image';
@@ -22,6 +22,7 @@ import { TracksTabale } from './components/tracks-table';
 import { ErrorBoundary } from '~/components/error-boundary';
 import { WorkDetailsSkeleton } from './components/skeleton';
 import { TracksSkeleton } from './components/tracks-skeleton';
+import { GenreEditor } from './components/genre-editor';
 
 import { match } from 'ts-pattern';
 import { useAtomValue } from 'jotai';
@@ -175,18 +176,7 @@ function WorkDetails({ id}: { id: string }) {
 
             <Separator className="opacity-0" />
 
-            <div className="inline-flex flex-wrap gap-2 mt-auto">
-              {
-                data.genres.map(genre => (
-                  <Badge key={genre.id} asChild variant="info" size="lg" className="hover:opacity-90 transition-opacity">
-                    <Link to="/" search={{ genres: [genre.id] }}>
-                      <TagIcon />
-                      {genre.name}
-                    </Link>
-                  </Badge>
-                ))
-              }
-            </div>
+            <GenreEditor workId={data.id} genres={data.genres} exists={data.exists} />
 
             <Separator />
 

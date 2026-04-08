@@ -330,6 +330,13 @@ export default {
   "曲目缓存已清理": "Tracks cache cleared",
   "清理曲目缓存失败": "Failed to clear tracks cache",
   "清理缓存": "Clear Cache",
+  "编辑标签": "Edit Tags",
+  "保存": "Save",
+  "搜索或创建标签...": "Search or create tags...",
+  "创建 '{name}'": "Create '{name}'",
+  "标签更新中...": "Updating tags...",
+  "标签更新成功": "Tags updated successfully",
+  "标签更新失败": "Tags update failed",
 
   // root
   "获取作品列表失败": "Failed to retrieve the list of works",

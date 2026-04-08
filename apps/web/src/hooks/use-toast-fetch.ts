@@ -39,6 +39,7 @@ type ToastMutationKeys =
   | 'delete'
   | 'create'
   | 'update'
+  | 'update-genres'
   | 'upload'
   | 'subtitles'
   | 'random'

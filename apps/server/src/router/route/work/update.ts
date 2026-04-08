@@ -1,10 +1,12 @@
 import type { WorkInfo } from '~/types/source';
 
+import * as z from 'zod';
 import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 
 import { getPrisma } from '~/lib/db';
 import { generateEmbedding } from '~/ai/jina';
+import { zValidator } from '~/lib/validator';
 import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { findwork, formatError, formatMessage, saveCoverImage } from '~/router/utils';
 
@@ -91,6 +93,81 @@ updateApp.put('/update/embedding/:id', async c => {
   } catch (e) {
     console.error(e);
     return c.json(formatError(e, t('生成向量失败')), 500);
+  }
+});
+
+const updateGenresSchema = z.object({
+  genres: z.array(z.object({
+    id: z.number(),
+    name: z.string().min(1)
+  }))
+});
+
+updateApp.put('/update/genres/:id', zValidator('json', updateGenresSchema), async c => {
+  const { id } = c.req.param();
+  const locale = getCookie(c, 'locale') ?? 'zh-cn';
+  const t = getT(locale);
+
+  try {
+    if (!await findwork(id))
+      return c.json(formatMessage(t('收藏不存在')), 400);
+  } catch (e) {
+    console.error(e);
+    return c.json(formatError(e), 500);
+  }
+
+  const { genres } = c.req.valid('json');
+  const prisma = getPrisma();
+
+  try {
+    // Separate existing genres (id > 0) from new ones (id <= 0)
+    const existingGenres = genres.filter(g => g.id > 0);
+    const newGenres = genres.filter(g => g.id <= 0);
+
+    // For new genres, generate IDs starting from max(maxId, 8999) + 1
+    let nextId = 9000;
+    if (newGenres.length > 0) {
+      const maxGenre = await prisma.genre.findFirst({
+        orderBy: { id: 'desc' },
+        select: { id: true }
+      });
+      nextId = Math.max(maxGenre?.id ?? 0, 8999) + 1;
+    }
+
+    const connectOrCreateOps = [
+      ...existingGenres.map(g => ({
+        where: { id: g.id },
+        create: { id: g.id, name: g.name }
+      })),
+      ...newGenres.map((g, i) => ({
+        where: { id: nextId + i },
+        create: { id: nextId + i, name: g.name }
+      }))
+    ];
+
+    const work = await prisma.work.update({
+      where: { id },
+      data: {
+        genres: {
+          set: [],
+          connectOrCreate: connectOrCreateOps
+        }
+      },
+      include: {
+        circle: true,
+        series: true,
+        artists: true,
+        illustrators: true,
+        genres: true,
+        translationInfo: true,
+        playback: true
+      }
+    });
+
+    return c.json(work);
+  } catch (e) {
+    console.error(e);
+    return c.json(formatError(e), 500);
   }
 });
 
