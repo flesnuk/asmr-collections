@@ -37,3 +37,5 @@ query
 covers
 transcode_cache
 apps/server/data
+scripts/
+apps/server/ai_prompt.txt
