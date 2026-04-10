@@ -52,7 +52,7 @@ export async function fetchDLsiteInfo(id: string, locale = 'zh-cn'): Promise<Wor
     rating_count: data.rate_count,
     review_count: data.review_count,
     translation_info: data.translation_info,
-    language_editions: data.dl_count_items?.map(item => ({
+    language_editions: data.dl_count_items?.filter(item => item.lang !== 'JPN').map(item => ({
       lang: item.lang,
       work_id: item.workno,
       label: item.display_label
