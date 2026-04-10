@@ -1,9 +1,10 @@
 import { createPortal } from 'react-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAtom, useSetAtom } from 'jotai';
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { useVideoPip } from './use-video-pip';
 import { useActiveCue } from '../../hooks/use-active-cue';
 import { pipCaptionsOpenAtom } from '../../hooks/use-pip-open';
 import { floatingCaptionsOpenAtom } from '../../hooks/use-floating-open';
@@ -22,6 +23,13 @@ interface DocumentPictureInPicture extends EventTarget {
 }
 
 export function PipCaptions() {
+  if ('documentPictureInPicture' in window)
+    return <DocumentPipCaptions />;
+
+  return <VideoPipCaptions />;
+}
+
+function DocumentPipCaptions() {
   const { activeCue } = useActiveCue();
 
   const pipWindowRef = useRef<Window | null>(null);
@@ -36,7 +44,7 @@ export function PipCaptions() {
       const initPiP = async () => {
         try {
           if (!('documentPictureInPicture' in window))
-            throw new Error('暂不支持移动端');
+            throw new Error('暂不支持 Document Picture-in-Picture API');
 
           const pip = await (window.documentPictureInPicture as DocumentPictureInPicture).requestWindow({
             width: 400,
@@ -121,4 +129,51 @@ export function PipCaptions() {
     </div>,
     container
   );
+}
+
+function VideoPipCaptions() {
+  const { activeCue } = useActiveCue();
+
+  const [open, setPipOpen] = useAtom(pipCaptionsOpenAtom);
+  const setFloatingCaptionsOpen = useSetAtom(floatingCaptionsOpenAtom);
+
+  const onClose = useCallback(() => {
+    setPipOpen(false);
+    setFloatingCaptionsOpen(true);
+  }, [setPipOpen, setFloatingCaptionsOpen]);
+
+  const { openPip, closePip, drawFrame } = useVideoPip({ onClose });
+
+  useEffect(() => {
+    if (!open) {
+      closePip();
+      return;
+    }
+
+    let cancelled = false;
+
+    openPip()
+      .then(() => {
+        if (cancelled) {
+          closePip();
+          return;
+        }
+        setFloatingCaptionsOpen(false);
+      })
+      .catch(err => {
+        if (!cancelled) {
+          setPipOpen(false);
+          notifyError(err, '开启画中画失败');
+          logger.error(err, '开启画中画失败');
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [open, openPip, closePip, setPipOpen, setFloatingCaptionsOpen]);
+
+  useEffect(() => {
+    drawFrame(activeCue?.text || '...');
+  }, [activeCue, drawFrame]);
+
+  return null;
 }
