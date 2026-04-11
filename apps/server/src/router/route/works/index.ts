@@ -14,7 +14,7 @@ import { ttl } from '~/lib/cachified';
 import { zValidator } from '~/lib/validator';
 import { formatError } from '~/router/utils';
 
-import { categorizeWorks, findManyByArtistCount, findManyByEmbedding, sortIdsBySeed, whereBuilder } from './utils';
+import { categorizeWorks, findManyByArtistCount, findManyByEmbedding, getIdsByArtistCount, sortIdsBySeed, whereBuilder } from './utils';
 
 export const worksApp = new Hono();
 
@@ -23,11 +23,11 @@ const randomSortCache = new LRUCache<string, string[]>({
   ttl: ttl.minute(30)
 });
 
-function createRandomSortCacheKey(where: Prisma.WorkWhereInput, seed: string) {
+function createRandomSortCacheKey(params: Record<string, unknown>, seed: string) {
   return createHash('sha256')
     .update(seed)
     .update('\0')
-    .update(JSON.stringify(where))
+    .update(JSON.stringify(params))
     .digest('hex');
 }
 
@@ -88,11 +88,26 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
 
     if (sort === 'random') {
       const randomSeed = seed ?? 'random';
-      const randomCacheKey = createRandomSortCacheKey(queryArgs.where ?? {}, randomSeed);
+      const randomCacheKey = createRandomSortCacheKey({
+        where: queryArgs.where ?? {},
+        artistCount
+      }, randomSeed);
 
       let shuffledIds = randomSortCache.get(randomCacheKey);
 
       if (!shuffledIds) {
+        // fix artistCount
+        if (artistCount) {
+          const targetIds = await getIdsByArtistCount(artistCount);
+
+          queryArgs.where = {
+            AND: [
+              queryArgs.where || {},
+              { id: { in: targetIds.map(item => item.id) } }
+            ]
+          };
+        }
+
         const allIds = await prisma.work.findMany({
           where: queryArgs.where,
           select: { id: true }
