@@ -71,16 +71,15 @@ export function TracksTabale({ work, tracks, searchPath, externalSubtitles, play
 
   const allSubtitles = useMemo(() => {
     const all = collectSubtitles(tracks, true);
-    if (all.length > 0) return all;
-
-    return externalSubtitles ?? [];
+    return [...(externalSubtitles ?? []), ...all];
   }, [externalSubtitles, tracks]);
 
   const subtitleMatcher = useMemo(() => {
     const currentDirSubtitles = collectSubtitles(groupByType?.media);
+    const localSubtitles = collectSubtitles(tracks, true);
 
-    return new SubtitleMatcher([currentDirSubtitles, allSubtitles]);
-  }, [groupByType?.media, allSubtitles]);
+    return new SubtitleMatcher([externalSubtitles ?? [], currentDirSubtitles, localSubtitles]);
+  }, [groupByType?.media, externalSubtitles, tracks]);
 
   const filterTracks = useMemo(
     () => groupByType?.media?.filter(track => track.type === 'audio'),

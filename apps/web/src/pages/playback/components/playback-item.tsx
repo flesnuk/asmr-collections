@@ -56,12 +56,12 @@ export function PlaybackItem({ playback, mutate }: Props) {
 
     const currentTrack = {
       ...playback.track,
-      subtitles: playback.track.subtitles ?? subtitleMatcher?.find(playback.track.title),
+      subtitles: subtitleMatcher?.find(playback.track.title) ?? playback.track.subtitles,
       position: playback.position
     };
 
     const tracks = playback.tracks.map(item => {
-      const subtitles = item.subtitles ?? subtitleMatcher?.find(item.title);
+      const subtitles = subtitleMatcher?.find(item.title) ?? item.subtitles;
       return {
         ...item,
         subtitles
