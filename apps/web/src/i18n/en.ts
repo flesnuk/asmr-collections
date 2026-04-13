@@ -338,6 +338,20 @@ export default {
   "标签更新成功": "Tags updated successfully",
   "标签更新失败": "Tags update failed",
 
+  // vtt-translate
+  "从 ASMR.ONE 获取 VTT": "Get VTT from ASMR.ONE",
+  "下载中文字幕并翻译为英文": "Download Chinese subtitles and translate to English",
+  "正在查找中文版本...": "Looking for Chinese edition...",
+  "选择包含 VTT 的文件夹": "Select folder containing VTT files",
+  "正在下载和翻译 VTT 文件...": "Downloading and translating VTT files...",
+  "翻译完成": "Translation complete",
+  "将从 ASMR.ONE 下载中文 VTT 字幕，翻译为英文，然后上传到数据库": "Will download Chinese VTT subtitles from ASMR.ONE, translate to English, and upload to the database",
+  "开始": "Start",
+  "找到中文版本": "Found Chinese edition",
+  "获取中文版本失败": "Failed to find Chinese edition",
+  "文件在此文件夹": "file(s) in this folder",
+  "选择此文件夹": "Select this folder",
+
   // root
   "获取作品列表失败": "Failed to retrieve the list of works",
 

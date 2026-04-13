@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 
 import { MenuActions } from './menu-actions';
 import { SleepModeDialog } from './sleep-mode-dialog';
+import { VttTranslateDialog } from './vtt-translate-dialog';
 
 import { GoToDetail } from '../go-to-detail';
 import { HiddenImage } from '../hidden-image';
@@ -24,6 +25,7 @@ export function WorkDetailsMenu() {
   const navigate = useNavigate();
 
   const [showSleepModeDialog, setShowSleepModeDialog] = useState(false);
+  const [showVttDialog, setShowVttDialog] = useState(false);
 
   return (
     <>
@@ -41,6 +43,10 @@ export function WorkDetailsMenu() {
           <Suspense fallback={<DropdownMenuItem disabled>菜单项加载中...</DropdownMenuItem>}>
             <MenuActions id={id} />
           </Suspense>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setShowVttDialog(true)}>
+            {t('从 ASMR.ONE 获取 VTT')}
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <HiddenImage menuType="dropdown" />
           <DropdownMenuSeparator />
@@ -62,6 +68,7 @@ export function WorkDetailsMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
       <SleepModeDialog open={showSleepModeDialog} setOpen={setShowSleepModeDialog} />
+      <VttTranslateDialog open={showVttDialog} setOpen={setShowVttDialog} workId={id} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAtomValue } from 'jotai';
 import useSWRImmutable from 'swr/immutable';
 
@@ -34,23 +34,11 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
   const settings = useAtomValue(settingOptionsAtom);
   const storage = settings.storage;
 
-  const onSuccess = useCallback((tracks: TracksData) => {
-    if (!tracks) return;
+  const hasSmartNavigated = useRef(false);
 
-    if (tracks.error)
-      notifyError(tracks.error.cause, tracks.error.message, { id: `work-tracks-error-${id}` });
-
-    if (
-      settings.smartPath.enabled
-      && !searchPath
-      && tracks.data
-    ) {
-      const targetPath = findSmartPath(tracks.data, settings.smartPath.pattern);
-
-      if (targetPath && targetPath.length > 0)
-        smartNavigate(targetPath);
-    }
-  }, [id, searchPath, settings.smartPath.enabled, settings.smartPath.pattern, smartNavigate]);
+  useEffect(() => {
+    hasSmartNavigated.current = false;
+  }, [id]);
 
   function getQuery(provider: 'asmrone' | 'local') {
     if (provider === 'asmrone') {
@@ -155,5 +143,28 @@ export function useWorkDetailsTracks(id: string, smartNavigate: (path: string[])
     ? null
     : [`work-tracks-${id}`, storage.enabled, storage.fallbackToAsmrOneApi, settings.asmrone.priority, hasSubtitles];
 
-  return useSWRImmutable<TracksData>(key, fetchFn, { onSuccess });
+  const swr = useSWRImmutable<TracksData>(key, fetchFn);
+
+  useEffect(() => {
+    if (!swr.data) return;
+
+    if (swr.data.error) {
+      notifyError(swr.data.error.cause, swr.data.error.message, { id: `work-tracks-error-${id}` });
+    }
+
+    if (
+      settings.smartPath.enabled
+      && !searchPath
+      && !hasSmartNavigated.current
+      && swr.data.data
+    ) {
+      hasSmartNavigated.current = true;
+      const targetPath = findSmartPath(swr.data.data, settings.smartPath.pattern);
+
+      if (targetPath && targetPath.length > 0)
+        smartNavigate(targetPath);
+    }
+  }, [id, searchPath, settings.smartPath.enabled, settings.smartPath.pattern, smartNavigate, swr.data]);
+
+  return swr;
 }

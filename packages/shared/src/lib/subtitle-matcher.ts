@@ -15,6 +15,7 @@ export class SubtitleMatcher {
   private readonly fuses: Array<Fuse<SubtitleInfo>>;
   private readonly fallbackFuse: Fuse<SubtitleInfo>;
   private readonly earlyExitScore: number;
+  private readonly allSubtitles: SubtitleInfo[];
 
   constructor(
     subtitles: SubtitleInfo[][],
@@ -26,14 +27,17 @@ export class SubtitleMatcher {
       threshold: 0.4,
       includeScore: true,
       ignoreLocation: true,
-      minMatchCharLength: 2,
+      distance: 20,
+      useTokenSearch: true,
+      minMatchCharLength: 1,
       ...options
     };
 
     this.earlyExitScore = earlyExitScore;
 
     this.fuses = subtitles.map(group => new Fuse(group, fuseOptions));
-    this.fallbackFuse = new Fuse(subtitles.flat(), { ...fuseOptions, threshold: 1 });
+    this.allSubtitles = subtitles.flat();
+    this.fallbackFuse = new Fuse(this.allSubtitles, { ...fuseOptions, threshold: 1 });
   }
 
   find(trackTitle: string, scoreThreshold = 0.4): SubtitleInfo | undefined {
@@ -52,6 +56,21 @@ export class SubtitleMatcher {
           return result.item;
 
         resultItem = { item: result.item, score: result.score };
+      }
+    }
+
+    if (!resultItem) {
+      const numMatch = trackTitle.match(/\d+/);
+      if (numMatch) {
+        const trackNumber = numMatch[0];
+        const matchedItem = this.allSubtitles.find(sub => {
+          const subNumMatch = sub.title.match(/\d+/);
+          return subNumMatch && subNumMatch[0] === trackNumber;
+        });
+
+        if (matchedItem) {
+          return matchedItem;
+        }
       }
     }
 

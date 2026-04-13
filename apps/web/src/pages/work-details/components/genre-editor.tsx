@@ -36,7 +36,7 @@ export function GenreEditor({ workId, genres, exists }: GenreEditorProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch all available genres
+  // Fetch all available genres eeee
   const { data: allGenres } = useSWR<Array<Data<number>>>(
     isEditing ? 'field-genre' : null,
     () => fetcher<Array<Data<number>>>('/api/field/genre')

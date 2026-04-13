@@ -39,12 +39,15 @@ RUN bun build /app/apps/server/src/index.ts --outdir build --target bun
 
 FROM oven/bun:alpine AS runtime
 
+RUN apk add --no-cache zip
+
 WORKDIR /app
 
 ENV DIST_PATH=/app/dist
 
 COPY --from=build /app/apps/server/prisma ./prisma
 
+COPY --from=build-web /app/apps/server/vtt_prompt.txt ./vtt_prompt.txt
 COPY --from=build /app/apps/web/dist ./dist
 COPY --from=build /app/build/index.js ./index.js
 

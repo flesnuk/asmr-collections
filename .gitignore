@@ -39,3 +39,4 @@ transcode_cache
 apps/server/data
 scripts/
 apps/server/ai_prompt.txt
+apps/server/vtt_prompt.txt

@@ -5,12 +5,14 @@ import { readerZipFileSubtitles } from '@asmr-collections/shared';
 import { getPrisma } from '~/lib/db';
 import { zValidator } from '~/lib/validator';
 import { findwork, formatError, formatMessage } from '~/router/utils';
+import { vttTranslateApp } from './vtt-translate';
 
 const schema = z.object({
   action: z.enum(['download']).optional()
 });
 
 export const subtitlesApp = new Hono()
+  .route('/', vttTranslateApp)
   .get('/:id', zValidator('query', schema), async c => {
     const { id } = c.req.param();
     const { action } = c.req.valid('query');
