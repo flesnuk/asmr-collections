@@ -4,8 +4,11 @@ import { motion } from 'framer-motion';
 
 import { Button } from '~/components/ui/button';
 import { Progress } from '~/components/ui/progress';
+import { Checkbox } from '~/components/ui/checkbox';
+import { Label } from '~/components/ui/label';
 import { ScrollArea } from '~/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
 import { CheckIcon, ChevronRightIcon, FolderIcon, FileTextIcon, Loader2, ArrowLeftIcon } from 'lucide-react';
 
@@ -179,6 +182,10 @@ export function VttTranslateDialog({
     logs,
     progress,
     errorMessage,
+    useLocal,
+    setUseLocal,
+    sourceLang,
+    setSourceLang,
     resolve,
     startTranslation,
     cancel,
@@ -236,6 +243,34 @@ export function VttTranslateDialog({
               <p className="text-sm text-muted-foreground mb-4">
                 {t('将从 ASMR.ONE 下载中文 VTT 字幕，翻译为英文，然后上传到数据库')}
               </p>
+
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="use-local-api"
+                    checked={useLocal}
+                    onCheckedChange={(checked) => setUseLocal(checked === true)}
+                  />
+                  <Label htmlFor="use-local-api" className="text-sm cursor-pointer">
+                    {t('使用本地 API')}
+                  </Label>
+                </div>
+
+                {useLocal && (
+                  <Select value={sourceLang} onValueChange={setSourceLang}>
+                    <SelectTrigger className="w-[180px]" size="sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="simplified-chinese">{t('简体中文')}</SelectItem>
+                      <SelectItem value="traditional-chinese">{t('繁體中文')}</SelectItem>
+                      <SelectItem value="japanese">{t('日本語')}</SelectItem>
+                      <SelectItem value="korean">{t('한국어')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+
               <Button onClick={handleStart}>
                 {t('开始')}
               </Button>

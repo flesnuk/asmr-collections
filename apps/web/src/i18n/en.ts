@@ -351,6 +351,11 @@ export default {
   "获取中文版本失败": "Failed to find Chinese edition",
   "文件在此文件夹": "file(s) in this folder",
   "选择此文件夹": "Select this folder",
+  "使用本地 API": "Use local API",
+  "简体中文": "Simplified Chinese",
+  "繁體中文": "Traditional Chinese",
+  "日本語": "Japanese",
+  "한국어": "Korean",
 
   // root
   "获取作品列表失败": "Failed to retrieve the list of works",

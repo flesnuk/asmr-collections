@@ -123,15 +123,60 @@ export const vttTranslateApp = new Hono();
 // ── Step 1: Resolve Chinese edition & fetch tracks ───────────────────────────
 
 const resolveSchema = z.object({
-  workId: z.string()
+  workId: z.string(),
+  useLocal: z.boolean().optional().default(false),
+  sourceLang: z.string().optional()
 });
 
 vttTranslateApp.post('/vtt-translate/resolve', zValidator('json', resolveSchema), async c => {
-  const { workId } = c.req.valid('json');
+  const { workId, useLocal, sourceLang: sourceLangParam } = c.req.valid('json');
 
   try {
     const numericId = stripRJ(workId);
 
+    if (useLocal) {
+      // ── Local mode: use local tracks API, workId as sourceId ──────────
+      const sourceLangMap: Record<string, string> = {
+        'simplified-chinese': 'Simplified Chinese',
+        'traditional-chinese': 'Traditional Chinese',
+        'japanese': 'Japanese',
+        'korean': 'Korean'
+      };
+      const sourceLang = sourceLangMap[sourceLangParam || 'simplified-chinese'] || 'Simplified Chinese';
+      const sourceId = workId;
+
+      // Write source_lang.txt
+      const tmpDir = `/tmp/${sourceId}`;
+      mkdirSync(tmpDir, { recursive: true });
+      writeFileSync(join(tmpDir, 'source_lang.txt'), sourceLang, 'utf-8');
+
+      // Fetch tracks from local API
+      const port = process.env.PORT || '8787';
+      const localApiBase = `http://localhost:${port}`;
+      const tracks = await fetcher<AsmrOneTrackItem[]>(
+        `${localApiBase}/api/tracks/${workId}`
+      ).then(data => {
+        // Local API returns { storage, tracks } for local works
+        if (Array.isArray(data)) return data;
+        return (data as any).tracks || data;
+      });
+
+      // Get work title from DB
+      const prisma = getPrisma();
+      const work = await prisma.work.findUnique({
+        where: { id: workId },
+        select: { name: true }
+      });
+
+      return c.json({
+        sourceId,
+        lang: sourceLang,
+        title: work?.name || workId,
+        tracks
+      });
+    }
+
+    // ── Remote mode: use asmr.one API ──────────────────────────────────
     // Fetch work info from asmr.one
     const workInfo = await fetcher<AsmrOneWorkInfo>(
       `${ASMR_ONE_API}/api/workInfo/${numericId}`
@@ -178,7 +223,8 @@ vttTranslateApp.post('/vtt-translate/resolve', zValidator('json', resolveSchema)
 const translateSchema = z.object({
   sourceId: z.string(),
   folder: z.string(), // JSON-encoded string[] of folder path segments
-  workId: z.string()  // original work ID to upload subtitles to
+  workId: z.string(),  // original work ID to upload subtitles to
+  useLocal: z.string().optional() // 'true' if using local API
 });
 
 vttTranslateApp.get('/vtt-translate/translate', zValidator('query', translateSchema), c => {
@@ -218,13 +264,31 @@ vttTranslateApp.get('/vtt-translate/translate', zValidator('query', translateSch
       }
       const sourceLang = readFileSync(sourceLangFile, 'utf-8').trim().toLowerCase();
 
+      const isLocal = c.req.valid('query').useLocal === 'true';
+
       // Fetch tracks for the source edition
       const sourceNumericId = stripRJ(sourceId);
-      await sendEvent('log', { type: 'info', message: `Fetching tracks for ${sourceId}...` });
+      await sendEvent('log', { type: 'info', message: `Fetching tracks for ${sourceId}${isLocal ? ' (local)' : ''}...` });
 
-      const allTracks = await fetcher<AsmrOneTrackItem[]>(
-        `${ASMR_ONE_API}/api/tracks/${sourceNumericId}?v=2`
-      );
+      let allTracks: AsmrOneTrackItem[];
+      let downloadBaseUrl: string;
+
+      if (isLocal) {
+        // Local mode: fetch from local tracks API
+        const port = process.env.PORT || '8787';
+        const localApiBase = `http://localhost:${port}`;
+        downloadBaseUrl = localApiBase;
+        const rawData = await fetcher<any>(
+          `${localApiBase}/api/tracks/${sourceId}`
+        );
+        allTracks = Array.isArray(rawData) ? rawData : (rawData.tracks || rawData);
+      } else {
+        // Remote mode: fetch from asmr.one
+        downloadBaseUrl = ASMR_ONE_API;
+        allTracks = await fetcher<AsmrOneTrackItem[]>(
+          `${ASMR_ONE_API}/api/tracks/${sourceNumericId}?v=2`
+        );
+      }
 
       // Navigate to selected folder
       const folderItems = findFolder(allTracks, folderPath);
@@ -302,10 +366,10 @@ vttTranslateApp.get('/vtt-translate/translate', zValidator('query', translateSch
 
         let vttContent: string;
         try {
-          // The mediaDownloadUrl from asmr.one is relative, prepend the API host
+          // The mediaDownloadUrl can be relative, prepend the appropriate host
           const fullUrl = downloadUrl.startsWith('http')
             ? downloadUrl
-            : `${ASMR_ONE_API}${downloadUrl}`;
+            : `${downloadBaseUrl}${downloadUrl}`;
           let rawContent = await downloadVttContent(fullUrl);
           writeFileSync(originalVttPath, rawContent, 'utf-8');
           await sendEvent('log', { type: 'info', message: `✅ Downloaded ${vttName}` });

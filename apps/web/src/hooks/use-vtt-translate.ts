@@ -26,6 +26,7 @@ interface ResolveResult {
   lang: string;
   title: string;
   tracks: AsmrOneTrackItem[];
+  useLocal?: boolean;
 }
 
 export type VttPhase = 'idle' | 'resolving' | 'select-folder' | 'translating' | 'done' | 'error';
@@ -34,6 +35,8 @@ export type VttPhase = 'idle' | 'resolving' | 'select-folder' | 'translating' | 
 
 export function useVttTranslate(workId: string) {
   const { t } = useTranslation();
+  const [useLocal, setUseLocal] = useState(false);
+  const [sourceLang, setSourceLang] = useState('simplified-chinese');
 
   const [phase, setPhase] = useState<VttPhase>('idle');
   const [resolveData, setResolveData] = useState<ResolveResult | null>(null);
@@ -57,19 +60,24 @@ export function useVttTranslate(workId: string) {
       const data = await fetcher<ResolveResult>('/api/subtitles/vtt-translate/resolve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workId })
+        body: JSON.stringify({ workId, useLocal, sourceLang })
       });
 
+      data.useLocal = useLocal;
       setResolveData(data);
       setPhase('select-folder');
-      toast.success(`${t('找到中文版本')}: ${data.title}`);
+      if (useLocal) {
+        toast.success(`${t('使用本地 API')}: ${data.title}`);
+      } else {
+        toast.success(`${t('找到中文版本')}: ${data.title}`);
+      }
     } catch (err) {
       setPhase('error');
       const msg = err instanceof Error ? err.message : String(err);
       setErrorMessage(msg);
       notifyError(err, t('获取中文版本失败'));
     }
-  }, [workId, setLogs, t]);
+  }, [workId, useLocal, sourceLang, setLogs, t]);
 
   // ── Step 2: Start translation SSE ────────────────────────────────────────
 
@@ -85,7 +93,8 @@ export function useVttTranslate(workId: string) {
     const params = new URLSearchParams({
       sourceId: resolveData.sourceId,
       folder: JSON.stringify(folderPath),
-      workId
+      workId,
+      ...(resolveData.useLocal ? { useLocal: 'true' } : {})
     });
 
     const es = new EventSource(`/api/subtitles/vtt-translate/translate?${params.toString()}`);
@@ -196,6 +205,10 @@ export function useVttTranslate(workId: string) {
     logs,
     progress,
     errorMessage,
+    useLocal,
+    setUseLocal,
+    sourceLang,
+    setSourceLang,
     resolve,
     startTranslation,
     cancel,
