@@ -3,10 +3,8 @@ import { mediaStateAtom } from '~/hooks/use-media-state';
 
 import { PlayerPageActions } from './actions';
 
-import { Volume1Icon, Volume2 } from 'lucide-react';
-import { Time, TimeSlider, VolumeSlider } from '@vidstack/react';
+import { Time, TimeSlider } from '@vidstack/react';
 
-import { isIOSSafari } from '../../utils';
 import { useTranslation } from '~/lib/i18n';
 
 export function PlayerPageMain() {
@@ -16,7 +14,7 @@ export function PlayerPageMain() {
   const title = mediaState.currentTrack?.title || t('未知曲目');
   const workTitle = mediaState.work?.name || t('未知作品');
 
-  const showVolumeSlider = !isIOSSafari();
+
 
   return (
     <div className="w-full flex flex-col sm:gap-2 gap-6">
@@ -47,20 +45,7 @@ export function PlayerPageMain() {
       <div id="actions" className="flex justify-center items-center">
         <PlayerPageActions />
       </div>
-      {showVolumeSlider && (
-        <div id="volume-slider" className="w-full flex justify-center items-center gap-2 touch-auto" onPointerDown={e => e.stopPropagation()}>
-          <div className="w-[95%] flex items-center gap-1">
-            <Volume1Icon className="min-max-size-6" />
-            <VolumeSlider.Root className="group relative mr-3 h-1 w-full cursor-pointer touch-none select-none items-center outline-none aria-hidden:hidden">
-              <VolumeSlider.Track className="relative ring-white z-0 h-1 w-full rounded-sm bg-foreground/20 group-data-focus:ring-[1px]">
-                <VolumeSlider.TrackFill className="bg-blue-400 absolute h-full w-(--slider-fill) rounded-sm will-change-[width]" />
-              </VolumeSlider.Track>
-              <VolumeSlider.Thumb className="absolute left-(--slider-fill) top-1/2 z-20 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cacaca] bg-white transition-opacity will-change-[left]" />
-            </VolumeSlider.Root>
-            <Volume2 className="min-max-size-6" />
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

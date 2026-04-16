@@ -1,12 +1,12 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useActiveCue } from '../../hooks/use-active-cue';
 import { pipCaptionsOpenAtom } from '../../hooks/use-pip-open';
-import { floatingCaptionsOpenAtom } from '../../hooks/use-floating-open';
+
 
 import { notifyError } from '~/utils';
 import { logger } from '~/lib/logger';
@@ -29,7 +29,7 @@ export function PipCaptions() {
   const pipWindowRef = useRef<Window | null>(null);
 
   const [open, setPipOpen] = useAtom(pipCaptionsOpenAtom);
-  const setFloatingCaptionsOpen = useSetAtom(floatingCaptionsOpenAtom);
+
 
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
@@ -52,13 +52,13 @@ export function PipCaptions() {
             pipWindowRef.current = null;
             setContainer(null);
             setPipOpen(false);
-            setFloatingCaptionsOpen(true);
+
           });
 
           pipWindowRef.current = pip;
 
           setContainer(pip.document.body);
-          setFloatingCaptionsOpen(false);
+
         } catch (err) {
           setPipOpen(false);
           notifyError(err, t('开启画中画失败'));
@@ -78,7 +78,7 @@ export function PipCaptions() {
         pipWindowRef.current = null;
       }
     };
-  }, [open, setFloatingCaptionsOpen, setPipOpen]);
+  }, [open, setPipOpen]);
 
   const isDark = document.documentElement.classList.contains('dark');
   const textColor = isDark ? '#FFFFFF' : '#000000';
@@ -117,7 +117,7 @@ export function PipCaptions() {
             margin: 0
           }}
         >
-          {activeCue?.text || '...'}
+          {activeCue?.text || ''}
         </motion.p>
       </AnimatePresence>
     </div>,

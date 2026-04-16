@@ -6,6 +6,7 @@ import { useIsMobile } from '~/hooks/use-is-mobile';
 import { usePlayerExpand } from '../../hooks/use-player-expand';
 
 import { PlayerCover } from './cover';
+import { InlineCaptions } from './inline-captions';
 import { PlayerSidePanel } from './side-panel';
 import { PlayerPageMain } from './page-main';
 import { TrackInfo } from '../track-info';
@@ -112,7 +113,8 @@ export function PlayerPage() {
                   >
                     <PlayerPageActionsAbove />
                     <PlayerCover onPointerDown={e => dragControls.start(e)} />
-                    <div className="w-full flex flex-col items-center max-sm:mt-8">
+                    <InlineCaptions />
+                    <div className="w-full flex flex-col items-center">
                       <PlayerPageMain />
                       <motion.div className="w-full max-sm:mt-10 mt-4">
                         <PlayerSidePanel

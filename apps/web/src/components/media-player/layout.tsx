@@ -12,7 +12,7 @@ import { PipCaptions } from './components/pip-captions';
 import { LeftControls } from './components/left-controls';
 import { RightControls } from './components/right-controls';
 import { ProgressSlider } from './components/progress-slider';
-import { FloatingCaptions } from './components/floating-captions';
+
 import { RightPlayControls } from './components/right-controls/right-play';
 
 interface PlayerLayoutProps {
@@ -43,7 +43,7 @@ export function AudioPlayerLayout({ prev, next, isTranscoded }: PlayerLayoutProp
   return (
     <MediaContext value={initialValue}>
       <PlayerPage />
-      <FloatingCaptions />
+
       <PipCaptions />
 
       <AnimatePresence>
