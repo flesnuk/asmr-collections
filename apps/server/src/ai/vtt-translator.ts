@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { generateEmbeddings } from './llamacpp';
 
 export interface VTTTranslatorConfig {
     apiUrl: string;
@@ -361,6 +362,44 @@ async function translateBatchWithRetry(
             const translations = parseTranslationResult(translationResult);
 
             if (translations.length === deduplicatedBatch.length) {
+                // Feature: Verify synchronization using embeddings if length is more than 12
+                let isDesynchronized = false;
+                if (deduplicatedBatch.length > 12) {
+                    const inputTexts = deduplicatedBatch.map(b => b.text);
+
+                    try {
+                        const inputEmbeddings = await generateEmbeddings(inputTexts);
+                        const outputEmbeddings = await generateEmbeddings(translations);
+
+                        if (inputEmbeddings && outputEmbeddings && inputEmbeddings.length === inputTexts.length && outputEmbeddings.length === translations.length) {
+                            let misalignedCount = 0;
+                            for (let i = 0; i < inputTexts.length; i++) {
+                                const simCurr = cosineSimilarity(inputEmbeddings[i], outputEmbeddings[i]);
+                                const simPrev = i > 0 ? cosineSimilarity(inputEmbeddings[i], outputEmbeddings[i - 1]) : 0;
+                                const simNext = i < inputTexts.length - 1 ? cosineSimilarity(inputEmbeddings[i], outputEmbeddings[i + 1]) : 0;
+
+                                // If a shifted translation matches this input significantly better than the aligned translation
+                                if (simCurr < 0.55 && (simPrev > simCurr + 0.15 || simNext > simCurr + 0.15)) {
+                                    misalignedCount++;
+                                }
+                            }
+
+                            if (misalignedCount >= 4) {
+                                log(`Desynchronization globally detected: ${misalignedCount} lines misaligned in chunk.`);
+                                isDesynchronized = true;
+                            }
+                        }
+                    } catch (e) {
+                        log(`Warning: Failed to check embedding synchronization: ${e}`);
+                    }
+
+                    if (isDesynchronized) {
+                        log(`Mismatched input/output lines detected (attempt ${retry + 1}). Retrying with temperature=${temperatures[Math.min(retry + 1, temperatures.length - 1)]}`);
+                        if (config.typeApi !== "local") await sleep(4000);
+                        continue;
+                    }
+                }
+
                 const restored = restoreRepetitions(
                     translations,
                     repetitionMap,
@@ -491,4 +530,17 @@ function balanceSubtitleLines(text: string, maxLineLength = 50): string {
 
 function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function cosineSimilarity(a: number[], b: number[]): number {
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < a.length; i++) {
+        dotProduct += a[i] * b[i];
+        normA += a[i] * a[i];
+        normB += b[i] * b[i];
+    }
+    if (normA === 0 || normB === 0) return 0;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }

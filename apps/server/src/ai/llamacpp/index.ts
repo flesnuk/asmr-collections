@@ -44,3 +44,34 @@ export async function generateEmbedding(d: WorkInfo | string) {
     return undefined;
   }
 }
+
+export async function generateEmbeddings(texts: string[]) {
+  if (texts.length === 0) return [];
+  const apiUrl = process.env.LLAMACPP_API_URL || 'http://host.docker.internal:8111/v1/embeddings';
+
+  const body = {
+    input: texts,
+    cache_prompt: false
+  };
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      console.error('Failed to generate embeddings via llamacpp:', await res.text());
+      return undefined;
+    }
+
+    const data = await res.json() as { data: Array<{ embedding: number[] }> };
+    return data?.data?.map(d => d.embedding);
+  } catch (err) {
+    console.error('Error fetching llamacpp embeddings:', err);
+    return undefined;
+  }
+}
