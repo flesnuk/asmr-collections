@@ -12,7 +12,7 @@ export function useActiveCue() {
     const onCueChange = () => {
       const cues = textTrackState.activeCues;
       const cue = cues.at(0) as VTTCue | undefined;
-      if (cue) setActiveCue(cue);
+      setActiveCue(cue);
     };
 
     const onLoad = () => {
