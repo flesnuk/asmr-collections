@@ -90,6 +90,7 @@ export function useVideoPip({ onClose }: UseVideoPipOptions) {
     }
 
     const video = document.createElement('video');
+    video.style.display = 'none';
     video.muted = true;
 
     document.body.appendChild(video);
