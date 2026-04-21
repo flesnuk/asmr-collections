@@ -45,6 +45,10 @@ const sortOptions = [
   {
     label: '随机排序',
     value: 'random'
+  },
+  {
+    label: '回放次数',
+    value: 'playCount'
   }
 ];
 

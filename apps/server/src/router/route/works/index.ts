@@ -5,6 +5,7 @@ import type { FindManyWorksQuery } from './utils';
 import { createHash } from 'node:crypto';
 
 import { Hono } from 'hono';
+import { match } from 'ts-pattern';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- ig
 import { LRUCache } from 'lru-cache';
 import { IndexSearchQuerySchema } from '@asmr-collections/shared';
@@ -59,9 +60,10 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
 
   const queryArgs: FindManyWorksQuery = {
     where,
-    orderBy: {
-      [sort]: order
-    },
+    orderBy: match(sort)
+      .returnType<Prisma.WorkOrderByWithRelationInput>()
+      .with('playCount', () => ({ playback: { count: order } }))
+      .otherwise(() => ({ [sort]: order })),
     include
   };
 
