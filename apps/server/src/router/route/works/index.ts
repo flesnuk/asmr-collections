@@ -86,6 +86,15 @@ worksApp.get('/', zValidator('query', IndexSearchQuerySchema), async c => {
       }
     }
 
+    if (sort === 'playCount') {
+      queryArgs.where = {
+        AND: [
+          queryArgs.where || {},
+          { playback: { isNot: null } }
+        ]
+      };
+    }
+
     const prisma = getPrisma();
 
     if (sort === 'random') {
