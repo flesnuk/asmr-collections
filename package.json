@@ -27,9 +27,6 @@
     "typescript": "~5.9.3"
   },
   "pnpm": {
-    "overrides": {
-      "vite": "8.0.0-beta.11"
-    },
     "patchedDependencies": {
       "lightgallery@2.9.0": "patches/lightgallery@2.9.0.patch"
     }

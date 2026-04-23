@@ -56,7 +56,7 @@ export default defineConfig(({ mode }) => {
       rolldownOptions: {
         plugins: [visualizer({ open: false })],
         output: {
-          advancedChunks: {
+          codeSplitting: {
             groups: [
               {
                 test: /node_modules[/\\](framer-motion|motion-dom)/,
