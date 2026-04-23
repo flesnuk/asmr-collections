@@ -119,6 +119,7 @@ export default {
   "更新时间": "Date Updated",
   "发售时间": "Release Date",
   "随机排序": "Random",
+  "回放次数": "Play Count",
 
   // components/media-player
   "转码中，请耐心等待...": "Transcoding, please wait...",
@@ -133,7 +134,7 @@ export default {
   "开启字幕画中画": "Enable subtitle picture-in-picture",
   "未知曲目": "Unknown track",
   "未知作品": "Unknown work",
-  "暂不支持移动端": "Not supported on mobile devices",
+  "暂不支持Document Picture-in-Picture API": "Not supported on Document Picture-in-Picture API",
   "开启画中画失败": "Failed to enable picture-in-picture",
   "未知艺术家": "Unknown artist",
 
