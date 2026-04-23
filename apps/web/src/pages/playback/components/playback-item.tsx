@@ -19,6 +19,7 @@ import { formatTimeAgoIntl } from '~/utils';
 
 import { logger } from '~/lib/logger';
 import { fetcher } from '~/lib/fetcher';
+import { useTranslation } from '~/lib/i18n';
 
 import type { SubtitleInfo, Playback } from '@asmr-collections/shared';
 
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function PlaybackItem({ playback, mutate }: Props) {
+  const { t } = useTranslation();
   const formatDate = formatTimeAgoIntl(playback.lastAt);
 
   const setMediaState = useSetAtom(mediaStateAtom);
@@ -49,7 +51,7 @@ export function PlaybackItem({ playback, mutate }: Props) {
         subtitleMatcher = new SubtitleMatcher([subtitles]);
       }
     } catch (e) {
-      logger.error(e, '获取字幕失败');
+      logger.error(e, t('获取字幕失败'));
     }
 
     const currentTrack = {
@@ -82,8 +84,8 @@ export function PlaybackItem({ playback, mutate }: Props) {
 
   const handleDelete = async () => {
     const yes = await confirm({
-      title: '确认删除播放记录？',
-      description: '认真考虑哦'
+      title: t('确认删除播放记录？'),
+      description: t('认真考虑哦')
     });
 
     if (!yes) return;
@@ -94,9 +96,9 @@ export function PlaybackItem({ playback, mutate }: Props) {
         method: 'DELETE'
       },
       toastOps: {
-        loading: '正在删除播放记录...',
-        success: '播放记录已删除',
-        error: '删除播放记录失败',
+        loading: t('正在删除播放记录...'),
+        success: t('播放记录已删除'),
+        error: t('删除播放记录失败'),
         finally() {
           mutate();
         }
@@ -125,18 +127,18 @@ export function PlaybackItem({ playback, mutate }: Props) {
           {playback.work.name}
         </ItemTitle>
         <ItemDescription className="sm:w-[90%] sm:line-clamp-1">
-          {formatDate} 听到「{playback.track.title}」
+          {formatDate} {t('听到')}「{playback.track.title}」
         </ItemDescription>
         <ItemActions className="sm:hidden mt-2">
           <ButtonGroup className="w-full *:flex-1">
             <Button size="lg" variant="secondary" onClick={handlePlay} disabled={isLoadingSubtitles}>
-              播放
+              {t('播放')}
             </Button>
             <Button size="lg" variant="secondary" asChild>
-              <Link to="/work-details/$id" params={{ id: playback.work.id }}>详情</Link>
+              <Link to="/work-details/$id" params={{ id: playback.work.id }}>{t('详情')}</Link>
             </Button>
             <Button size="lg" variant="destructive" onClick={handleDelete} disabled={isLoading}>
-              删除
+              {t('删除')}
             </Button>
           </ButtonGroup>
         </ItemActions>
@@ -144,13 +146,13 @@ export function PlaybackItem({ playback, mutate }: Props) {
       <ItemActions className="max-sm:hidden">
         <ButtonGroup>
           <Button variant="secondary" onClick={handlePlay} disabled={isLoadingSubtitles}>
-            播放
+            {t('播放')}
           </Button>
           <Button variant="secondary" asChild>
-            <Link to="/work-details/$id" params={{ id: playback.work.id }}>详情</Link>
+            <Link to="/work-details/$id" params={{ id: playback.work.id }}>{t('详情')}</Link>
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
-            删除
+            {t('删除')}
           </Button>
         </ButtonGroup>
       </ItemActions>

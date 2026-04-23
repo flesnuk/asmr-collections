@@ -5,13 +5,18 @@ import { extname, HTTPError } from '@asmr-collections/shared';
 
 import type { Tracks } from '@asmr-collections/shared';
 
-export function writeClipboard(text: string, notifyText = '已复制到剪贴板') {
+import { getTranslation } from '~/lib/i18n';
+
+export function writeClipboard(text: string, notifyText?: string) {
+  const { t } = getTranslation();
+  const notifyValue = notifyText || t('已复制到剪贴板');
+
   if (typeof navigator.clipboard === 'undefined') {
-    toast.error('复制失败', { description: '请检查是否处于 HTTPS 环境下，或浏览器不支持' });
+    toast.error(t('复制失败'), { description: t('请检查是否处于 HTTPS 环境下，或浏览器不支持') });
   } else {
     navigator.clipboard.writeText(text)
-      .then(() => toast.success(notifyText))
-      .catch(() => toast.error('复制失败', { description: '请检查是否处于 HTTPS 环境下，或浏览器不支持' }));
+      .then(() => toast.success(notifyValue))
+      .catch(() => toast.error(t('复制失败'), { description: t('请检查是否处于 HTTPS 环境下，或浏览器不支持') }));
   }
 }
 

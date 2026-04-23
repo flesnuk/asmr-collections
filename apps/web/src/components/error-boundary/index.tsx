@@ -15,8 +15,10 @@ import {
   AlertDialogTrigger
 } from '~/components/ui/alert-dialog';
 import { Button } from '~/components/ui/button';
+import { useTranslation } from '~/lib/i18n';
 
 function ErrorFallback({ error }: FallbackProps) {
+  const { t } = useTranslation();
   const message = match(error)
     .with(P.instanceOf(HTTPError), ({ message, data }) => {
       if (data?.detail)
@@ -31,27 +33,27 @@ function ErrorFallback({ error }: FallbackProps) {
         return `${message}: ${data}`;
     })
     .with({ message: P.string }, ({ message }) => message)
-    .otherwise(() => '未知错误');
+    .otherwise(() => t('未知错误'));
 
   return (
     <div className="mt-24 space-y-4 px-4">
-      <h2 className="font-bold text-3xl">遇到了一些问题</h2>
-      <p className="opacity-60">请重试。如果问题依旧存在，请在 GitHub 创建一个 Issue 并提供详细信息。 </p>
+      <h2 className="font-bold text-3xl">{t('遇到了一些问题')}</h2>
+      <p className="opacity-60">{t('请重试。如果问题依旧存在，请在 GitHub 创建一个 Issue 并提供详细信息。')}</p>
       <div className="flex gap-4">
-        <Button variant="default" onClick={() => window.location.reload()}>重试</Button>
+        <Button variant="default" onClick={() => window.location.reload()}>{t('重试')}</Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline">查看详情</Button>
+            <Button variant="outline">{t('查看详情')}</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>错误详情</AlertDialogTitle>
+              <AlertDialogTitle>{t('错误详情')}</AlertDialogTitle>
             </AlertDialogHeader>
             <AlertDialogDescription className="font-mono text-sm break-all">
               {message}
             </AlertDialogDescription>
             <AlertDialogFooter>
-              <AlertDialogCancel>关闭</AlertDialogCancel>
+              <AlertDialogCancel>{t('关闭')}</AlertDialogCancel>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

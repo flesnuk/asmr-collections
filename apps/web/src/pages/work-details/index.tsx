@@ -33,10 +33,12 @@ import { settingOptionsAtom } from '~/hooks/use-setting-options';
 import { externalUrl, writeClipboard } from '~/utils';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 const route = getRouteApi('/work-details/$id');
 
 function WorkDetails({ id}: { id: string }) {
+  const { t } = useTranslation();
   const navigate = route.useNavigate();
   const searchPath = route.useSearch({ select: ({ path }) => path });
   const matchRoute = useMatchRoute();
@@ -55,7 +57,7 @@ function WorkDetails({ id}: { id: string }) {
   const { data: tracks, isLoading } = useWorkDetailsTracks(id, smartNavigate, data?.subtitles, searchPath);
 
   if (!data)
-    throw new Error('作品数据请求失败，详情请查看控制台');
+    throw new Error(t('作品数据请求失败，详情请查看控制台'));
 
   return (
     <motion.div
@@ -77,12 +79,12 @@ function WorkDetails({ id}: { id: string }) {
             <Badge
               className="absolute top-2 left-2 bg-[#795548] text-white font-bold shadow-md cursor-copy"
               onClick={() => {
-                writeClipboard(data.id, 'ID 已复制到剪贴板');
+                writeClipboard(data.id, t('ID 已复制到剪贴板'));
               }}
             >
               {data.id}
-              {data.subtitles ? <span>带字幕</span> : null}
-              {data.exists === false ? <span>未收藏</span> : null}
+              {data.subtitles ? <span>{t('带字幕')}</span> : null}
+              {data.exists === false ? <span>{t('未收藏')}</span> : null}
             </Badge>
             <Badge
               className={cn(
@@ -95,7 +97,7 @@ function WorkDetails({ id}: { id: string }) {
             >
               {
                 match(data.ageCategory)
-                  .with(1, () => '全年龄')
+                  .with(1, () => t('全年龄'))
                   .with(2, () => 'R15')
                   .otherwise(() => 'R18')
               }
@@ -116,23 +118,23 @@ function WorkDetails({ id}: { id: string }) {
             <h2 className="sm:text-xl text-[20px] pt-2" title={data.name}>{data.name}</h2>
             <div className="text-muted-foreground">
               <Link to="/" search={{ circleId: data.circleId }} underline="hover">{data.circle.name}</Link>
-              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2" underline="hover">「{data.series?.name}」系列</Link> : null}
+              {data.seriesId ? <Link to="/" search={{ seriesId: data.seriesId }} className="ml-2" underline="hover">「{data.series?.name}」{t('系列')}</Link> : null}
             </div>
 
             <Separator />
 
             <div className="text-sm">
-              <span className="font-bold">销量：</span>
+              <span className="font-bold">{t('销量')}：</span>
               <span>{data.sales}</span>
             </div>
 
             <div className="text-sm">
-              <span className="font-bold">价格：</span>
+              <span className="font-bold">{t('价格')}：</span>
               <span>{data.price}<sup className="ml-1">JPY</sup></span>
             </div>
 
             <div className="text-sm mb-2">
-              <span className="font-bold">发行日期：</span>
+              <span className="font-bold">{t('发行日期')}：</span>
               <span>{formatChineseDate(data.releaseDate)}</span>
             </div>
 
@@ -219,7 +221,7 @@ function WorkDetails({ id}: { id: string }) {
                 data.translationInfo.childWorknos.map(childId => (
                   <Button key={childId} asChild variant="link" size="sm" className="w-max hover:opacity-90">
                     <Link to="/work-details/$id" params={{ id: childId }}>
-                      译者版
+                      {t('译者版')}
                     </Link>
                   </Button>
                 ))
@@ -236,13 +238,13 @@ function WorkDetails({ id}: { id: string }) {
 
       {!isLoading && tracks?.error && (
         <div className="mt-2 text-sm opacity-65">
-          {tracks.error.message || '未知错误'}
+          {tracks.error.message || t('未知错误')}
         </div>
       )}
 
       {!isLoading && tracks === null && (
         <p className="mt-2 text-sm opacity-65">
-          当前作品不在本地库中，且未启用回退 ASMR.ONE。
+          {t('当前作品不在本地库中，且未启用回退 ASMR.ONE。')}
         </p>
       )}
 

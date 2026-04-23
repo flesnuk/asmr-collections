@@ -9,6 +9,8 @@ import { BatchLogs } from './batch-logs';
 import { useBatchOperation } from '~/hooks/use-batch-operation';
 import { usePreventAutoFocus } from '~/hooks/use-prevent-auto-focus';
 
+import { useTranslation } from '~/lib/i18n';
+
 export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
   const {
     copyLogs,
@@ -19,6 +21,7 @@ export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (
     logs,
     progress
   } = useBatchOperation('update', setOpen);
+  const { t } = useTranslation();
 
   const prevent = usePreventAutoFocus();
 
@@ -34,17 +37,17 @@ export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (
       >
         <DialogHeader>
           <DialogTitle>
-            批量更新收藏信息
+            {t('批量更新收藏信息')}
           </DialogTitle>
           <DialogDescription>
-            从 DLsite 获取最新的信息
+            {t('从 DLsite 获取最新的信息')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-6">
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>进度 ({progress.current}/{progress.total})</span>
+              <span>{t('进度')} ({progress.current}/{progress.total})</span>
               <span>{progress.percent}%</span>
             </div>
             <Progress value={progress.percent} className="h-2" />
@@ -55,17 +58,17 @@ export function BatchUpdateDialog({ open, setOpen }: { open: boolean, setOpen: (
 
         <DialogFooter className="flex sm:justify-between gap-2">
           <div className="flex items-center text-sm text-muted-foreground mr-auto">
-            {isProcessing ? <span className="flex items-center gap-2 text-blue-500"><Loader2 className="size-4 animate-spin" />正在运行</span>
+            {isProcessing ? <span className="flex items-center gap-2 text-blue-500"><Loader2 className="size-4 animate-spin" />{t('正在运行')}</span>
               : (progress.percent === 100
-                ? <span className="flex items-center gap-2 text-green-600"><CheckIcon className="size-4" />更新完成</span>
-                : <span>等待开始</span>
+                ? <span className="flex items-center gap-2 text-green-600"><CheckIcon className="size-4" />{t('更新完成')}</span>
+                : <span>{t('等待开始')}</span>
               )}
           </div>
           <div className="flex gap-2">
             {isProcessing ? (
-              <Button variant="destructive" onClick={handleCancel}>停止</Button>
+              <Button variant="destructive" onClick={handleCancel}>{t('停止')}</Button>
             ) : (
-              <Button onClick={handleStart}>{progress.percent > 0 && progress.percent < 100 ? '重试' : '开始更新'}</Button>
+              <Button onClick={handleStart}>{progress.percent > 0 && progress.percent < 100 ? t('重试') : t('开始更新')}</Button>
             )}
           </div>
         </DialogFooter>

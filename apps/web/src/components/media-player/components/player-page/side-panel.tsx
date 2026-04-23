@@ -8,6 +8,7 @@ import { Tabs, TabsContent } from '~/components/tabs';
 
 import { useRef, useState } from 'react';
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 import type * as TabsPrimitive from '@radix-ui/react-tabs';
 
@@ -20,6 +21,7 @@ type PlayerSidePanelProps = {
 } & React.ComponentProps<typeof TabsPrimitive.Root>;
 
 export function PlayerSidePanel({ activeTab = 'playlist', onTabChange, classNames, ...rest }: PlayerSidePanelProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState(activeTab);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -38,9 +40,9 @@ export function PlayerSidePanel({ activeTab = 'playlist', onTabChange, className
       value={tab}
       onValueChange={handleTabChange}
       tabs={[
-        { value: 'playlist', label: '播放列表' },
-        { value: 'subtitles', label: '字幕' },
-        { value: 'similar', label: '相似推荐' }
+        { value: 'playlist', label: t('播放列表') },
+        { value: 'subtitles', label: t('字幕') },
+        { value: 'similar', label: t('相似推荐') }
       ]}
     >
       <ScrollArea

@@ -6,8 +6,10 @@ import { useTranscodeOptions } from '~/hooks/use-transcode-options';
 import { HTTPError, withQuery } from '@asmr-collections/shared';
 
 import { logger } from '~/lib/logger';
+import { useTranslation } from '~/lib/i18n';
 
 export function useMediaSrc(url: string | undefined) {
+  const { t } = useTranslation();
   const [options] = useTranscodeOptions();
 
   const fetcher = async () => {
@@ -22,16 +24,16 @@ export function useMediaSrc(url: string | undefined) {
     }
 
     if (response.status === 202) {
-      const message = '转码中，请耐心等待...';
+      const message = t('转码中，请耐心等待...');
       toast.loading(message, {
         id: 'transcode-status',
-        description: '根据文件大小，这可能需要几分钟或数十分钟'
+        description: t('根据文件大小，这可能需要几分钟或数十分钟')
       });
       throw new HTTPError(message, 202);
     }
 
     if (response.status >= 400) {
-      const transcodeStatus = decodeURIComponent(response.headers.get('x-transcode-status') ?? '未知错误');
+      const transcodeStatus = decodeURIComponent(response.headers.get('x-transcode-status') ?? t('未知错误'));
       throw new HTTPError(transcodeStatus, response.status);
     }
   };
@@ -50,11 +52,11 @@ export function useMediaSrc(url: string | undefined) {
 
         if (error instanceof Error) {
           toast.dismiss('transcode-status');
-          toast.error('转码失败', {
+          toast.error(t('转码失败'), {
             description: error.message,
             duration: Infinity,
             action: {
-              label: '重试',
+              label: t('重试'),
               onClick: () => mutate()
             }
           });

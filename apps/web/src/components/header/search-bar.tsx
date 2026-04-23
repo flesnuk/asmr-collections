@@ -5,6 +5,7 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '../ui/input-group';
 import { Search, Zap, ZapOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '~/lib/i18n';
 
 interface SearchBarProps {
   search: {
@@ -14,6 +15,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ search }: SearchBarProps) {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState(() => search.keyword ?? '');
   const [isEmbedding, setIsEmbedding] = useState(() => !!search.embedding);
 
@@ -33,7 +35,7 @@ export function SearchBar({ search }: SearchBarProps) {
     <InputGroup className="max-w-52">
       <InputGroupAddon align="inline-start">
         <InputGroupButton
-          title="使用向量搜索"
+          title={t('使用向量搜索')}
           onClick={() => setIsEmbedding(p => !p)}
         >
           <AnimatePresence mode="wait" initial={false}>

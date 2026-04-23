@@ -11,6 +11,7 @@ import { floatingCaptionsOpenAtom } from '../../hooks/use-floating-open';
 
 import { notifyError } from '~/utils';
 import { logger } from '~/lib/logger';
+import { useTranslation } from '~/lib/i18n';
 
 interface DocumentPictureInPictureOptions {
   width?: number
@@ -30,6 +31,7 @@ export function PipCaptions() {
 }
 
 function DocumentPipCaptions() {
+  const { t } = useTranslation();
   const { activeCue } = useActiveCue();
 
   const pipWindowRef = useRef<Window | null>(null);
@@ -44,7 +46,7 @@ function DocumentPipCaptions() {
       const initPiP = async () => {
         try {
           if (!('documentPictureInPicture' in window))
-            throw new Error('暂不支持 Document Picture-in-Picture API');
+            throw new Error(t('暂不支持Document Picture-in-Picture API'));
 
           const pip = await (window.documentPictureInPicture as DocumentPictureInPicture).requestWindow({
             width: 400,
@@ -67,7 +69,7 @@ function DocumentPipCaptions() {
           setFloatingCaptionsOpen(false);
         } catch (err) {
           setPipOpen(false);
-          notifyError(err, '开启画中画失败');
+          notifyError(err, t('开启画中画失败'));
           logger.error(err, '开启画中画失败');
         }
       };

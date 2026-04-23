@@ -4,12 +4,14 @@ import { useNavigate } from '@tanstack/react-router';
 import { useGenerateSearch } from '~/hooks/use-generate-search';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 
 type WorkType = 'RJ' | 'BJ' | 'VJ';
 
 const TYPE_OPTIONS: WorkType[] = ['RJ', 'BJ', 'VJ'];
 
 export function WorkCategory() {
+  const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
 
@@ -27,7 +29,7 @@ export function WorkCategory() {
   return (
     <MenubarSub>
       <MenubarSubTrigger className={cn('transition-opacity', search.workType ? 'opacity-100' : 'opacity-60')}>
-        作品类型
+        {t('作品类型')}
       </MenubarSubTrigger>
       <MenubarSubContent>
         {TYPE_OPTIONS

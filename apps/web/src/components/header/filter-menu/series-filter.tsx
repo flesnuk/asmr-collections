@@ -11,13 +11,15 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 import { notifyError } from '~/utils';
 
 import { cn } from '~/lib/utils';
+import { useTranslation } from '~/lib/i18n';
 import { fetcher } from '~/lib/fetcher';
 
 import type { Data } from '@asmr-collections/shared';
 
 export function SeriesFilter() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useSWR<Array<Data<string>>>('/api/field/series', fetcher, {
-    onError: error => notifyError(error, '获取系列列表失败')
+    onError: error => notifyError(error, t('获取系列列表失败'))
   });
 
   const { search, exclude } = useGenerateSearch();
@@ -56,14 +58,14 @@ export function SeriesFilter() {
   return (
     <MenubarSub>
       <MenubarSubTrigger className={cn('transition-opacity', search.seriesId ? 'opacity-100' : 'opacity-60')}>
-        系列
+        {t('系列')}
       </MenubarSubTrigger>
       <MenubarSubContent>
         <FilterPanel
-          placeholder="筛选系列..."
+          placeholder={t('筛选系列...')}
           isLoading={isLoading}
           error={error}
-          errorText="获取系列列表失败"
+          errorText={t('获取系列列表失败')}
           data={data}
           handleSelect={handleSelect}
           selectedData={search.seriesId}

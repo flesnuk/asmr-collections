@@ -12,9 +12,13 @@ import { GoToDetail } from '../go-to-detail';
 import { HiddenImage } from '../hidden-image';
 import { ThemeToggle } from '../theme-toggle';
 
+import { useTranslation } from '~/lib/i18n';
+
 const { useParams, useNavigate } = getRouteApi('/work-details/$id');
 
 export function WorkDetailsMenu() {
+  const { t } = useTranslation();
+
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -26,7 +30,7 @@ export function WorkDetailsMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">
-            菜单
+            {t('菜单')}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-46">
@@ -42,17 +46,17 @@ export function WorkDetailsMenu() {
           <DropdownMenuSeparator />
           <ThemeToggle menuType="dropdown" />
           <DropdownMenuItem onClick={() => setShowSleepModeDialog(p => !p)}>
-            睡眠模式
+            {t('睡眠模式')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate({ to: '/playback' })}>
-            播放记录
+            {t('播放记录')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate({ to: '/playlists' })}>
-            播放列表
+            {t('播放列表')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate({ to: '/settings' })}>
-            设置
+            {t('设置')}
             <DropdownMenuShortcut>⌘,</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>

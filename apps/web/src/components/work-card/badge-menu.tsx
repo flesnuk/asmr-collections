@@ -11,6 +11,7 @@ import { MetaButton } from '../meta-button';
 import { useState } from 'react';
 
 import { externalUrl, writeClipboard } from '~/utils';
+import { useTranslation } from '~/lib/i18n';
 import type { RootSearchParams } from '~/providers/router';
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function BadgeMenu({ search, metaType, text, isFilter }: Props) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,7 +34,7 @@ export function BadgeMenu({ search, metaType, text, isFilter }: Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40" onInteractOutside={() => setOpen(false)}>
         <DropdownMenuItem asChild>
-          <Link disabled={isFilter} to="/" search={search} onClick={() => setOpen(false)}>筛选</Link>
+          <Link disabled={isFilter} to="/" search={search} onClick={() => setOpen(false)}>{t('筛选')}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
@@ -41,11 +43,11 @@ export function BadgeMenu({ search, metaType, text, isFilter }: Props) {
             setOpen(false);
           }}
         >
-          复制名称
+          {t('复制名称')}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to={externalUrl.dlsiteKeyword(text)} isExternal showAnchorIcon>
-            在 DLsite 上查看
+            {t('在 DLsite 上查看')}
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

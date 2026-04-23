@@ -10,6 +10,8 @@ import { memo, useState } from 'react';
 
 import type { BatchLogType } from '@asmr-collections/shared';
 
+import { useTranslation } from '~/lib/i18n';
+
 interface BatchLogsProps {
   onClick: () => void
   isProcessing: boolean
@@ -33,6 +35,7 @@ const LogItem = memo(({ id, type, message }: { id: string, type: BatchLogType, m
 ));
 
 export function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
+  const { t } = useTranslation();
   const [autoScroll, setAutoScroll] = useState(true);
 
   const handleScroll = (e: Event) => {
@@ -48,7 +51,7 @@ export function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
   return (
     <div className="border rounded-md relative bg-muted/30">
       <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/50 text-xs font-medium">
-        <span>处理日志</span>
+        <span>{t('处理日志')}</span>
         <Button size="icon" variant="ghost" className="size-4" onClick={onClick} title="复制日志">
           <CopyIcon className="size-3.5" />
         </Button>
@@ -74,11 +77,11 @@ export function BatchLogs({ onClick, logs, isProcessing }: BatchLogsProps) {
             {logs.length === 0 && isProcessing && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground text-center py-8">
                 <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
-                正在处理中...
+                {t('正在处理中...')}
               </motion.div>
             )}
             {logs.length === 0 && !isProcessing && (
-              <div className="text-muted-foreground text-center py-12">准备就绪</div>
+              <div className="text-muted-foreground text-center py-12">{t('准备就绪')}</div>
             )}
             {logs.map(log => (
               <LogItem key={log.id} {...log} />

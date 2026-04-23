@@ -5,61 +5,65 @@ import { useGenerateSearch } from '~/hooks/use-generate-search';
 
 import { setStoredValue } from '~/providers/router/utils';
 
-const sortOptions = [
-  {
-    label: '售价',
-    value: 'price'
-  },
-  {
-    label: '销量',
-    value: 'sales'
-  },
-  {
-    label: '评分',
-    value: 'rate'
-  },
-  {
-    label: '评分人数',
-    value: 'rateCount'
-  },
-  {
-    label: '收藏人数',
-    value: 'wishlistCount'
-  },
-  {
-    label: '评论人数',
-    value: 'reviewCount'
-  },
-  {
-    label: '收藏时间',
-    value: 'createdAt'
-  },
-  {
-    label: '更新时间',
-    value: 'updatedAt'
-  },
-  {
-    label: '发售时间',
-    value: 'releaseDate'
-  },
-  {
-    label: '随机排序',
-    value: 'random'
-  },
-  {
-    label: '回放次数',
-    value: 'playCount'
-  }
-];
+import { useTranslation } from '~/lib/i18n';
 
 export function SortMenu() {
+
+  const { t } = useTranslation();
   const { search, exclude } = useGenerateSearch();
   const navigate = useNavigate();
+
+  const sortOptions = [
+    {
+      label: t('售价'),
+      value: 'price'
+    },
+    {
+      label: t('销量'),
+      value: 'sales'
+    },
+    {
+      label: t('评分'),
+      value: 'rate'
+    },
+    {
+      label: t('评分人数'),
+      value: 'rateCount'
+    },
+    {
+      label: t('收藏人数'),
+      value: 'wishlistCount'
+    },
+    {
+      label: t('评论人数'),
+      value: 'reviewCount'
+    },
+    {
+      label: t('收藏时间'),
+      value: 'createdAt'
+    },
+    {
+      label: t('更新时间'),
+      value: 'updatedAt'
+    },
+    {
+      label: t('发售时间'),
+      value: 'releaseDate'
+    },
+    {
+      label: t('随机排序'),
+      value: 'random'
+    },
+    {
+      label: t('回放次数'),
+      value: 'playCount'
+    }
+  ];
 
   return (
     <MenubarMenu>
       <MenubarTrigger>
-        排序
+        {t('排序')}
       </MenubarTrigger>
       <MenubarContent align="center">
         <MenubarRadioGroup
@@ -72,7 +76,7 @@ export function SortMenu() {
             navigate({ to: '/', search: exclude(['page', 'keyword'], { order: newValue }) });
           }}
         >
-          {([{ label: '正序', value: 'asc' }, { label: '倒序', value: 'desc' }]).map(({ label, value }) => (
+          {([{ label: t('正序'), value: 'asc' }, { label: t('倒序'), value: 'desc' }]).map(({ label, value }) => (
             <MenubarRadioItem
               key={value}
               value={value}
