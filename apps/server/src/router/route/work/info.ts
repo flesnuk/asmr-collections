@@ -1,11 +1,13 @@
 import type { ServerWork, WorkInfoResponse } from '@asmr-collections/shared';
 
 import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
 
 import { getPrisma } from '~/lib/db';
 import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { createCachified, ttl } from '~/lib/cachified';
 import { formatError, formatMessage } from '~/router/utils';
+import { getT } from '~/i18n';
 
 const [dlsiteCache, clearDLsiteCache] = createCachified<WorkInfoResponse<ServerWork> | null>({
   ttl: ttl.day(1)
@@ -69,17 +71,19 @@ export async function processIllustrators(names: string[]) {
 
 infoApp.get('/info/:id', async c => {
   const { id } = c.req.param();
+  const locale = getCookie(c, 'locale') ?? 'zh-cn';
+  const t = getT(locale);
 
   try {
     const data = await dlsiteCache({
       cacheKey: `dlsite-work-info-${id}`,
-      getFreshValue: () => getInfo(id),
+      getFreshValue: () => getInfo(id, locale),
       ctx: c
     });
 
     if (!data) {
       await clearDLsiteCache(`dlsite-work-info-${id}`);
-      return c.json(formatMessage('DLsite 不存在此作品'), 404);
+      return c.json(formatMessage(t('DLsite 不存在此作品')), 404);
     }
 
     return c.json(data);
@@ -89,8 +93,8 @@ infoApp.get('/info/:id', async c => {
   }
 });
 
-async function getInfo(id: string): Promise<WorkInfoResponse<ServerWork> | null> {
-  const data = await fetchDLsiteInfo(id);
+async function getInfo(id: string, locale: string): Promise<WorkInfoResponse<ServerWork> | null> {
+  const data = await fetchDLsiteInfo(id, locale);
 
   if (!data)
     return null;

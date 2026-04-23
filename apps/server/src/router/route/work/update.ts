@@ -1,6 +1,7 @@
 import type { WorkInfo } from '~/types/source';
 
 import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
 
 import { getPrisma } from '~/lib/db';
 import { generateEmbedding } from '~/ai/jina';
@@ -8,15 +9,18 @@ import { fetchDLsiteInfo } from '~/lib/dlsite';
 import { findwork, formatError, formatMessage, saveCoverImage } from '~/router/utils';
 
 import { clearSimilarCache } from './similar';
+import { getT } from '~/i18n';
 
 export const updateApp = new Hono();
 
 updateApp.put('/update/:id', async c => {
   const { id } = c.req.param();
+  const locale = getCookie(c, 'locale') ?? 'zh-cn';
+  const t = getT(locale);
 
   try {
     if (!await findwork(id))
-      return c.json(formatMessage('收藏不存在'), 400);
+      return c.json(formatMessage(t('收藏不存在')), 400);
   } catch (e) {
     console.error(e);
     return c.json(formatError(e), 500);
@@ -31,13 +35,13 @@ updateApp.put('/update/:id', async c => {
     return c.json(formatError(e), 500);
   }
 
-  if (!data) return c.json(formatMessage('DLsite 不存在此作品'), 404);
+  if (!data) return c.json(formatMessage(t('DLsite 不存在此作品')), 404);
 
   try {
     const coverPath = await saveCoverImage(data.image_main, id);
     data.image_main = coverPath ?? data.image_main;
   } catch (e) {
-    console.error('保存 cover 图片失败', e);
+    console.error(t('保存 cover 图片失败'), e);
   }
 
   try {
@@ -52,10 +56,12 @@ updateApp.put('/update/:id', async c => {
 
 updateApp.put('/update/embedding/:id', async c => {
   const { id } = c.req.param();
+  const locale = getCookie(c, 'locale') ?? 'zh-cn';
+  const t = getT(locale);
 
   try {
     if (!await findwork(id))
-      return c.json(formatMessage('收藏不存在'), 400);
+      return c.json(formatMessage(t('收藏不存在')), 400);
   } catch (e) {
     console.error(e);
     return c.json(formatError(e), 500);
@@ -70,7 +76,7 @@ updateApp.put('/update/embedding/:id', async c => {
     return c.json(formatError(e), 500);
   }
 
-  if (!data) return c.json(formatMessage('DLsite 不存在此作品'), 404);
+  if (!data) return c.json(formatMessage(t('DLsite 不存在此作品')), 404);
   const prisma = getPrisma();
 
   try {
@@ -81,10 +87,10 @@ updateApp.put('/update/embedding/:id', async c => {
       await clearSimilarCache(id);
     }
 
-    return c.json(formatMessage('向量更新成功'));
+    return c.json(formatMessage(t('向量更新成功')));
   } catch (e) {
     console.error(e);
-    return c.json(formatError(e, '生成向量失败'), 500);
+    return c.json(formatError(e, t('生成向量失败')), 500);
   }
 });
 
